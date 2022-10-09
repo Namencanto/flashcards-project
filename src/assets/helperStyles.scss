@@ -1,0 +1,8 @@
+@import "./base.scss";
+.active {
+  opacity: 1 !important;
+}
+.active.features-active {
+  color: $color-purple !important;
+  border-bottom: solid 2px $color-purple;
+}

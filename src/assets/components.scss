@@ -1,0 +1,103 @@
+@import "./Base.scss";
+
+//BUTTONS
+@mixin btn-outline {
+  display: inline-block;
+  border-radius: 2rem;
+  background-color: transparent;
+  color: $color-purple;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+@mixin btn-solid {
+  display: inline-block;
+  border: 0.2rem solid $color-purple;
+  border-radius: 3.25rem;
+  background-color: $color-purple;
+  color: $color-white;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  &:hover {
+    background: transparent;
+    color: $color-purple;
+  }
+}
+@mixin btn-solid-reverse {
+  display: inline-block;
+  border: 0.2rem solid $color-offWhite;
+  border-radius: 3.25rem;
+  background-color: $color-offWhite;
+  color: $color-purple;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  &:hover {
+    background: transparent;
+    color: $color-offWhite;
+  }
+}
+
+.btn {
+  &-outline {
+    &-small {
+      @include btn-outline;
+      padding: 0.875rem 1.5rem 0.875rem 1.5rem;
+      border: 0.125rem solid $color-purple;
+      font: 700 0.875rem/0 "Open Sans", sans-serif;
+
+      &-header {
+        @include btn-outline;
+        padding: 1.4rem 2.4rem;
+        border: 0.2rem solid $color-purple;
+        font: 700 1.4rem/0 "Open Sans", sans-serif;
+
+        margin-bottom: 2.2rem;
+        margin-left: 0.8rem;
+        border: 0.2rem solid $color-white;
+        color: $color-white;
+
+        @media only screen and (min-width: $bp-1000) {
+          margin: 0 0 0 1.2rem !important;
+        }
+      }
+    }
+    &-medium {
+      //soon
+    }
+    &-large {
+      //soon
+    }
+  }
+  &-solid {
+    &-small {
+      //soon
+    }
+    &-medium {
+      @include btn-solid;
+      font-weight: 700;
+      padding: 1.9rem 3.4rem;
+      font: 700 1.4rem/0 "Open Sans", sans-serif;
+    }
+    &-large {
+      @include btn-solid-reverse;
+
+      padding: 2.25rem 4.25rem;
+      font: 700 1.425rem/0 "Open Sans", sans-serif;
+    }
+
+    &-header-content {
+      margin-right: 0.8125rem;
+      margin-bottom: 1.85rem;
+      margin-left: 0.8125rem;
+      border-color: $color-offWhite;
+      background-color: $color-offWhite;
+      color: $color-purple;
+      @media only screen and (min-width: $bp-800) {
+        margin-bottom: 0;
+        margin-left: 0;
+      }
+    }
+  }
+}

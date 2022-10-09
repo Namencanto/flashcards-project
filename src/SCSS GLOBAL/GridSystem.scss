@@ -1,0 +1,84 @@
+// COLOR VARIABLES
+$color-primary: #fff;
+$color-logo: #eb699e;
+$color-secondary: #daccfd;
+
+// FONT VARIABLES
+$font-logo: "Secular One", sans-serif;
+$font-display: "Roboto", sans-serif;
+
+// RESPONSIVE BREAKPOINTS
+$bp-largest: 75em; // 1200px
+$bp-large: 62.5em; // 1000px
+$bp-medium: 50em; // 800px;
+$bp-small: 37.5em; // 600px;
+
+input,
+textarea,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+  font-size: 62.5%; // 10px/16px = 62.5% -> 1rem = 10px
+
+  @media only screen and (max-width: $bp-largest) {
+    font-size: 50%;
+  }
+}
+
+body {
+  font-family: $font-display;
+  color: #000;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.container {
+  display: grid;
+  font-size: 2rem;
+  grid-template-rows:
+    115rem 70rem 70rem
+    83rem 57rem 65rem;
+
+  @media only screen and (max-width: $bp-largest) {
+    grid-template-rows:
+      116.5rem 77.5rem 70rem
+      83rem 57rem 65rem;
+  }
+  @media only screen and (max-width: $bp-small) {
+    grid-template-rows:
+      125rem 85rem 80rem
+      107.5rem 75rem 75rem;
+  }
+}
+
+.about-page {
+  font-size: 2rem;
+  background-color: #f2daac;
+}
+
+.offert-page {
+  font-size: 2rem;
+  background-color: #f2daac;
+}
+
+.user-account-page {
+  background-color: #f2daac;
+}
+
+.logout-page {
+  background-color: #ddd;
+}

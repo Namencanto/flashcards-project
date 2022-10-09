@@ -1,0 +1,27 @@
+.carousel {
+  grid-column: 2;
+  cursor: grab;
+  overflow: hidden;
+  height: 3rem;
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  &-container {
+    padding: 8rem 0 5.2rem 0;
+  }
+
+  &-item {
+    text-align: center;
+
+    & img {
+      pointer-events: none;
+      width: 15rem;
+      max-height: 3rem;
+    }
+  }
+  &-inner {
+    display: flex;
+  }
+}

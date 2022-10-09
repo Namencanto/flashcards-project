@@ -1,0 +1,105 @@
+@import "../../../assets/base.scss";
+.cards {
+  padding-top: 5.2rem;
+  padding-bottom: 4.8rem;
+  text-align: center;
+
+  &-container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+
+    grid-column: 2;
+  }
+
+  &-title {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    &-above {
+      color: #5f4dee;
+      font: 700 1.2rem/1.4rem "Open Sans", sans-serif;
+      text-align: center;
+      width: 100%;
+    }
+
+    & h2 {
+      margin-bottom: 5.6rem;
+      color: #333;
+      font: 700 3.2rem/4.2rem "Open Sans", sans-serif;
+      letter-spacing: -0.2px;
+      @media only screen and (min-width: $bp-800) {
+        width: 80%;
+        margin-right: auto;
+        margin-left: auto;
+
+        @media only screen and (min-width: $bp-1000) {
+          width: 60%;
+
+          @media only screen and (min-width: $bp-1200) {
+            width: 50%;
+          }
+        }
+      }
+    }
+  }
+
+  &-cardslist {
+    display: flex;
+
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+    @media only screen and (min-width: $bp-1000) {
+      flex-wrap: nowrap;
+    }
+    &-card {
+      max-width: 33.6rem;
+      margin-right: auto;
+      margin-bottom: 5.6rem;
+      margin-left: auto;
+      padding: 0;
+      border: none;
+
+      @media only screen and (min-width: $bp-1000) {
+        width: 30%;
+      }
+      &-img {
+        max-width: 25.6rem;
+        margin-right: auto;
+        margin-bottom: 3.2rem;
+        margin-left: auto;
+
+        & img {
+          max-width: 100%;
+          height: auto;
+          vertical-align: middle;
+          border-style: none;
+          @media only screen and (min-width: $bp-1200) {
+            width: 20rem;
+          }
+        }
+      }
+
+      &-body {
+        padding: 0;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+
+        & h4 {
+          margin-bottom: 1.3rem;
+          color: #333;
+          font: 700 2.2rem/2.8rem "Open Sans", sans-serif;
+          letter-spacing: -0.1px;
+        }
+        & p {
+          margin-top: 0;
+          margin-bottom: 1.6rem;
+        }
+      }
+    }
+  }
+}

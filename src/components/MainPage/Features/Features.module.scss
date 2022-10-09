@@ -1,0 +1,75 @@
+@import "../../../assets/base.scss";
+
+.features {
+  background-color: $color-offWhite;
+  padding: 13rem 0;
+
+  &-container {
+    grid-column: 2;
+  }
+
+  // title
+
+  &-title {
+    // display: flex;
+    text-align: center;
+    padding: 0 1.5rem;
+    &-heading {
+      color: #5f4dee;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    & h2 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 0.8rem;
+    }
+    & p {
+      font-weight: 400;
+      font-size: 1.6rem;
+      color: #555;
+      margin-bottom: 5.2rem;
+      @media only screen and (min-width: $bp-1000) {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  }
+
+  // buttons
+
+  &-nav {
+    &-tabs {
+      margin-bottom: 3.6rem;
+      @media only screen and (min-width: $bp-1000) {
+        display: flex;
+        justify-content: center;
+      }
+    }
+    &-item {
+      text-align: center;
+      height: 4rem;
+
+      &-link {
+        &:hover {
+          color: $color-purple;
+          border-bottom: solid 2px $color-purple;
+        }
+        transition: all 0.2s ease;
+        font-weight: 700;
+        padding: 0.6rem 1.6rem;
+        font-size: 2rem;
+        color: #86929b;
+        text-decoration: none;
+        border-bottom: solid 2px rgb(202, 202, 202);
+      }
+      &-icon {
+        margin-right: 1rem;
+        width: 2rem;
+        height: 2.1rem;
+      }
+    }
+  }
+}

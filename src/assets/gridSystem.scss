@@ -1,0 +1,78 @@
+@mixin mainpageDefaultGrid {
+}
+
+.grid {
+  &-mainpage {
+    &-header {
+      &-content {
+        display: grid;
+        grid-template-columns: 1fr 75vw 1fr;
+
+        @media only screen and (min-width: $bp-1000) {
+          grid-template-columns: repeat(2, 50vw);
+          align-items: center;
+          margin-bottom: -6rem;
+          @media only screen and (min-width: $bp-1200) {
+            grid-template-columns: 1fr repeat(2, 27.5vw) 1fr;
+            @media only screen and (min-width: $bp-1400) {
+              grid-template-columns: 1fr repeat(2, 25vw) 1fr;
+              @media only screen and (min-width: $bp-1800) {
+                grid-template-columns: 1fr repeat(2, 22.5vw) 1fr;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &-carousel {
+      display: grid;
+      grid-template-columns: 1fr 87.5vw 1fr;
+
+      @media only screen and (min-width: $bp-1200) {
+        grid-template-columns: 1fr 60vw 1fr;
+        @media only screen and (min-width: $bp-1400) {
+          grid-template-columns: 1fr 55vw 1fr;
+          @media only screen and (min-width: $bp-2000) {
+            grid-template-columns: 1fr 45vw 1fr;
+          }
+        }
+      }
+    }
+    &-cards {
+      display: grid;
+      grid-template-columns: 1fr 87.5vw 1fr;
+
+      padding-top: 5.2rem;
+      padding-bottom: 4.8rem;
+      text-align: center;
+      @media only screen and (min-width: $bp-1200) {
+        grid-template-columns: 1fr 60vw 1fr;
+        @media only screen and (min-width: $bp-1400) {
+          grid-template-columns: 1fr 55vw 1fr;
+          @media only screen and (min-width: $bp-2000) {
+            grid-template-columns: 1fr 45vw 1fr;
+          }
+        }
+      }
+    }
+    &-features {
+      display: grid;
+      grid-template-columns: 1fr 87.5vw 1fr;
+      @media only screen and (max-width: $bp-500) {
+        display: block;
+        padding: 0 1.5rem;
+      }
+      @media only screen and (min-width: $bp-1200) {
+        display: grid;
+        grid-template-columns: 1fr 80vw 1fr;
+        @media only screen and (min-width: $bp-1400) {
+          grid-template-columns: 1fr 65vw 1fr;
+          @media only screen and (min-width: $bp-2000) {
+            grid-template-columns: 1fr 45vw 1fr;
+          }
+        }
+      }
+    }
+  }
+}
