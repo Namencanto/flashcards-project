@@ -6,3 +6,20 @@
   color: $color-purple !important;
   border-bottom: solid 2px $color-purple;
 }
+
+.popup-fade-enter {
+  opacity: 0;
+}
+.popup-fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.popup-fade-exit {
+  opacity: 1;
+}
+
+.popup-fade-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in;
+}

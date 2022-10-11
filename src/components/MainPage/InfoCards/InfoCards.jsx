@@ -12,8 +12,6 @@ function InfoCards() {
   const cx = classNames.bind(classes);
   const { minWidth1000 } = MediaQueries();
 
-  console.log(minWidth1000);
-
   const cardsClassName = () => {
     return minWidth1000 ? classNames(cx("cards")) : "grid-mainpage-cards";
   };

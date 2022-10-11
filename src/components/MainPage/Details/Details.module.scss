@@ -1,0 +1,63 @@
+@import "../../../assets/base.scss";
+
+.details {
+  &-container {
+    grid-column: 2;
+
+    margin: 0 auto;
+    @media only screen and (min-width: $bp-800) {
+      max-width: 72rem;
+      @media only screen and (min-width: $bp-1000) {
+        display: flex;
+        max-width: 100%;
+      }
+    }
+  }
+  &-text-container {
+    margin-bottom: 6rem;
+
+    @media only screen and (min-width: $bp-1000) {
+      padding: 0 1.5rem;
+      width: 50%;
+    }
+    & h2 {
+      margin-bottom: 0.8rem;
+      color: #333;
+      font: 700 3.2rem/4.2rem "Open Sans", sans-serif;
+      letter-spacing: -0.2px;
+
+      @media only screen and (min-width: $bp-1200) {
+        margin-bottom: 1.625rem;
+      }
+    }
+    & p {
+      margin-bottom: 1.6rem;
+    }
+    & ul {
+      margin-bottom: 2.2rem;
+      & li {
+        display: flex;
+        & p {
+          margin: 0;
+        }
+      }
+    }
+  }
+  &-image-container {
+    max-width: 69rem;
+    @media only screen and (min-width: $bp-1000) {
+      padding: 0 1.5rem;
+      width: 50%;
+      max-width: 48rem;
+      @media only screen and (min-width: $bp-1200) {
+        padding-right: 1.5rem;
+        max-width: 53rem;
+      }
+    }
+    & img {
+      max-width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+  }
+}

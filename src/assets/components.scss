@@ -8,6 +8,12 @@
   color: $color-purple;
   text-decoration: none;
   transition: all 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background: $color-purple;
+    color: $color-offWhite;
+  }
 }
 
 @mixin btn-solid {
@@ -64,7 +70,10 @@
       }
     }
     &-medium {
-      //soon
+      @include btn-outline;
+      padding: 1.9rem 3.4rem;
+      border: 0.2rem solid $color-purple;
+      font: 700 1.4rem/0 "Open Sans", sans-serif;
     }
     &-large {
       //soon
@@ -99,5 +108,16 @@
         margin-left: 0;
       }
     }
+  }
+}
+
+// ICONS
+
+.icon {
+  &-square {
+    width: 0.7rem;
+    height: 0.8rem;
+    margin: auto 1rem auto 0;
+    color: $color-purple;
   }
 }

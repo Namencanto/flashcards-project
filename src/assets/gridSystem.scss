@@ -59,10 +59,62 @@
     &-features {
       display: grid;
       grid-template-columns: 1fr 87.5vw 1fr;
+
       @media only screen and (max-width: $bp-500) {
         display: block;
         padding: 0 1.5rem;
       }
+      @media only screen and (min-width: $bp-1200) {
+        display: grid;
+        grid-template-columns: 1fr 80vw 1fr;
+        @media only screen and (min-width: $bp-1400) {
+          grid-template-columns: 1fr 65vw 1fr;
+          @media only screen and (min-width: $bp-2000) {
+            grid-template-columns: 1fr 45vw 1fr;
+          }
+        }
+      }
+    }
+    &-details {
+      display: grid;
+      grid-template-columns: 1fr 87.5vw 1fr;
+      padding: 12.5rem 0rem;
+
+      @media only screen and (min-width: $bp-1200) {
+        display: grid;
+        grid-template-columns: 1fr 80vw 1fr;
+        @media only screen and (min-width: $bp-1400) {
+          grid-template-columns: 1fr 65vw 1fr;
+          @media only screen and (min-width: $bp-2000) {
+            grid-template-columns: 1fr 45vw 1fr;
+          }
+        }
+      }
+    }
+    &-player {
+      display: grid;
+      grid-template-columns: 1fr 87.5vw 1fr;
+
+      @media only screen and (max-width: $bp-500) {
+        display: block;
+        padding: 0 1.5rem;
+      }
+      @media only screen and (min-width: $bp-1200) {
+        display: grid;
+        grid-template-columns: 1fr 80vw 1fr;
+        @media only screen and (min-width: $bp-1400) {
+          grid-template-columns: 1fr 65vw 1fr;
+          @media only screen and (min-width: $bp-2000) {
+            grid-template-columns: 1fr 45vw 1fr;
+          }
+        }
+      }
+    }
+    &-price {
+      display: grid;
+      grid-template-columns: 1fr 87.5vw 1fr;
+      padding: 12.5rem 0 3.5rem 0;
+
       @media only screen and (min-width: $bp-1200) {
         display: grid;
         grid-template-columns: 1fr 80vw 1fr;

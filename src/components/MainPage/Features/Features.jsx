@@ -4,7 +4,6 @@ import classes from "./Features.module.scss";
 import classNames from "classnames/bind";
 
 import { NavLink, Routes, Route, useLocation } from "react-router-dom";
-import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList } from "@fortawesome/free-solid-svg-icons";
@@ -19,19 +18,50 @@ import FeaturesImage3 from "../../../images/features-3.png";
 
 function Features() {
   const cx = classNames.bind(classes);
-  const [feature, setFeature] = useState(FeaturesImage1);
 
   const pathName = useLocation().pathname;
-
-  const setFeatureHandler = (img) => {
-    setFeature(img);
-  };
 
   const iconStyling = classNames(cx("features-nav-item-icon"));
   const navLinkStyling = classNames(
     cx("features-nav-item-link"),
     "features-active"
   );
+
+  const setdefaultFeatureActiveHandler = () => {
+    if (
+      pathName !== "/features/campaigns-nav" &&
+      pathName !== "/features/analytics-nav"
+    ) {
+      return (
+        <NavLink
+          className={classNames(
+            cx("features-nav-item-link"),
+            "features-active",
+            "active"
+          )}
+          to="features/listbuilder-nav"
+        >
+          <FontAwesomeIcon className={iconStyling} icon={faList} />
+          List Builder
+        </NavLink>
+      );
+    } else {
+      return (
+        <NavLink
+          className={classNames(
+            cx("features-nav-item-link"),
+            "features-active"
+          )}
+          to="features/listbuilder-nav"
+        >
+          <FontAwesomeIcon className={iconStyling} icon={faList} />
+          List Builder
+        </NavLink>
+      );
+    }
+  };
+  // te hendlerki to mozna jeszcze ulepszyc ale pierdole to jak na razie
+  setdefaultFeatureActiveHandler();
 
   return (
     <div className={classNames(cx("features"))}>
@@ -51,18 +81,11 @@ function Features() {
 
           <ul className={classNames(cx("features-nav-tabs"))}>
             <li className={classNames(cx("features-nav-item"))}>
-              <NavLink
-                className={`${navLinkStyling} ${
-                  pathName === "/" ? "active" : ""
-                }`}
-                to="listbuilder-nav"
-              >
-                <FontAwesomeIcon className={iconStyling} icon={faList} />
-                List Builder
-              </NavLink>
+              {/* default link */}
+              {setdefaultFeatureActiveHandler()}
             </li>
             <li className={classNames(cx("features-nav-item"))}>
-              <NavLink className={navLinkStyling} to="campaigns-nav">
+              <NavLink className={navLinkStyling} to="features/campaigns-nav">
                 <FontAwesomeIcon
                   className={iconStyling}
                   icon={faEnvelopeOpenText}
@@ -71,7 +94,7 @@ function Features() {
               </NavLink>
             </li>
             <li className={classNames(cx("features-nav-item"))}>
-              <NavLink className={navLinkStyling} to="analytics-nav">
+              <NavLink className={navLinkStyling} to="features/analytics-nav">
                 <FontAwesomeIcon className={iconStyling} icon={faChartColumn} />
                 Analytics
               </NavLink>
@@ -79,23 +102,53 @@ function Features() {
           </ul>
 
           {/* content */}
+
           <Routes>
             <Route
-              path="/"
-              element={<FeaturesContent image={FeaturesImage1} />}
+              path="/*"
+              element={
+                <FeaturesContent
+                  image={FeaturesImage1}
+                  title={"List Building Is Easier Than Ever"}
+                />
+              }
             ></Route>
             <Route
-              path="listbuilder-nav/*"
-              element={<FeaturesContent image={FeaturesImage1} />}
+              path="/features"
+              element={
+                <FeaturesContent
+                  image={FeaturesImage1}
+                  title={"List Building Is Easier Than Ever"}
+                />
+              }
+            ></Route>
+            <Route
+              path="features/listbuilder-nav"
+              element={
+                <FeaturesContent
+                  image={FeaturesImage1}
+                  title={"List Building Is Easier Than Ever"}
+                />
+              }
             ></Route>
 
             <Route
-              path="campaigns-nav/*"
-              element={<FeaturesContent image={FeaturesImage2} />}
+              path="features/campaigns-nav"
+              element={
+                <FeaturesContent
+                  image={FeaturesImage2}
+                  title={"Campaigns Monitoring Tools"}
+                />
+              }
             ></Route>
             <Route
-              path="analytics-nav/*"
-              element={<FeaturesContent image={FeaturesImage3} />}
+              path="features/analytics-nav"
+              element={
+                <FeaturesContent
+                  image={FeaturesImage3}
+                  title={"Analytics Control Panel"}
+                />
+              }
             ></Route>
           </Routes>
         </div>

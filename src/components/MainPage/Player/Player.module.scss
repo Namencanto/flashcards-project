@@ -1,0 +1,105 @@
+@import "../../../assets/base.scss";
+.player {
+  background-color: $color-offWhite;
+  padding: 13rem 0;
+
+  &-container {
+    grid-column: 2;
+
+    & p {
+      margin-bottom: 1.6rem;
+      text-align: center;
+
+      @media only screen and (min-width: $bp-1000) {
+        margin: 0 auto;
+        width: 72rem;
+      }
+    }
+  }
+  &-video {
+    cursor: pointer;
+    margin-bottom: 3.25rem;
+
+    @media only screen and (min-width: $bp-1000) {
+      max-width: 85rem;
+      margin: 0 auto 3.25rem auto;
+    }
+    &-main {
+      position: relative;
+      & img {
+        border-radius: 1.2rem;
+        max-width: 100%;
+        height: auto;
+        vertical-align: middle;
+      }
+      &-button {
+        position: absolute;
+        z-index: 10;
+        top: 50%;
+        left: 50%;
+        display: block;
+        box-sizing: content-box;
+        width: 3.2rem;
+        height: 4.4rem;
+        padding: 1.8rem 2rem;
+        border-radius: 50%;
+
+        transform: translateX(-50%) translateY(-50%);
+
+        & span {
+          position: relative;
+          display: block;
+          z-index: 3;
+          top: 0.6rem;
+          left: 0.4rem;
+          width: 0;
+          height: 0;
+          border-left: 2.6rem solid #fff;
+          border-top: 1.6rem solid transparent;
+          border-bottom: 1.6rem solid transparent;
+          margin: auto;
+        }
+        &::before {
+          content: "";
+          position: absolute;
+          z-index: 0;
+          top: 50%;
+          left: 50%;
+          display: block;
+          width: 7.6rem;
+          height: 7.6rem;
+          border-radius: 50%;
+          background: #5f4dee;
+          animation: pulse-border 1500ms ease-out infinite;
+
+          transform: translateX(-50%) translateY(-50%);
+        }
+        &::after {
+          content: "";
+          position: absolute;
+          z-index: 1;
+          top: 50%;
+          left: 50%;
+          display: block;
+          width: 7rem;
+          height: 7rem;
+          border-radius: 50%;
+          background: #5f4dee;
+          transition: all 200ms;
+
+          transform: translateX(-50%) translateY(-50%);
+        }
+      }
+    }
+  }
+}
+@keyframes pulse-border {
+  0% {
+    transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-50%) translateY(-50%) translateZ(0) scale(1.5);
+    opacity: 0;
+  }
+}

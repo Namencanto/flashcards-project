@@ -3,39 +3,57 @@
 .content {
   @media only screen and (min-width: $bp-1000) {
     display: flex;
+    justify-content: center;
   }
   &-image-container {
+    max-width: 69rem;
+    margin: 0 auto;
     @media only screen and (min-width: $bp-1000) {
-      flex: 0 0 50%;
-      max-width: 50%;
+      // flex: 0 0 50%;
+      margin: 0;
+
       padding: 0 1.5rem;
+      max-width: 48rem;
       @media only screen and (min-width: $bp-1200) {
-        padding-right: 3.5rem;
+        padding-right: 1.5rem;
+        max-width: 53rem;
       }
     }
     & img {
+      margin: 0 auto;
+      display: flex;
+
+      height: auto;
+      padding-bottom: 4.4rem;
       max-width: 100%;
       height: auto;
-      margin-bottom: 4.4rem;
+      vertical-align: middle;
+      // width: 51rem;
+      // @media only screen and (min-width: $bp-800) {
+      //   width: 69rem;
+      // }
     }
   }
   &-text-container {
+    margin: 0 auto;
+
+    max-width: 69rem;
+
     @media only screen and (min-width: $bp-1000) {
+      margin: 0;
       padding: 0 1.5rem;
+
+      height: 35rem;
+      max-width: 45rem;
 
       @media only screen and (min-width: $bp-1200) {
         padding-left: 3.5rem;
+        max-width: 50rem;
       }
     }
     color: #555;
     &-description {
       margin-bottom: 1.6rem;
-    }
-    &-icon {
-      width: 0.7rem;
-      height: 0.8rem;
-      margin: auto 1rem auto 0;
-      color: $color-purple;
     }
     &-register-link {
       color: $color-purple;
@@ -44,7 +62,7 @@
       }
     }
     & h3 {
-      font-size: 1.875rem;
+      font-size: 2.6rem;
       margin-bottom: 1.2rem;
     }
     & p {
