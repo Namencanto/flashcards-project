@@ -1,4 +1,5 @@
 import "../../../assets/Global.scss";
+import React from "react";
 
 import classes from "./Features.module.scss";
 import classNames from "classnames/bind";
@@ -16,7 +17,7 @@ import FeaturesImage1 from "../../../images/features-1.png";
 import FeaturesImage2 from "../../../images/features-2.png";
 import FeaturesImage3 from "../../../images/features-3.png";
 
-function Features() {
+const Features = React.forwardRef((props, ref) => {
   const cx = classNames.bind(classes);
 
   const pathName = useLocation().pathname;
@@ -64,7 +65,7 @@ function Features() {
   setdefaultFeatureActiveHandler();
 
   return (
-    <div className={classNames(cx("features"))}>
+    <div ref={ref} id="features-part" className={classNames(cx("features"))}>
       <div className="grid-mainpage-features">
         <div className={classNames(cx("features-container"))}>
           <div className={classNames(cx("features-title"))}>
@@ -155,6 +156,5 @@ function Features() {
       </div>
     </div>
   );
-}
-
+});
 export default Features;

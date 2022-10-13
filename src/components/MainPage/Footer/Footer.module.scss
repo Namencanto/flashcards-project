@@ -1,0 +1,103 @@
+@import "../../../assets/base.scss";
+.footer {
+  padding: 4.8rem 0 0.6rem;
+  background-color: $color-purple;
+
+  &-frame {
+    & svg {
+      height: 2.4rem;
+      margin-top: -0.1rem;
+      overflow: hidden;
+      vertical-align: bottom;
+      width: 100%;
+
+      @media only screen and (min-width: $bp-800) {
+        height: 8rem;
+      }
+    }
+    & path {
+      fill: $color-purple;
+    }
+  }
+
+  &-container {
+  }
+  &-main {
+    max-width: 54rem;
+    margin: 0 auto;
+
+    @media only screen and (min-width: $bp-800) {
+      display: flex;
+      max-width: 80rem;
+      @media only screen and (min-width: $bp-1000) {
+        max-width: 100rem;
+      }
+    }
+    &-box {
+      width: 100%;
+      padding: 0 1.5rem;
+      display: block;
+
+      margin-bottom: 3.6rem;
+      & h4 {
+        font-size: 2.2rem;
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+      & p {
+        font: 400 1.4rem/2.4rem "Open Sans", sans-serif;
+        margin-bottom: 3.2rem;
+        color: $color-offWhite;
+      }
+      & ul {
+        & li {
+          color: #fff;
+          display: flex;
+          align-items: center;
+          margin-bottom: 0.6rem;
+          & p {
+            margin: auto 0;
+          }
+          & a {
+            font-size: 1.4rem;
+            color: #fff;
+          }
+        }
+      }
+
+      &-icon {
+        margin-right: 1rem;
+      }
+
+      .square {
+        width: 0.7rem;
+      }
+    }
+  }
+
+  &-copyright {
+    padding: 2.4rem 1.5rem 0rem 1.5rem;
+    &-container {
+      max-width: 54rem;
+      margin: 0 auto;
+      padding-top: 2.2rem;
+      border-top: 1px solid #718ad1;
+      margin-bottom: 1.6rem;
+      text-align: center;
+
+      @media only screen and (min-width: $bp-800) {
+        max-width: 80rem;
+        @media only screen and (min-width: $bp-1000) {
+          max-width: 100rem;
+        }
+      }
+
+      & p,
+      a {
+        font-size: 1.4rem;
+        text-decoration: none;
+        color: #f3f7fd;
+      }
+    }
+  }
+}

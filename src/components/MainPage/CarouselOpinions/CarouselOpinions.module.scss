@@ -1,0 +1,45 @@
+@import "../../../assets/base.scss";
+.carousel {
+  grid-column: 2;
+
+  overflow: hidden;
+  padding: 0 1.5rem;
+
+  &-container {
+    padding: 8rem 0 5.2rem 0;
+  }
+
+  &-item {
+    align-items: center;
+    padding: 0 3rem;
+    text-align: center;
+
+    @media only screen and (min-width: $bp-1000) {
+      display: flex !important;
+      text-align: start;
+    }
+    &-text-container {
+      @media only screen and (min-width: $bp-1000) {
+        margin-left: 4rem;
+      }
+    }
+
+    & img {
+      max-width: 16rem;
+      height: auto;
+
+      pointer-events: none;
+      border-radius: 50%;
+
+      @media only screen and (min-width: $bp-1000) {
+        margin-left: 3rem;
+      }
+    }
+    & p {
+      margin-bottom: 0.8rem;
+    }
+    & h3 {
+      color: $color-333;
+    }
+  }
+}

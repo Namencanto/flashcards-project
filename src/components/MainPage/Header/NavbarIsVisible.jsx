@@ -2,17 +2,30 @@ import classes from "./Header.module.scss";
 import "../../../assets/Global.scss";
 
 import { NavLink, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import useWindowDimensions from "../../../hooks/useWindowDimensions";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
-const NavbarIsVisible = () => {
+const NavbarIsVisible = (props) => {
   let cx = classNames.bind(classes);
 
+  let [featuresPart] = props.allParts;
   const pathName = useLocation().pathname;
+
+  useEffect(() => {
+    console.log("prawda");
+
+    window.addEventListener("load", function () {
+      setTimeout(() => {
+        featuresPart.current.scrollIntoView();
+      }, 250);
+    });
+
+    console.log(featuresPart.current);
+  }, [featuresPart]);
 
   const [videoIsVisible, setVideoIsVisible] = useState(false);
   const minWidth1000 = useWindowDimensions().width < 1000;
@@ -40,7 +53,12 @@ const NavbarIsVisible = () => {
             HOME
           </NavLink>
         </li>
-        <li className={classNames(cx("navbar-nav-item"))}>
+        <li
+          onClick={() => {
+            featuresPart.current.scrollIntoView();
+          }}
+          className={classNames(cx("navbar-nav-item"))}
+        >
           <NavLink className={classNames(cx("navbar-nav-link"))} to="features">
             FEATURES
           </NavLink>

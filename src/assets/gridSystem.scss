@@ -111,17 +111,45 @@
       }
     }
     &-price {
+      // display: grid;
+      // grid-template-columns: 1fr 87.5vw 1fr;
+      padding: 12.5rem 0 8.5rem 0;
+
+      @media only screen and (min-width: $bp-1200) {
+        display: grid;
+        grid-template-columns: 1fr 75vw 1fr;
+        @media only screen and (min-width: $bp-1400) {
+          grid-template-columns: 1fr 65vw 1fr;
+          @media only screen and (min-width: $bp-2000) {
+            grid-template-columns: 1fr 45vw 1fr;
+          }
+        }
+      }
+    }
+    &-carousel-opinions {
+      display: grid;
+      grid-template-columns: 1fr 95vw 1fr;
+
+      @media only screen and (min-width: $bp-400) {
+        grid-template-columns: 1fr 85vw 1fr;
+        @media only screen and (min-width: $bp-1000) {
+          grid-template-columns: 1fr 105rem 1fr;
+        }
+      }
+    }
+    &-newsletter {
       display: grid;
       grid-template-columns: 1fr 87.5vw 1fr;
-      padding: 12.5rem 0 3.5rem 0;
+      padding: 0 1.5rem;
 
       @media only screen and (min-width: $bp-1200) {
         display: grid;
         grid-template-columns: 1fr 80vw 1fr;
         @media only screen and (min-width: $bp-1400) {
-          grid-template-columns: 1fr 65vw 1fr;
+          grid-template-columns: 1fr 100rem 1fr;
+
           @media only screen and (min-width: $bp-2000) {
-            grid-template-columns: 1fr 45vw 1fr;
+            grid-template-columns: 1fr 40vw 1fr;
           }
         }
       }

@@ -1,0 +1,113 @@
+@import "../../../assets/base.scss";
+.newsletter {
+  background-color: $color-offWhite;
+  border-radius: 0.8rem;
+  margin-bottom: 5.6rem;
+  grid-column: 2;
+  padding: 5.6rem 1.6rem 4rem 1.6rem;
+  &-container {
+    text-align: center;
+    & p {
+      font: 700 1.2rem/1.4rem "Open Sans", sans-serif;
+      color: $color-purple;
+    }
+    & h2 {
+      max-width: 60rem;
+      margin: 0 auto;
+      font-size: 3.2rem;
+      color: $color-333;
+      margin-bottom: 4.4rem;
+      letter-spacing: -0.2px;
+      font: 700 3.2rem/4.2rem "Open Sans", sans-serif;
+    }
+  }
+  &-form {
+    max-width: 50rem;
+    margin: 0 auto;
+    position: relative;
+    & input[type="email"] {
+      outline: none;
+      display: block;
+      width: 100%;
+      padding: 1.7rem 0.2rem 0.1rem 2rem;
+      border: 1px solid #c4d8dc;
+      border-radius: 0.4rem;
+      background-color: #fff;
+      color: #555;
+      font: 400 1.4rem/3rem "Open Sans", sans-serif;
+      transition: all 0.2s;
+
+      &:hover {
+        border: 1px solid #a1a1a1;
+      }
+      &:focus {
+        border: 1px solid #a1a1a1;
+      }
+      &:not(:placeholder-shown) {
+        & + label {
+          top: 0.2rem;
+          opacity: 1;
+          font-size: 1.2rem;
+          font-weight: 700;
+        }
+      }
+      &:focus + label {
+        top: 0.2rem;
+        opacity: 1;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+    }
+    & label {
+      top: 0.2rem;
+      opacity: 1;
+      font-size: 1.2rem;
+      font-weight: 700;
+      position: absolute;
+      top: 1.395rem;
+      left: 2rem;
+      color: #555;
+      opacity: 1;
+      font: 400 1.4rem/2.2rem "Open Sans", sans-serif;
+      cursor: text;
+      transition: all 0.2s ease;
+    }
+    &-confirm {
+      display: flex;
+      align-items: flex-start;
+      margin: 2rem 0;
+
+      & input[type="checkbox"] {
+        margin: 0.45rem 0.6rem 0 0;
+      }
+      & p {
+        color: #555;
+        font: 400 1.2rem/2rem "Open Sans", sans-serif;
+        text-align: start;
+      }
+      & a {
+        color: #555;
+      }
+    }
+
+    & button {
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    &-errors {
+      &-email {
+        text-align: start;
+        font-size: 1.2rem;
+        color: red;
+        margin-bottom: -2rem;
+      }
+      &-checkbox {
+        margin-top: -2rem;
+        text-align: start;
+        font-size: 1.2rem;
+        color: red;
+      }
+    }
+  }
+}

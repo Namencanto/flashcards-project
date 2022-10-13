@@ -14,10 +14,11 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import NavbarIsVisible from "./NavbarIsVisible";
 import HeaderContent from "./HeaderContent/HeaderContent";
 
-function Header() {
+function Header(props) {
   const cx = classNames.bind(classes);
   const [navbarIsOpen, setNavbarIsOpen] = useState(false);
 
+  console.log(props.allParts);
   const setNavbarIsOpenHandler = () => {
     navbarIsOpen === true ? setNavbarIsOpen(false) : setNavbarIsOpen(true);
   };
@@ -40,7 +41,7 @@ function Header() {
               {navbarIsOpen && <FontAwesomeIcon icon={faTimes} />}
             </button>
           ) : (
-            <NavbarIsVisible />
+            <NavbarIsVisible allParts={props.allParts} />
           )}
           {navbarIsOpen && <NavbarIsVisible />}
         </div>

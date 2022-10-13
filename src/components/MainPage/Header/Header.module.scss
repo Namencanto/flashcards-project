@@ -21,16 +21,15 @@
     padding: 3.4rem 2.4rem 3.4rem 3.2rem;
   }
   &-nav {
-    margin-top: 0.75rem;
-    margin-bottom: 0.5rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0.8rem;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-direction: column;
     flex-direction: column;
     padding-left: 0;
-    margin-bottom: 0;
+
     list-style: none;
-    align-items: center;
 
     @media only screen and (min-width: $bp-1000) {
       flex-direction: row;
@@ -53,8 +52,7 @@
       align-items: center;
     }
     &-item {
-      margin-top: 0.8rem;
-
+      padding: 1rem 1.2rem;
       & li {
         display: list-item;
         text-align: -webkit-match-parent;
@@ -63,7 +61,6 @@
       }
     }
     &-link {
-      padding: 1rem 1.2rem;
       color: $color-offWhite;
       opacity: 0.8;
       text-decoration: none;
@@ -82,14 +79,13 @@
       border-radius: 0.25rem;
       background-color: $color-purple;
 
-      position: absolute;
       top: 100%;
       left: 0;
       z-index: 1000;
 
       min-width: 10rem;
-      padding: 0.5rem 0;
-      margin: 0.125rem 0 0;
+
+      margin: 0.2rem 0 0;
       font-size: 1rem;
       color: #212529;
       text-align: left;
@@ -132,7 +128,7 @@
       &-item {
         display: block;
         width: 100%;
-        padding: 0.4rem 2.4rem;
+        padding: 0.64rem 2.4rem;
         clear: both;
         font-weight: 400;
         color: #212529;

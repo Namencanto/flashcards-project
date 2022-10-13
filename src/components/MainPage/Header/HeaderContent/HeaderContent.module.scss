@@ -1,5 +1,4 @@
 @import "../../../../assets/base.scss";
-@import "../../../../assets/gridSystem.scss";
 
 .content {
   background-color: $color-purple;
@@ -8,51 +7,56 @@
   text-align: center;
   font-size: 2rem;
 
+  @media only screen and (min-width: $bp-800) {
+    text-align: start;
+    @media only screen and (min-width: $bp-1000) {
+      padding: 17.5rem 0 0 0;
+    }
+  }
+
   & h1 {
-    margin-bottom: 1.625rem;
+    margin-bottom: 1.6rem;
     color: #fff;
     font-size: 4.05rem;
     line-height: 4.875rem;
 
     @media only screen and (min-width: $bp-800) {
-      font-size: 3.5rem;
-      line-height: 4.125rem;
+      font-size: 5.6rem;
+      line-height: 6.6rem;
     }
   }
 
   & p {
     margin-bottom: 2rem;
     color: #f3f7fd;
-    font: 400 1.85rem/2.85rem "Open Sans", sans-serif;
-  }
-
-  @media only screen and (min-width: $bp-1000) {
-    padding: 17.5rem 0 0 0;
+    font: 400 1.8rem/2.85rem "Open Sans", sans-serif;
   }
 
   &-frame {
-    margin-top: -0.1rem;
-    overflow: hidden;
-    vertical-align: middle;
     background-color: $color-white;
-    height: 3.6rem;
     width: 100%;
+    & svg {
+      height: 3.6rem;
+      margin-top: -0.1rem;
+      overflow: hidden;
+      vertical-align: middle;
+      width: 100%;
 
-    & path {
-      z-index: 10;
-      fill: #5f4dee;
-    }
-
-    @media only screen and (min-width: $bp-800) {
-      height: 9rem;
-      @media only screen and (min-width: $bp-1000) {
-        height: 13rem;
-        @media only screen and (min-width: $bp-1200) {
-          height: 15.2rem;
+      @media only screen and (min-width: $bp-800) {
+        height: 9rem;
+        @media only screen and (min-width: $bp-1000) {
+          height: 13rem;
+          @media only screen and (min-width: $bp-1200) {
+            height: 15.2rem;
+          }
         }
       }
     }
+    & path {
+      fill: #5f4dee;
+    }
   }
+
   &-image-container {
     margin-bottom: 3rem;
     grid-column: 2;
@@ -69,8 +73,8 @@
       width: 47rem;
       grid-column: 2 !important;
       grid-row: 1 !important;
-      margin-bottom: auto;
       z-index: 10;
+      margin-bottom: 2.75rem;
       @media only screen and (min-width: $bp-1200) {
         width: 63rem;
         grid-column: 3 !important;

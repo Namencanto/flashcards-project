@@ -60,7 +60,7 @@
         font: 700 1.4rem/0 "Open Sans", sans-serif;
 
         margin-bottom: 2.2rem;
-        margin-left: 0.8rem;
+        // margin-left: 0.8rem;
         border: 0.2rem solid $color-white;
         color: $color-white;
 
@@ -76,7 +76,10 @@
       font: 700 1.4rem/0 "Open Sans", sans-serif;
     }
     &-large {
-      //soon
+      @include btn-outline;
+      padding: 2.5rem 4.45rem;
+      font: 700 1.4rem/0 "Open Sans", sans-serif;
+      border: 0.325rem solid $color-purple;
     }
   }
   &-solid {
@@ -90,10 +93,24 @@
       font: 700 1.4rem/0 "Open Sans", sans-serif;
     }
     &-large {
-      @include btn-solid-reverse;
+      @include btn-solid;
 
-      padding: 2.25rem 4.25rem;
-      font: 700 1.425rem/0 "Open Sans", sans-serif;
+      padding: 2.175rem 4.45rem;
+      font: 700 1.4rem/0 "Open Sans", sans-serif;
+      border: 0.325rem solid $color-purple;
+      // @include btn-outline;
+      // padding: 2.25rem 4.25rem;
+      // font: 700 1.425rem/0 "Open Sans", sans-serif;
+    }
+    &-large-reverse {
+      @include btn-solid-reverse();
+
+      padding: 2.175rem 4.45rem;
+      font: 700 1.4rem/0 "Open Sans", sans-serif;
+      border: 0.325rem solid $color-white;
+      // @include btn-outline;
+      // padding: 2.25rem 4.25rem;
+      // font: 700 1.425rem/0 "Open Sans", sans-serif;
     }
 
     &-header-content {
