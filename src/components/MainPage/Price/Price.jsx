@@ -1,3 +1,5 @@
+import React from "react";
+
 import classes from "./Price.module.scss";
 import classNames from "classnames/bind";
 
@@ -7,10 +9,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 
-function Price() {
+const Price = React.forwardRef((props, ref) => {
   const cx = classNames.bind(classes);
   return (
-    <div className="grid-mainpage-price">
+    <div ref={ref} className="grid-mainpage-price">
       <div className={classNames(cx("price"))}>
         <div className={classNames(cx("price-heading"))}>
           <p>PRICING</p>
@@ -212,6 +214,5 @@ function Price() {
       </div>
     </div>
   );
-}
-
+});
 export default Price;

@@ -1,3 +1,6 @@
+import ReactDOM from "react-dom";
+import React from "react";
+
 import classes from "./Player.module.scss";
 import classNames from "classnames/bind";
 
@@ -8,10 +11,9 @@ import { useState } from "react";
 
 import ModalVideo from "react-modal-video";
 
-import ReactDOM from "react-dom";
 import "./PlayerVideo.scss";
 
-function Player() {
+const Player = React.forwardRef((props, ref) => {
   const cx = classNames.bind(classes);
 
   const [videoIsVisible, setVideoIsVisible] = useState(false);
@@ -32,7 +34,7 @@ function Player() {
         document.getElementById("overlay-root")
       )}
 
-      <div className={classNames(cx("player"))}>
+      <div ref={ref} className={classNames(cx("player"))}>
         <div className="grid-mainpage-player">
           <div className={classNames(cx("player-container"))}>
             <div
@@ -56,6 +58,6 @@ function Player() {
       </div>
     </>
   );
-}
+});
 
 export default Player;

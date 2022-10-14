@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import classes from "./HeaderContent.module.scss";
@@ -6,8 +7,18 @@ import "../../../../assets/Global.scss";
 
 import softwareApp from "../../../../images/header-software-app.png";
 
-function HeaderContent() {
-  let cx = classNames.bind(classes);
+function HeaderContent(props) {
+  const cx = classNames.bind(classes);
+
+  /**
+   * * TRANSFERING REF TO PARENT
+   */
+  const headerContentRef = useRef();
+
+  useEffect(() => {
+    props.giveHeaderContentRef(headerContentRef);
+  }, [headerContentRef]);
+
   return (
     <>
       <main
@@ -20,7 +31,7 @@ function HeaderContent() {
             SIGN UP
           </Link>
         </div>
-        <div className={cx("content-image-container")}>
+        <div ref={headerContentRef} className={cx("content-image-container")}>
           <img src={softwareApp} alt="software app" />
         </div>
       </main>

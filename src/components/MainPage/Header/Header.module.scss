@@ -1,5 +1,4 @@
 @import "../../../assets/base.scss";
-@import "../../../assets/gridSystem.scss";
 
 .navbar {
   position: fixed;
@@ -15,11 +14,24 @@
   justify-content: space-between;
   padding: 0.8rem 1.6rem;
 
+  background-color: $color-purple;
+
+  font: 700 1.4rem "Open Sans", sans-serif;
+  transition: all 0.2s;
+
   @media only screen and (min-width: $bp-1000) {
     display: flex !important;
     flex-basis: auto;
     padding: 3.4rem 2.4rem 3.4rem 3.2rem;
   }
+
+  // ONLY OVER 1000WIDTH AND AFTER SCROLL
+  &-narrower {
+    padding: 0.8rem 2.4rem 0.8rem 3.2rem;
+
+    box-shadow: 0 0.1rem 0.6rem 0 rgb(0 0 0 / 10%);
+  }
+
   &-nav {
     margin-top: 1.2rem;
     margin-bottom: 0.8rem;
@@ -37,7 +49,7 @@
       /* max-width: 85rem; */
       margin-left: auto;
       margin-top: auto;
-      //   align-items: center;
+      align-items: center;
       margin: 0;
     }
 
@@ -49,10 +61,10 @@
     &-visible {
       flex-basis: 100%;
       flex-grow: 1;
-      align-items: center;
     }
     &-item {
-      padding: 1rem 1.2rem;
+      padding: 0.4rem 1.2rem;
+
       & li {
         display: list-item;
         text-align: -webkit-match-parent;
@@ -80,7 +92,7 @@
       background-color: $color-purple;
 
       top: 100%;
-      left: 0;
+      left: -22%;
       z-index: 1000;
 
       min-width: 10rem;
@@ -112,8 +124,8 @@
       @media only screen and (min-width: $bp-1000) {
         position: absolute !important;
 
-        padding-top: 1rem;
-        padding-bottom: 1rem;
+        padding-top: 1.6rem;
+        padding-bottom: 1.6rem;
         border-top: 0.25rem solid rgba(0, 0, 0, 0);
         border-radius: 0.25rem;
       }
@@ -125,6 +137,10 @@
       border: none;
       background-color: #c4d8dc;
       opacity: 0.2;
+      @media only screen and (min-width: $bp-1000) {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+      }
       &-item {
         display: block;
         width: 100%;
@@ -155,12 +171,6 @@
     }
   }
 
-  &-custom {
-    background-color: $color-purple;
-    box-shadow: 0 0.0625rem 0.375rem 0 rgb(0 0 0 / 10%);
-    font: 700 1.4rem "Open Sans", sans-serif;
-    transition: all 0.2s;
-  }
   &-logo {
     font-size: 1.25rem;
     line-height: inherit;

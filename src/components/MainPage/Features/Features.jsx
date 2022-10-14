@@ -1,5 +1,6 @@
-import "../../../assets/Global.scss";
 import React from "react";
+
+import "../../../assets/Global.scss";
 
 import classes from "./Features.module.scss";
 import classNames from "classnames/bind";

@@ -2,45 +2,32 @@ import classes from "./Header.module.scss";
 import "../../../assets/Global.scss";
 
 import { NavLink, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import classNames from "classnames/bind";
-import useWindowDimensions from "../../../hooks/useWindowDimensions";
+
+import MediaQueries from "../../../HelperComponents/MediaQueries";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 const NavbarIsVisible = (props) => {
-  let cx = classNames.bind(classes);
+  const [featuresPart, detailsPart, playerPart, pricingPart] = props.allParts;
 
-  let [featuresPart] = props.allParts;
-  const pathName = useLocation().pathname;
+  let pathName = useLocation().pathname;
 
-  useEffect(() => {
-    console.log("prawda");
-
-    window.addEventListener("load", function () {
-      setTimeout(() => {
-        featuresPart.current.scrollIntoView();
-      }, 250);
-    });
-
-    console.log(featuresPart.current);
-  }, [featuresPart]);
+  const cx = classNames.bind(classes);
+  const { minWidth1000 } = MediaQueries();
 
   const [videoIsVisible, setVideoIsVisible] = useState(false);
-  const minWidth1000 = useWindowDimensions().width < 1000;
-
-  const setVideoIsVisibleHandler = () => {
-    videoIsVisible === false
-      ? setVideoIsVisible(true)
-      : setVideoIsVisible(false);
-  };
 
   return (
     <div className={classNames(cx("navbar-nav-visible"))}>
       <ul className={classNames(cx("navbar-nav"))}>
         <li className={classNames(cx("navbar-nav-item"))}>
           <NavLink
+            onClick={() => {
+              window.scroll({ top: 0, left: 0 });
+            }}
             className={
               (({ isActive }) => (isActive ? "active" : undefined),
               classNames(
@@ -53,25 +40,40 @@ const NavbarIsVisible = (props) => {
             HOME
           </NavLink>
         </li>
-        <li
-          onClick={() => {
-            featuresPart.current.scrollIntoView();
-          }}
-          className={classNames(cx("navbar-nav-item"))}
-        >
-          <NavLink className={classNames(cx("navbar-nav-link"))} to="features">
+        <li className={classNames(cx("navbar-nav-item"))}>
+          <NavLink
+            onClick={() => {
+              featuresPart.current.scrollIntoView();
+            }}
+            className={classNames(cx("navbar-nav-link"))}
+            to="features"
+          >
             FEATURES
           </NavLink>
         </li>
         <li className={classNames(cx("navbar-nav-item"))}>
-          <NavLink className={classNames(cx("navbar-nav-link"))} to="details">
+          <NavLink
+            onClick={() => {
+              detailsPart.current.scrollIntoView();
+            }}
+            className={classNames(cx("navbar-nav-link"))}
+            to="details"
+          >
             DETAILS
           </NavLink>
         </li>
 
         <li className={classNames(cx("navbar-nav-item"))}>
           <NavLink
-            onClick={setVideoIsVisibleHandler}
+            onMouseEnter={() => {
+              setVideoIsVisible(true);
+            }}
+            onMouseLeave={() => {
+              setVideoIsVisible(false);
+            }}
+            onClick={() => {
+              playerPart.current.scrollIntoView();
+            }}
             className={classNames(
               cx("navbar-nav-link"),
               cx("navbar-dropdown-toggle")
@@ -117,7 +119,13 @@ const NavbarIsVisible = (props) => {
         </li>
 
         <li className={classNames(cx("navbar-nav-item"))}>
-          <NavLink className={classNames(cx("navbar-nav-link"))} to="pricing">
+          <NavLink
+            onClick={() => {
+              pricingPart.current.scrollIntoView();
+            }}
+            className={classNames(cx("navbar-nav-link"))}
+            to="pricing"
+          >
             PRICING
           </NavLink>
         </li>
@@ -132,7 +140,7 @@ const NavbarIsVisible = (props) => {
 
       {minWidth1000 && (
         <span className={classNames(cx("navbar-nav-item"))}>
-          <NavLink className="btn-outline-small-header" to="">
+          <NavLink className="btn-outline-small-header" to="login">
             LOG IN
           </NavLink>
         </span>

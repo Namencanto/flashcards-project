@@ -9,25 +9,43 @@ import CarouselOpinions from "./CarouselOpinions/CarouselOpinions";
 import Newsletter from "./Newsletter/Newsletter";
 import SocialMedia from "./SocialMedia/SocialMedia";
 import Footer from "./Footer/Footer";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import PageScrollBtn from "../PageScrollBtn/PageScrollBtn";
+import useScrollPosition from "../../hooks/useScrollPosition";
+
 function MainPage() {
-  const featuresRef = useRef();
-  console.log(featuresRef);
-  const allParts = [featuresRef];
+  const featuresRef = useRef(),
+    detailsRef = useRef(),
+    playerRef = useRef(),
+    pricingRef = useRef();
+
+  const scrollPosition = useScrollPosition();
+
+  const [scrollIsVisible, setScrollIsVisible] = useState();
+
+  if (scrollIsVisible !== true && scrollPosition > 600) {
+    setScrollIsVisible(true);
+  }
+  if (scrollIsVisible !== false && scrollPosition < 600) {
+    setTimeout(() => {
+      setScrollIsVisible(false);
+    }, 500);
+  }
 
   return (
     <>
-      <Header allParts={allParts} />
+      <Header allParts={[featuresRef, detailsRef, playerRef, pricingRef]} />
       <Carousel />
       <InfoCards />
       <Features ref={featuresRef} />
-      <Details />
-      <Player />
-      <Price />
+      <Details ref={detailsRef} />
+      <Player ref={playerRef} />
+      <Price ref={pricingRef} />
       <CarouselOpinions />
       <Newsletter />
       <SocialMedia />
       <Footer />
+      {scrollIsVisible ? <PageScrollBtn /> : ""}
     </>
   );
 }

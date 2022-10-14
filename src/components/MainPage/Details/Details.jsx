@@ -1,3 +1,5 @@
+import React from "react";
+
 import "../../../assets/Global.scss";
 
 import classes from "./Details.module.scss";
@@ -8,10 +10,10 @@ import { faSquare } from "@fortawesome/free-solid-svg-icons";
 
 import DetailsImage from "../../../images/details.png";
 
-function Details() {
+const Details = React.forwardRef((props, ref) => {
   const cx = classNames.bind(classes);
   return (
-    <div className="grid-mainpage-details">
+    <div ref={ref} className="grid-mainpage-details">
       <div className={classNames(cx("details-container"))}>
         <div className={classNames(cx("details-text-container"))}>
           <h2>Now Is The Time To Upgrade Your Marketing Solution</h2>
@@ -39,6 +41,6 @@ function Details() {
       </div>
     </div>
   );
-}
+});
 
 export default Details;
