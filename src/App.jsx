@@ -16,7 +16,11 @@ function App() {
   };
 
   useEffect(() => {
-    window.addEventListener("load", handleLoading);
+    if (document.readyState === "complete") {
+      handleLoading();
+    } else {
+      window.addEventListener("load", handleLoading);
+    }
   }, []);
 
   return (

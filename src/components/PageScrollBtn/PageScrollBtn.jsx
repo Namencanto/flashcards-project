@@ -9,12 +9,10 @@ import { Link } from "react-router-dom";
 
 import useScrollPosition from "../../hooks/useScrollPosition";
 import { useState } from "react";
-function PageScrollBtn(props) {
+function PageScrollBtn() {
   const cx = classNames.bind(classes);
 
   const scrollPosition = useScrollPosition();
-
-  console.log(scrollPosition);
 
   const [opacity, setOpacity] = useState("");
   if (opacity !== "visible" && scrollPosition > 600) {
