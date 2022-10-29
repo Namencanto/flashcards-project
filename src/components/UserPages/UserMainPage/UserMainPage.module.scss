@@ -1,0 +1,183 @@
+@import "../../../assets/base.scss";
+.user-main {
+  width: 100%;
+  height: 100%;
+
+  &-wrapper {
+    margin-top: 4.8rem;
+    background-color: $color-purple;
+    padding: 1.5rem;
+    min-height: 50rem;
+    width: 100%;
+    height: calc(100vh - 4.8rem);
+    @media only screen and (min-width: $bp-1000) {
+      height: calc(100vh - 10.8rem);
+      margin-top: 10.8rem;
+    }
+  }
+  &-container {
+    padding-top: 1.5rem;
+    & h1 {
+      color: $color-offWhite;
+      font-size: 2.8rem;
+      line-height: 2.6rem;
+    }
+    & h3 {
+      line-height: 3rem;
+      color: $color-offWhite;
+      font-size: 1.8rem;
+    }
+    & p,
+    svg {
+      color: $color-white;
+    }
+  }
+  &-boxes {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    // justify-content: center;
+  }
+  &-box {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+
+    flex: 1 0 41%;
+    margin: 5px;
+
+    min-height: 11rem;
+    margin: 0 0 1rem 0;
+
+    padding: 2.5rem 2rem;
+    background-color: rgba($color-white, 0.1);
+    border-radius: 1rem;
+
+    cursor: pointer;
+    transition: all 0.5s;
+
+    &:nth-child(odd) {
+      margin: 0 1rem 1rem 0;
+    }
+
+    &:hover {
+      scale: 1.05;
+      background-color: rgba($color-white, 0.25);
+    }
+
+    & p {
+      margin-top: 0.4rem;
+      font-size: 1.4rem;
+      line-height: 1.8rem;
+    }
+    & svg {
+      margin-right: auto;
+    }
+  }
+
+  &-frames {
+    margin-bottom: auto;
+    position: relative;
+  }
+  &-frame {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    overflow: hidden;
+
+    &:nth-child(2) {
+      margin-bottom: 0.5rem;
+      opacity: 25%;
+
+      & svg {
+        height: 12.5rem;
+        @media only screen and (min-width: $bp-2000) {
+          height: 17.5rem;
+        }
+      }
+    }
+    &:nth-child(3) {
+      margin-bottom: 1.5rem;
+      opacity: 25%;
+
+      & svg {
+        height: 15rem;
+        @media only screen and (min-width: $bp-2000) {
+          height: 22.5rem;
+        }
+      }
+    }
+    & svg {
+      margin-bottom: -1rem;
+      transform: scale(-1, 1);
+      height: 10rem;
+      width: calc(100% + 8rem);
+      overflow: hidden;
+      z-index: 10;
+
+      @media only screen and (min-width: $bp-2000) {
+        height: 12.5rem;
+      }
+    }
+    & path {
+      fill: $color-offWhite;
+    }
+  }
+
+  //desktop
+
+  &-desktop {
+    &-hello {
+      overflow: auto;
+      grid-column: 1 / 4;
+
+      background-color: $color-white;
+      width: 100%;
+      height: 100%;
+
+      &-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        height: 20vh;
+
+        & h1,
+        h3 {
+          color: $color-black;
+        }
+      }
+    }
+
+    &-last-learned {
+      grid-column: 4 / 8;
+    }
+    &-about-me {
+      grid-row: 2;
+      grid-column: 1 / 3;
+      p,
+      svg,
+      h1,
+      h3 {
+        color: $color-black;
+      }
+    }
+    &-statistics {
+      grid-row: 2;
+      grid-column: 3 / 5;
+    }
+    &-ranking {
+      grid-row: 2;
+      grid-column: 5 / 8;
+      p,
+      svg,
+      h1,
+      h3 {
+        color: $color-black;
+      }
+    }
+  }
+}

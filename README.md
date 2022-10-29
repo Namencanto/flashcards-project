@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# TechCards
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Website based on React, which is an application on which you can create and use own flashcards :purple_heart:
 
 ## Available Scripts
 

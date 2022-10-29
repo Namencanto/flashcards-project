@@ -33,7 +33,11 @@ const Details = React.forwardRef((props, ref) => {
             </li>
           </ul>
 
-          <button className="btn-solid-medium">SIGN UP</button>
+          {!props.currentUser ? (
+            <button className="btn-solid-medium">SIGN UP</button>
+          ) : (
+            ""
+          )}
         </div>
         <div className={classNames(cx("details-image-container"))}>
           <img src={DetailsImage} alt="app illustration" />

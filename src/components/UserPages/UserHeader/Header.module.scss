@@ -1,0 +1,226 @@
+@import "../../../assets/base.scss";
+
+.navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  z-index: 1000;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.6rem;
+
+  background-color: $color-purple;
+
+  font: 700 1.4rem "Open Sans", sans-serif;
+  transition: all 0.2s;
+
+  @media only screen and (min-width: $bp-1000) {
+    display: flex !important;
+    flex-basis: auto;
+    padding: 3.4rem 2.4rem 3.4rem 3.2rem;
+  }
+
+  // ONLY OVER 1000WIDTH AND AFTER SCROLL
+  &-narrower {
+    padding: 0.8rem 2.4rem 0.8rem 3.2rem;
+
+    box-shadow: 0 0.1rem 0.6rem 0 rgb(0 0 0 / 10%);
+  }
+
+  &-nav {
+    margin-top: 1.2rem;
+    margin-bottom: 0.8rem;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    padding-left: 0;
+
+    list-style: none;
+
+    @media only screen and (min-width: $bp-1000) {
+      flex-direction: row;
+      justify-content: flex-end;
+      /* max-width: 85rem; */
+      margin-left: auto;
+      margin-top: auto;
+      align-items: center;
+      margin: 0;
+    }
+
+    &-video-icon {
+      margin-left: 0.35rem;
+      font-size: 1.25rem;
+      margin-bottom: 0.1rem;
+    }
+    &-visible {
+      flex-basis: 100%;
+      flex-grow: 1;
+    }
+    &-item {
+      padding: 0.4rem 1.2rem;
+
+      & li {
+        display: list-item;
+        text-align: -webkit-match-parent;
+      }
+      &-text {
+      }
+    }
+    &-link {
+      color: $color-offWhite;
+      opacity: 0.8;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+  }
+
+  &-dropdown {
+    display: block;
+    min-width: auto;
+    animation: fadeDropdown 0.2s;
+
+    &-menu {
+      padding-top: 1.5rem;
+      border: none;
+      border-radius: 0.25rem;
+      background-color: $color-purple;
+
+      top: 100%;
+      left: -22%;
+      z-index: 1000;
+
+      min-width: 10rem;
+
+      margin: 0.2rem 0 0;
+      font-size: 1rem;
+      color: #212529;
+      text-align: left;
+      list-style: none;
+      background-color: $color-white;
+      background-clip: padding-box;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 0.25rem;
+
+      display: block;
+      min-width: auto;
+      animation: fadeDropdown 0.2s;
+
+      margin-top: 0;
+      border: none;
+      border-radius: 0.25rem;
+      background-color: $color-purple;
+
+      &:hover {
+        display: block;
+        min-width: auto;
+        animation: fadeDropdown 0.2s;
+      }
+      @media only screen and (min-width: $bp-1000) {
+        position: absolute !important;
+
+        padding-top: 1.6rem;
+        padding-bottom: 1.6rem;
+        border-top: 0.25rem solid rgba(0, 0, 0, 0);
+        border-radius: 0.25rem;
+      }
+    }
+    &-items {
+      width: 100%;
+      height: 1px;
+      margin: 0.75rem auto 0.725rem auto;
+      border: none;
+      background-color: #c4d8dc;
+      opacity: 0.2;
+      @media only screen and (min-width: $bp-1000) {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+      }
+      &-item {
+        display: block;
+        width: 100%;
+        padding: 0.64rem 2.4rem;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+
+        color: $color-offWhite;
+        opacity: 0.8;
+        font: 700 1.4rem "Open Sans", sans-serif;
+        text-decoration: none;
+
+        @media only screen and (min-width: $bp-1000) {
+          margin: 0;
+        }
+      }
+    }
+
+    &-toggle {
+      @media only screen and (min-width: $bp-1000) {
+        position: relative;
+      }
+    }
+  }
+
+  &-logo {
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;
+
+    @media only screen and (min-width: $bp-1000) {
+      display: inline-block;
+      padding: 0;
+    }
+
+    & img {
+      width: 7.1rem;
+      height: 2.8rem;
+    }
+  }
+  &-icon {
+    width: 2.8rem;
+    height: 3.2rem;
+
+    padding: 0;
+    border: none;
+    color: $color-white;
+    font-size: 3.2rem;
+
+    cursor: pointer;
+
+    line-height: 1;
+    background-color: transparent;
+    border-radius: 0.25rem;
+  }
+  &-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+
+    @media only screen and (min-width: $bp-1000) {
+      display: flex;
+      flex-wrap: nowrap !important;
+      align-items: center;
+      padding-right: 1.5rem;
+      padding-left: 1.5rem;
+
+      max-width: 140rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}

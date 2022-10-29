@@ -9,11 +9,17 @@ import CarouselOpinions from "./CarouselOpinions/CarouselOpinions";
 import Newsletter from "./Newsletter/Newsletter";
 import SocialMedia from "./SocialMedia/SocialMedia";
 import Footer from "./Footer/Footer";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PageScrollBtn from "../PageScrollBtn/PageScrollBtn";
 import useScrollPosition from "../../hooks/useScrollPosition";
 
-function MainPage() {
+import HeaderScrollContext from "../../context/AuthContext";
+
+import { useAuth } from "../../context/AuthContext";
+
+function MainPage(props) {
+  const { currentUser, logout } = useAuth();
+
   const featuresRef = useRef(),
     detailsRef = useRef(),
     playerRef = useRef(),
@@ -32,15 +38,25 @@ function MainPage() {
     }, 500);
   }
 
+  useEffect(() => {
+    props.sendAllParts([featuresRef, detailsRef, playerRef, pricingRef]);
+  }, []);
+
   return (
     <>
-      <Header allParts={[featuresRef, detailsRef, playerRef, pricingRef]} />
+      {/* logged && header zmieniony bez loginu i reszta*/}
+
+      <Header
+        allParts={[featuresRef, detailsRef, playerRef, pricingRef]}
+        currentUser={currentUser}
+        logout={logout}
+      />
       <Carousel />
       <InfoCards />
       <Features ref={featuresRef} />
-      <Details ref={detailsRef} />
+      <Details ref={detailsRef} currentUser={currentUser} />
       <Player ref={playerRef} />
-      <Price ref={pricingRef} />
+      <Price ref={pricingRef} currentUser={currentUser} />
       <CarouselOpinions />
       <Newsletter />
       <SocialMedia />

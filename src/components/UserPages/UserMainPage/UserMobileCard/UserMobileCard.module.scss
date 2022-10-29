@@ -1,0 +1,17 @@
+@import "../../../../assets/base.scss";
+.card {
+  padding: 0 1.5rem;
+  padding-top: 7.5rem;
+
+  &-navbar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 2rem;
+    padding: 0 0.25rem;
+    & svg {
+      color: $color-white;
+      font-size: 2.6rem;
+    }
+  }
+}

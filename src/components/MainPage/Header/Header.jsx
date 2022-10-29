@@ -17,10 +17,6 @@ import HeaderContent from "./HeaderContent/HeaderContent";
 import MediaQueries from "../../../HelperComponents/MediaQueries";
 
 function Header(props) {
-  // all refs used for check elements position
-  const [featuresPart, detailsPart, playerPart, pricingPart] = props.allParts;
-  const scrollPosition = useScrollPosition();
-
   const cx = classNames.bind(classes);
   let pathName = useLocation().pathname;
   const navigate = useNavigate();
@@ -29,6 +25,10 @@ function Header(props) {
   const [headerClassName, setHeaderClassName] = useState("");
 
   const { minWidth1000 } = MediaQueries();
+
+  // all refs used for check elements position
+  const [featuresPart, detailsPart, playerPart, pricingPart] = props.allParts;
+  const scrollPosition = useScrollPosition();
 
   const setHeaderContentRefHandler = (ref) => {
     setHeaderContentRef(ref);
@@ -41,15 +41,22 @@ function Header(props) {
    */
 
   // useEffect to select specified components when page loaded depending on specified url
+
   useEffect(() => {
+    if (pathName === "/home") window.scroll({ top: 0, left: 0 });
+    if (pathName === "/features") featuresPart.current.scrollIntoView();
+    if (pathName === "/details") detailsPart.current.scrollIntoView();
+    if (pathName === "/video") playerPart.current.scrollIntoView();
+    if (pathName === "/pricing") pricingPart.current.scrollIntoView();
     window.addEventListener("load", function () {
+      // i put this in event listener and settimout for execute after load and to move execution in stack for sure to execute in slow internet connection
       setTimeout(() => {
         if (pathName === "/home") window.scroll({ top: 0, left: 0 });
         if (pathName === "/features") featuresPart.current.scrollIntoView();
         if (pathName === "/details") detailsPart.current.scrollIntoView();
         if (pathName === "/video") playerPart.current.scrollIntoView();
         if (pathName === "/pricing") pricingPart.current.scrollIntoView();
-      }, 250);
+      }, 10);
     });
   }, [featuresPart, detailsPart, playerPart, pricingPart]);
 
@@ -165,12 +172,25 @@ function Header(props) {
               {navbarIsOpen && <FontAwesomeIcon icon={faTimes} />}
             </button>
           ) : (
-            <NavbarIsVisible allParts={props.allParts} />
+            <NavbarIsVisible
+              currentUser={props.currentUser}
+              logout={props.logout}
+              allParts={props.allParts}
+            />
           )}
-          {navbarIsOpen && <NavbarIsVisible allParts={props.allParts} />}
+          {navbarIsOpen && (
+            <NavbarIsVisible
+              currentUser={props.currentUser}
+              logout={props.logout}
+              allParts={props.allParts}
+            />
+          )}
         </div>
       </nav>
-      <HeaderContent giveHeaderContentRef={setHeaderContentRefHandler} />
+      <HeaderContent
+        currentUser={props.currentUser}
+        giveHeaderContentRef={setHeaderContentRefHandler}
+      />
     </>
   );
 }

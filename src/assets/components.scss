@@ -138,3 +138,79 @@
     color: $color-purple;
   }
 }
+
+// INPUTS
+
+.input {
+  &-default {
+    margin: 0 auto;
+    position: relative;
+    & input {
+      outline: none;
+      display: block;
+      width: 100%;
+      padding: 1.7rem 0.2rem 0.1rem 2rem;
+      border: 1px solid #c4d8dc;
+      border-radius: 0.4rem;
+      background-color: #fff;
+      color: #555;
+      font: 400 1.4rem/3rem "Open Sans", sans-serif;
+      transition: all 0.2s;
+
+      &:hover {
+        border: 1px solid #a1a1a1;
+      }
+      &:focus {
+        border: 1px solid #a1a1a1;
+      }
+      &:not(:placeholder-shown) {
+        & + label {
+          top: 0.2rem;
+          opacity: 1;
+          font-size: 1.2rem;
+          font-weight: 700;
+        }
+      }
+      &:focus + label {
+        top: 0.2rem;
+        opacity: 1;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+    }
+    & label {
+      top: 0.2rem;
+      opacity: 1;
+      font-size: 1.2rem;
+      font-weight: 700;
+      position: absolute;
+      top: 1.395rem;
+      left: 2rem;
+      color: #555;
+      opacity: 1;
+      font: 400 1.4rem/2.2rem "Open Sans", sans-serif;
+      cursor: text;
+      transition: all 0.2s ease;
+    }
+  }
+}
+
+.checkbox {
+  &-default {
+    display: flex;
+    align-items: flex-start;
+    margin: 2rem 0;
+
+    & input[type="checkbox"] {
+      margin: 0.45rem 0.6rem 0 0;
+    }
+    & p {
+      color: #555;
+      font: 400 1.2rem/2rem "Open Sans", sans-serif;
+      text-align: start;
+    }
+    & a {
+      color: #555;
+    }
+  }
+}

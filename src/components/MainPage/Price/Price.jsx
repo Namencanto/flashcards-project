@@ -79,7 +79,9 @@ const Price = React.forwardRef((props, ref) => {
                   <p>Planning And Evaluation</p>
                 </li>
               </ul>
-              <button className="btn-solid-medium">SIGN UP</button>
+              <button className="btn-solid-medium">
+                {props.currentUser ? "CHOOSE" : "SIGN UP"}
+              </button>
             </div>
           </div>
 
@@ -143,7 +145,9 @@ const Price = React.forwardRef((props, ref) => {
                   <p>Planning And Evaluation</p>
                 </li>
               </ul>
-              <button className="btn-solid-medium">SIGN UP</button>
+              <button className="btn-solid-medium">
+                {props.currentUser ? "CHOOSE" : "SIGN UP"}
+              </button>
             </div>
           </div>
 
@@ -207,7 +211,9 @@ const Price = React.forwardRef((props, ref) => {
                   <p>Planning And Evaluation</p>
                 </li>
               </ul>
-              <button className="btn-solid-medium">SIGN UP</button>
+              <button className="btn-solid-medium">
+                {props.currentUser ? "CHOOSE" : "SIGN UP"}
+              </button>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import classes from "./Header.module.scss";
 import "../../../assets/Global.scss";
 
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import classNames from "classnames/bind";
 
@@ -11,7 +11,35 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 const NavbarIsVisible = (props) => {
-  const [featuresPart, detailsPart, playerPart, pricingPart] = props.allParts;
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await props.logout();
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // function which handling a logic of navbar links navigate at page
+  const scrollHandler = (part) => {
+    const scrollFunction = () => {
+      const [featuresPart, detailsPart, playerPart, pricingPart] =
+        props.allParts;
+
+      if (part === "features") featuresPart.current.scrollIntoView();
+      if (part === "details") detailsPart.current.scrollIntoView();
+      if (part === "player") playerPart.current.scrollIntoView();
+      if (part === "pricing") pricingPart.current.scrollIntoView();
+    };
+
+    if (!props.allParts) {
+      window.addEventListener("load", function () {
+        scrollFunction();
+      });
+    } else scrollFunction();
+  };
 
   let pathName = useLocation().pathname;
 
@@ -26,6 +54,8 @@ const NavbarIsVisible = (props) => {
         <li className={classNames(cx("navbar-nav-item"))}>
           <NavLink
             onClick={() => {
+              // addEventListener for execute after components loaded
+
               window.scroll({ top: 0, left: 0 });
             }}
             className={
@@ -35,7 +65,7 @@ const NavbarIsVisible = (props) => {
                 `${pathName === "/" ? "active" : ""}`
               ))
             }
-            to="home"
+            to="/home"
           >
             HOME
           </NavLink>
@@ -43,10 +73,10 @@ const NavbarIsVisible = (props) => {
         <li className={classNames(cx("navbar-nav-item"))}>
           <NavLink
             onClick={() => {
-              featuresPart.current.scrollIntoView();
+              scrollHandler("features");
             }}
             className={classNames(cx("navbar-nav-link"))}
-            to="features"
+            to="/features"
           >
             FEATURES
           </NavLink>
@@ -54,10 +84,10 @@ const NavbarIsVisible = (props) => {
         <li className={classNames(cx("navbar-nav-item"))}>
           <NavLink
             onClick={() => {
-              detailsPart.current.scrollIntoView();
+              scrollHandler("details");
             }}
             className={classNames(cx("navbar-nav-link"))}
-            to="details"
+            to="/details"
           >
             DETAILS
           </NavLink>
@@ -72,13 +102,13 @@ const NavbarIsVisible = (props) => {
               setVideoIsVisible(false);
             }}
             onClick={() => {
-              playerPart.current.scrollIntoView();
+              scrollHandler("player");
             }}
             className={classNames(
               cx("navbar-nav-link"),
               cx("navbar-dropdown-toggle")
             )}
-            to="video"
+            to="/video"
           >
             VIDEO
             <FontAwesomeIcon
@@ -89,7 +119,7 @@ const NavbarIsVisible = (props) => {
               <div className={classNames(cx("navbar-dropdown-menu"))}>
                 <NavLink
                   className={classNames(cx("navbar-dropdown-items-item"))}
-                  to="video/article"
+                  to="/video/article"
                 >
                   <span className={classNames(cx("navbar-nav-item-text"))}>
                     ARTICLE DETAILS
@@ -98,7 +128,7 @@ const NavbarIsVisible = (props) => {
                 <div className={classNames(cx("navbar-dropdown-items"))}></div>
                 <NavLink
                   className={classNames(cx("navbar-dropdown-items-item"))}
-                  to="video/terms"
+                  to="/video/terms"
                 >
                   <span className={classNames(cx("navbar-nav-item-text"))}>
                     TERMS CONDITIONS
@@ -107,7 +137,7 @@ const NavbarIsVisible = (props) => {
                 <div className={classNames(cx("navbar-dropdown-items"))}></div>
                 <NavLink
                   className={classNames(cx("navbar-dropdown-items-item"))}
-                  to="video/policy"
+                  to="/video/policy"
                 >
                   <span className={classNames(cx("navbar-nav-item-text"))}>
                     PRIVACY POLICY
@@ -121,28 +151,52 @@ const NavbarIsVisible = (props) => {
         <li className={classNames(cx("navbar-nav-item"))}>
           <NavLink
             onClick={() => {
-              pricingPart.current.scrollIntoView();
+              scrollHandler("pricing");
             }}
             className={classNames(cx("navbar-nav-link"))}
-            to="pricing"
+            to="/pricing"
           >
             PRICING
           </NavLink>
         </li>
+        {props.currentUser && props.currentUser.displayName !== null ? (
+          <li className={classNames(cx("navbar-nav-item"))}>
+            <NavLink className={classNames(cx("navbar-nav-link"))} to="/user">
+              {props.currentUser.displayName.toUpperCase()}
+            </NavLink>
+          </li>
+        ) : (
+          ""
+        )}
         {!minWidth1000 && (
           <span className={classNames(cx("navbar-nav-item"))}>
-            <NavLink className="btn-outline-small-header" to="login">
-              LOG IN
-            </NavLink>
+            {props.currentUser ? (
+              <button
+                onClick={handleLogout}
+                className="btn-outline-small-header"
+              >
+                LOG OUT
+              </button>
+            ) : (
+              <NavLink className="btn-outline-small-header" to="/login">
+                LOG IN
+              </NavLink>
+            )}
           </span>
         )}
       </ul>
 
       {minWidth1000 && (
         <span className={classNames(cx("navbar-nav-item"))}>
-          <NavLink className="btn-outline-small-header" to="login">
-            LOG IN
-          </NavLink>
+          {props.currentUser ? (
+            <button onClick={handleLogout} className="btn-outline-small-header">
+              LOG OUT
+            </button>
+          ) : (
+            <NavLink className="btn-outline-small-header" to="/login">
+              LOG IN
+            </NavLink>
+          )}
         </span>
       )}
     </div>
