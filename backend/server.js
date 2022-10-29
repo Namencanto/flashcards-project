@@ -25,7 +25,7 @@ const app = express();
 //   })
 // );
 console.log(filePath);
-app.use(express.static(path.join(__dirname, "../src")));
+app.use(express.static(path.join(__dirname, "../build")));
 app.get("*", (req, res) => res.sendFile(filePath, "/index.html"));
 
 app.listen(port, console.log(`Server running on port ${port}`));
