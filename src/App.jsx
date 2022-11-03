@@ -1,19 +1,14 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import MainPage from "./components/MainPage/MainPage";
 import LoginPage from "./components/LoginPage/LoginPage";
-import { AuthProvider } from "./context/AuthContext";
 import UserPages from "./components/UserPages/UserPages";
-
-//backend
-import { collection, addDoc } from "firebase/firestore";
-import { database } from "./firebase";
+import { AuthContext } from "./context/AuthContext";
+import { useContext } from "react";
 
 function App() {
-  // backend
-  const collectionRef = collection(database, "users");
-
+  const { currentUser } = useContext(AuthContext);
   // page loading spinner
   const handleLoading = () => {
     setTimeout(() => {
@@ -46,38 +41,19 @@ function App() {
 
         <Route
           path="/*"
-          element={
-            <AuthProvider>
-              <MainPage sendAllParts={allPartsHandler} />
-            </AuthProvider>
-          }
+          element={<MainPage sendAllParts={allPartsHandler} />}
         ></Route>
 
         <Route
           path="/login"
-          element={
-            <AuthProvider>
-              <LoginPage allParts={allParts} />
-            </AuthProvider>
-          }
+          element={<LoginPage allParts={allParts} />}
         ></Route>
         <Route
           path="/register"
-          element={
-            <AuthProvider>
-              <LoginPage allParts={allParts} />
-            </AuthProvider>
-          }
+          element={<LoginPage allParts={allParts} />}
         ></Route>
 
-        <Route
-          path="/user/*"
-          element={
-            <AuthProvider>
-              <UserPages />
-            </AuthProvider>
-          }
-        ></Route>
+        {currentUser && <Route path="/user/*" element={<UserPages />}></Route>}
       </Routes>
     </BrowserRouter>
   );

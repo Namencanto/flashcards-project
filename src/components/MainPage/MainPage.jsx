@@ -9,16 +9,14 @@ import CarouselOpinions from "./CarouselOpinions/CarouselOpinions";
 import Newsletter from "./Newsletter/Newsletter";
 import SocialMedia from "./SocialMedia/SocialMedia";
 import Footer from "./Footer/Footer";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import PageScrollBtn from "../PageScrollBtn/PageScrollBtn";
 import useScrollPosition from "../../hooks/useScrollPosition";
 
-import HeaderScrollContext from "../../context/AuthContext";
-
-import { useAuth } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 function MainPage(props) {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout } = useContext(AuthContext);
 
   const featuresRef = useRef(),
     detailsRef = useRef(),

@@ -2,18 +2,17 @@ import classes from "./Header.module.scss";
 import "../../../assets/Global.scss";
 
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import classNames from "classnames/bind";
 
 import MediaQueries from "../../../HelperComponents/MediaQueries";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-
-import { useAuth } from "../../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 const NavbarIsVisible = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -77,7 +76,7 @@ const NavbarIsVisible = () => {
             )}
             to="/user"
           >
-            {currentUser.displayName.toUpperCase()}
+            {currentUser.nick.toUpperCase()}
             <FontAwesomeIcon
               className={classNames(cx("navbar-nav-video-icon"))}
               icon={faCaretDown}

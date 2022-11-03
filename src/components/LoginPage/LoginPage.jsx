@@ -8,6 +8,7 @@ import classes from "./LoginPage.module.scss";
 import classNames from "classnames/bind";
 
 import { Link } from "react-router-dom";
+
 function LoginPage(props) {
   const cx = classNames.bind(classes);
   const [loginIsVisible, setLoginIsVisible] = useState(true);

@@ -1,7 +1,6 @@
 import "../../../assets/Global.scss";
 
-import { useAuth } from "../../../context/AuthContext";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Link, Routes, Route } from "react-router-dom";
 import classes from "./UserMainPage.module.scss";
 import classNames from "classnames/bind";
@@ -21,10 +20,11 @@ import AboutMe from "./AboutMe/AboutMe";
 import Statistics from "./Statistics/Statistics";
 import Ranking from "./Ranking/Ranking";
 
+import { AuthContext } from "../../../context/AuthContext";
 function UserMainPage() {
   const { minWidth1000 } = MediaQueries();
 
-  const { currentUser } = useAuth();
+  const { currentUser } = useContext(AuthContext);
   const cx = classNames.bind(classes);
 
   const [boxIsOpen, setBoxIsOpen] = useState(false);
@@ -40,7 +40,7 @@ function UserMainPage() {
           <div className={classNames(cx("user-main-container"))}>
             {minWidth1000 === true ? (
               <>
-                <h1>Welcome {currentUser.displayName}</h1>
+                <h1>Welcome {currentUser.nick}</h1>
                 <h3>Your strike is 27 days!</h3>
                 <div className={classNames(cx("user-main-boxes"))}>
                   <Link
@@ -89,7 +89,7 @@ function UserMainPage() {
               <div className="grid-user-main">
                 <div className={cx("user-main-desktop-hello")}>
                   <div className={cx("user-main-desktop-hello-text")}>
-                    <h1>Welcome {currentUser.displayName}</h1>
+                    <h1>Welcome {currentUser.nick}</h1>
                     <h3>Your strike is 27 days!</h3>
                   </div>
                 </div>

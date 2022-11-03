@@ -2,13 +2,12 @@ import classes from "./Ranking.module.scss";
 import classNames from "classnames/bind";
 
 import { Link } from "react-router-dom";
-
+import { useContext } from "react";
+import { AuthContext } from "../../../../context/AuthContext";
 import { faRankingStar } from "@fortawesome/free-solid-svg-icons";
 import ReactCountryFlag from "react-country-flag";
 
 import UserMobileCard from "../UserMobileCard/UserMobileCard";
-
-import { useAuth } from "../../../../context/AuthContext";
 
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
 const dummyUsersData = [
@@ -52,7 +51,7 @@ const dummyUsersData = [
 
 function Ranking() {
   const { minWidth1000 } = MediaQueries();
-  const { currentUser } = useAuth();
+  const { currentUser } = useContext(AuthContext);
 
   dummyUsersData.sort((a, b) => b.ranking_score - a.ranking_score);
   const cx = classNames.bind(classes);

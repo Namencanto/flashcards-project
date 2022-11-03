@@ -11,10 +11,12 @@
   }
 
   &-container {
+    min-height: 50rem;
     overflow: auto;
     background-color: $color-white;
     border-radius: 1rem;
     padding: 1rem 1rem 2rem 1rem;
+    position: relative;
     & h1 {
       color: $color-black;
       font-size: 3rem;
@@ -27,9 +29,21 @@
       color: $color-black;
     }
     @media only screen and (min-width: $bp-1000) {
+      min-height: 0;
       border-radius: 0;
       padding: 1rem 0 1rem 1rem;
       height: 100%;
+    }
+    &-info {
+      margin: 1rem 1rem 0 0;
+
+      line-break: anywhere;
+    }
+    &-languages {
+      position: absolute;
+      margin-bottom: auto;
+
+      bottom: auto;
     }
   }
   &-textarea {
@@ -50,14 +64,39 @@
       font-size: 1.6rem;
     }
   }
-  &-languages {
-    &-form {
-      display: flex;
-      flex-direction: column;
-      max-width: 33%;
-      margin-top: 1rem;
-      & button {
-        width: 10rem;
+  &-form {
+    &-about-me {
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed black;
+    }
+    &-languages {
+      // max-width: 33%;
+
+      padding: 1rem 0;
+      margin-right: 1rem;
+      &:not(:last-child) {
+        border-bottom: 1px dashed black;
+      }
+      &-change {
+        &-inputs {
+          list-style-type: none;
+          border: none;
+        }
+        &-language {
+          height: 3rem;
+          outline: none;
+
+          margin-bottom: 0.75rem;
+
+          @media only screen and (min-width: $bp-1000) {
+            width: 60%;
+          }
+        }
+        &-level {
+          outline: none;
+          height: 3rem;
+          width: 5rem;
+        }
       }
     }
   }

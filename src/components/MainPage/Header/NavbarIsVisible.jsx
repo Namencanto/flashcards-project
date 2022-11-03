@@ -159,10 +159,10 @@ const NavbarIsVisible = (props) => {
             PRICING
           </NavLink>
         </li>
-        {props.currentUser && props.currentUser.displayName !== null ? (
+        {props.currentUser && props.currentUser.nick !== null ? (
           <li className={classNames(cx("navbar-nav-item"))}>
             <NavLink className={classNames(cx("navbar-nav-link"))} to="/user">
-              {props.currentUser.displayName.toUpperCase()}
+              {props.currentUser.nick.toUpperCase()}
             </NavLink>
           </li>
         ) : (

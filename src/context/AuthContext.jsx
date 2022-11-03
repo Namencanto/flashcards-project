@@ -1,108 +1,54 @@
-import React, { useContext, useState, useEffect } from "react";
-import { auth, database } from "../firebase";
-import { updateProfile, getAuth } from "firebase/auth";
+import { createContext, useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "universal-cookie";
 
-import { getFirestore, setDoc } from "firebase/firestore";
+export const AuthContext = createContext();
 
-import {
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  getDocs,
-} from "firebase/firestore";
+export const AuthContextProvider = ({ children }) => {
+  const cookies = new Cookies();
+  const cookiesTime = new Date(new Date().setDate(new Date().getDate() + 7));
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem("user")) || null
+  );
 
-const usersCollection = collection(database, "users");
-
-const AuthContext = React.createContext();
-
-export function useAuth() {
-  return useContext(AuthContext);
-}
-export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState();
-  const [serverLoading, setServerLoading] = useState(true);
-
-  async function signup(email, password, nick) {
-    const { user } = await auth.createUserWithEmailAndPassword(email, password);
-
-    addDoc(usersCollection, {
+  const register = async (email, password, nick) => {
+    const res = await axios.post("/auth/register", {
       email,
       password,
       nick,
-    })
-      .then((response) => {
-        // Profile updated!
-        // ...
+    });
+    setCurrentUser(res.data);
+    cookies.set("jwtTime", ".", { path: "/", expires: cookiesTime });
+    return res;
+  };
 
-        console.log("response");
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-        // An error occurred
-        // ...
-      });
+  const login = async (email, password) => {
+    const res = await axios.post("/auth/login", {
+      email,
+      password,
+    });
+    setCurrentUser(res.data);
+    cookies.set("jwtTime", ".", { path: "/", expires: cookiesTime });
+    return res;
+  };
 
-    // const currentUserRef = doc(database, "users", currentUser.uid);
-    // await updateDoc(currentUserRef, {
-    //   aboutMeInfo: info,
-    // });
-
-    await updateProfile(user, {
-      displayName: nick,
-    })
-      .then((response) => {
-        // Profile updated!
-        // ...
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-        // An error occurred
-        // ...
-      });
-  }
-
-  async function logout() {
-    return auth.signOut();
-  }
-  function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password);
-  }
+  const logout = async () => {
+    await axios.post("/auth/logout");
+    setCurrentUser(null);
+  };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-
-      setServerLoading(false);
-    });
-
-    return unsubscribe;
-  }, []);
-
-  /*
-   * database functions
-   */
-
-  async function updateAboutMe(info) {
-    const currentUserRef = doc(database, "users", currentUser.uid);
-    await updateDoc(currentUserRef, {
-      aboutMeInfo: info,
-    });
-  }
+    if (cookies.get("jwtTime")) {
+      localStorage.setItem("user", JSON.stringify(currentUser));
+    } else setCurrentUser(null);
+  }, [currentUser, cookies.get("jwtTime")]);
 
   const value = {
     currentUser,
     login,
-    signup,
+    register,
     logout,
-    updateAboutMe,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!serverLoading && children}
-    </AuthContext.Provider>
-  );
-}
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};

@@ -3,17 +3,17 @@ import "../../../assets/Global.scss";
 import classes from "./Login.module.scss";
 import classNames from "classnames/bind";
 
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { inputValidation } from "../../../hooks/useInputValidation";
 
-import { useAuth } from "../../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 
 function Login() {
   const cx = classNames.bind(classes);
   const navigate = useNavigate();
-  const { login, currentUser } = useAuth();
+  const { login } = useContext(AuthContext);
 
   const [inputEmailIsValid, setInputEmailIsValid] = useState(true);
   const [inputPasswordIsValid, setInputPasswordIsValid] = useState(true);
@@ -42,19 +42,24 @@ function Login() {
     ) {
       try {
         setServerLoading(true);
-        await login(
+        const res = await login(
           inputEmailRef.current.value,
           inputPasswordRef.current.value
-        ).then(function (response) {
+        );
+
+        console.log(res);
+        if (res.status === 200) {
           setServerMessage("Successfully logged!");
-          setServerMessageClass("login-server-accepted");
+          setServerMessageClass("register-server-accepted");
           navigate("/user");
-        });
+        }
       } catch (error) {
-        setServerMessage(error.message.split(":")[1].split(".")[0]);
-        setServerMessageClass("login-server-denied");
+        console.log(error);
+        setServerMessage(error.response.data);
+        setServerMessageClass("register-server-denied");
         setServerLoading(false);
       }
+
       setServerLoading(false);
     } else {
       inputValidation(

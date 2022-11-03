@@ -9,6 +9,7 @@ import AboutMe from "./UserMainPage/AboutMe/AboutMe";
 import LastLearned from "./UserMainPage/LastLearned/LastLearned";
 import Statistics from "./UserMainPage/Statistics/Statistics";
 import Ranking from "./UserMainPage/Ranking/Ranking";
+
 function UserPages() {
   return (
     <>

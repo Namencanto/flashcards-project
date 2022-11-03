@@ -4,20 +4,23 @@ import classes from "./Register.module.scss";
 import classNames from "classnames/bind";
 
 import { Link, useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 
 import { inputValidation } from "../../../hooks/useInputValidation";
 
-import { useAuth } from "../../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
+
+import axios from "axios";
 
 function Register() {
   const cx = classNames.bind(classes);
   const navigate = useNavigate();
-  const { signup, currentUser } = useAuth();
+  const { currentUser, register } = useContext(AuthContext);
+
   /**
    * * INPUTS STATES
    */
-  console.log(currentUser);
+  console.log("asfas", currentUser);
   const [inputEmailIsValid, setInputEmailIsValid] = useState(true);
   const [inputPasswordIsValid, setInputPasswordIsValid] = useState(true);
   const [inputPasswordConfirmIsValid, setInputPasswordConfirmIsValid] =
@@ -96,18 +99,20 @@ function Register() {
       try {
         setServerLoading(true);
 
-        await signup(
+        const res = await register(
           inputEmailRef.current.value,
           inputPasswordRef.current.value,
           inputNickRef.current.value
-        ).then(function (response) {
-          setServerMessage("Successfully registered!");
+        );
+        console.log(res);
+        if (res.status === 200) {
+          setServerMessage("Account successfully created!");
           setServerMessageClass("register-server-accepted");
           navigate("/user");
-        });
+        }
       } catch (error) {
-        setServerMessage(error.message.split(":")[1].split(".")[0]);
         console.log(error);
+        setServerMessage(error.response.data);
         setServerMessageClass("register-server-denied");
         setServerLoading(false);
       }
@@ -151,11 +156,12 @@ function Register() {
               );
             }}
             ref={inputEmailRef}
-            id="remail"
+            id="email"
             type="email"
+            name="email"
             placeholder=" "
           />
-          <label htmlFor="remail">Email</label>
+          <label htmlFor="email">Email</label>
         </div>
         {inputEmailIsValid || (
           <div className={classNames(cx("register-error"))}>
@@ -174,11 +180,12 @@ function Register() {
               );
             }}
             ref={inputNickRef}
-            id="rnick"
+            id="nick"
             type="text"
+            name="nick"
             placeholder=" "
           />
-          <label htmlFor="rnick">Nick</label>
+          <label htmlFor="nick">Nick</label>
         </div>
 
         {inputNickIsValid || (
@@ -192,11 +199,12 @@ function Register() {
             className="input-default"
             onChange={passwordValidation}
             ref={inputPasswordRef}
-            id="rpassword"
+            id="password"
             type="password"
+            name="password"
             placeholder=" "
           />
-          <label htmlFor="rpassword">Password</label>
+          <label htmlFor="password">Password</label>
         </div>
 
         {inputPasswordIsValid || (
