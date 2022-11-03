@@ -1,31 +1,37 @@
-const express = require("express");
+import express from "express";
+import authRoutes from "./routes/auth.js";
+import userRoutes from "./routes/users.js";
+import postRoutes from "./routes/posts.js";
 
-// const colors = require("colors");
-// const cors = require("cors");
-// require("dotenv").config();
-// const { graphqlHTTP } = require("express-graphql");
-// const schema = require("./schema/schema.js");
-// const connectDB = require("./config/db");
+import cors from "cors";
+import path from "path";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import cookieParser from "cookie-parser";
+
 const port = process.env.PORT || 3000;
-const path = require("path");
-const filePath = path.join(__dirname, "../public");
-
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// Connect to database
-// connectDB();
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-// app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
 
-// app.use(
-//   "/graphql",
-//   graphqlHTTP({
-//     schema,
-//     graphiql: process.env.NODE_ENV === "development",
-//   })
-// );
-console.log(filePath);
+/**
+ * * PRODUCTION
+ */
+console.log(path.join(__dirname, "../public"));
 app.use(express.static(path.join(__dirname, "../build")));
-app.get("*", (req, res) => res.sendFile(filePath, "/index.html"));
+
+// app.get("*", (req, res) =>
+//   res.sendFile(path.join(__dirname, "../build/index.html"))
+// );
+
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
 
 app.listen(port, console.log(`Server running on port ${port}`));
