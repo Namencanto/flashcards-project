@@ -33,7 +33,9 @@ export const register = (req, res) => {
           (err, data) => {
             if (err) return res.status(500).json(err);
 
-            const token = jwt.sign({ id: data[0].id }, "jwtkey");
+            const token = jwt.sign({ id: data[0].id }, "jwtkey", {
+              expiresIn: "7d", // expires in 24 hours
+            });
             const { password, ...other } = data[0];
 
             // CREATE USER DESCRIPTION IN DB
@@ -46,6 +48,7 @@ export const register = (req, res) => {
             );
             res
               .cookie("jwt", token, {
+                maxAge: 7 * 60 * 60 * 60 * 1000,
                 httpOnly: true,
               })
               .status(200)
@@ -78,6 +81,7 @@ export const login = (req, res) => {
 
     res
       .cookie("jwt", token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
       })
       .status(200)

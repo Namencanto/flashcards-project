@@ -84,7 +84,10 @@
   }
   &-solid {
     &-small {
-      //soon
+      @include btn-solid;
+      font-weight: 700;
+      padding: 1.425rem 2.55rem;
+      font: 700 1.3rem/0 "Open Sans", sans-serif;
     }
     &-medium {
       @include btn-solid;
@@ -128,7 +131,8 @@
   }
 }
 
-// ICONS
+///////////////////////////////////
+///  ICONS
 
 .icon {
   &-square {

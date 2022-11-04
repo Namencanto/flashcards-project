@@ -3,19 +3,22 @@ import classNames from "classnames/bind";
 
 import UserMobileCard from "../UserMobileCard/UserMobileCard";
 
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faGear,
+  faArrowLeft,
+  faRemove,
+} from "@fortawesome/free-solid-svg-icons";
 
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
 
 import axios from "axios";
 
-import { AuthContext } from "../../../../context/AuthContext";
 function AboutMe() {
   const { minWidth1000 } = MediaQueries();
-
   const cx = classNames.bind(classes);
 
   const [changeTextIsVisible, setChangeTextIsVisible] = useState(false);
@@ -28,10 +31,11 @@ function AboutMe() {
   const aboutMeRef = useRef();
   const allLanguages = useRef();
 
+  // * FETCHING USER DATA
   const fetchUserInformation = async () => {
     try {
       const res = await axios.get("/users/getInformation");
-      console.log(res.data);
+
       setChangeTextIsVisible(false);
       setTextareaIcon(faGear);
       setAboutMeText(res.data[0].about_me_info);
@@ -47,6 +51,10 @@ function AboutMe() {
     fetchUserInformation();
   }, []);
 
+  /////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////
+
+  // * CHANGE ICON AFTER CLICK
   const changeTextIconHandler = () => {
     if (changeTextIsVisible === true) {
       setTextareaIcon(faGear);
@@ -57,6 +65,7 @@ function AboutMe() {
     }
   };
 
+  // * UPDATE ABOUT ME INFO
   const changeAboutMeTextSubmitHandler = async (e) => {
     e.preventDefault();
 
@@ -96,35 +105,35 @@ function AboutMe() {
           className={classNames(cx("aboutme-textarea"))}
           name="aboutMeText"
         />
-        <button className="btn-outline-small">Change</button>
+        <button className="btn-solid-small">Change</button>
       </form>
     ) : (
       <p ref={aboutMeRef}>{aboutMeText || "Write some about yourself"}</p>
     );
 
-  // * languages
+  /////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////
 
+  // * lANGUAGES PART
   const languagesInputRef = useRef();
   const languagesLevelInputRef = useRef();
 
+  // * CHANGE LANGUAGES
   const changeLanguagesSubmitHandler = async (e) => {
     e.preventDefault();
     let newLanguages = "";
     let newLanguagesLevels = "";
     for (let i = 0; i < e.target.length; i++) {
+      console.log(e.target[i].value.length);
       if (e.target[i].value !== "") {
-        i % 2 === 0
-          ? (newLanguagesLevels += e.target[i].value + "/")
-          : (newLanguages += e.target[i].value + "/");
+        if (e.target[i].value.length < 30) {
+          i % 2 === 0
+            ? (newLanguagesLevels += e.target[i].value + "/")
+            : (newLanguages += e.target[i].value + "/");
+        } else return console.log("30let");
       }
     }
 
-    // if (
-    //   languagesInputRef.current.value !== "" &&
-    //   languagesInputRef.current.value.length < 30 &&
-    //   /[a-zA-Z]+/.test(languagesInputRef.current.value)
-    // ) {
-    // } else console.log("dupsko");
     try {
       const res = await axios.post("/users/addLanguage", {
         language: newLanguagesLevels,
@@ -138,6 +147,7 @@ function AboutMe() {
     }
   };
 
+  // * CHANGE LANGUAGES
   const addLanguageSubmitHandler = async (e) => {
     e.preventDefault();
 
@@ -162,89 +172,149 @@ function AboutMe() {
     } else console.log("dupsko");
   };
 
+  // * REMOVE LANGUAGES
+  const removeLanguageHandler = async (e) => {
+    e.preventDefault();
+    const languageToDelete = e.target.attributes.language.value;
+    let index;
+    for (let i = 0; i < userLanguages.length; i++) {
+      if (languageToDelete === userLanguages[i]) index = i;
+    }
+    console.log(index);
+    const newLanguagesArr = userLanguages.filter(
+      (lang, i) => lang !== languageToDelete
+    );
+    const newLanguagesLevelsArr = userLanguagesLevels.filter(
+      (lev, i) => i !== index
+    );
+
+    let newLanguages = "";
+    let newLanguagesLevels = "";
+    for (let i = 0; i < newLanguagesArr.length; i++) {
+      if (newLanguagesArr[i] !== "") {
+        if (newLanguagesArr[i].length < 30) {
+          newLanguagesLevels += newLanguagesLevelsArr[i] + "/";
+          newLanguages += newLanguagesArr[i] + "/";
+        } else return console.log("30let");
+      }
+    }
+
+    try {
+      const res = await axios.post("/users/addLanguage", {
+        language: newLanguages,
+        level: newLanguagesLevels,
+        change: true,
+      });
+      fetchUserInformation();
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  /////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////
+
+  // * COMPONTENTS
   const aboutMeLanguages =
     changeTextIsVisible === true ? (
       <>
-        <form
-          className={classNames(cx("aboutme-form-languages"))}
-          onSubmit={changeLanguagesSubmitHandler}
-        >
-          <div
-            ref={allLanguages}
-            className={classNames(cx("aboutme-form-languages-change-inputs"))}
+        {userLanguages[0] !== "" ? (
+          <form
+            className={classNames(cx("aboutme-form-languages"))}
+            onSubmit={changeLanguagesSubmitHandler}
           >
-            {userLanguages.map((language, i) => {
-              return (
-                <>
-                  <input
-                    key={i}
-                    id="changeLanguages"
-                    ref={languagesInputRef}
-                    defaultValue={language}
+            <div
+              ref={allLanguages}
+              className={classNames(cx("aboutme-form-languages-change-inputs"))}
+            >
+              {userLanguages.map((language, i) => {
+                return (
+                  <div
                     className={classNames(
-                      cx("aboutme-form-languages-change-language")
-                    )}
-                  />
-                  <select
-                    ref={languagesLevelInputRef}
-                    name="languagesLevel"
-                    className={classNames(
-                      cx("aboutme-form-languages-change-level")
+                      cx("aboutme-form-languages-change-input-box")
                     )}
                   >
-                    <option
-                      selected={userLanguagesLevels[i] === "A1"}
-                      value="A1"
+                    <input
+                      key={i}
+                      id="changeLanguages"
+                      ref={languagesInputRef}
+                      defaultValue={language}
+                      className={classNames(
+                        cx("aboutme-form-languages-change-language")
+                      )}
+                    />
+                    <select
+                      ref={languagesLevelInputRef}
+                      name="languagesLevel"
+                      className={classNames(
+                        cx("aboutme-form-languages-change-level")
+                      )}
                     >
-                      A1
-                    </option>
-                    <option
-                      selected={userLanguagesLevels[i] === "A2"}
-                      value="A2"
-                    >
-                      A2
-                    </option>
-                    <option
-                      selected={userLanguagesLevels[i] === "B1"}
-                      value="B1"
-                    >
-                      B1
-                    </option>
-                    <option
-                      selected={userLanguagesLevels[i] === "B2"}
-                      value="B2"
-                    >
-                      B2
-                    </option>
-                    <option
-                      selected={userLanguagesLevels[i] === "C1"}
-                      value="C1"
-                    >
-                      C1
-                    </option>
-                    <option
-                      selected={userLanguagesLevels[i] === "C2"}
-                      value="C2"
-                    >
-                      C2
-                    </option>
-                    <option
-                      selected={userLanguagesLevels[i] === "Native"}
-                      value="Native"
-                    >
-                      Native
-                    </option>
-                  </select>
-                </>
-              );
-            })}
-          </div>
+                      <option
+                        selected={userLanguagesLevels[i] === "A1"}
+                        value="A1"
+                      >
+                        A1
+                      </option>
+                      <option
+                        selected={userLanguagesLevels[i] === "A2"}
+                        value="A2"
+                      >
+                        A2
+                      </option>
+                      <option
+                        selected={userLanguagesLevels[i] === "B1"}
+                        value="B1"
+                      >
+                        B1
+                      </option>
+                      <option
+                        selected={userLanguagesLevels[i] === "B2"}
+                        value="B2"
+                      >
+                        B2
+                      </option>
+                      <option
+                        selected={userLanguagesLevels[i] === "C1"}
+                        value="C1"
+                      >
+                        C1
+                      </option>
+                      <option
+                        selected={userLanguagesLevels[i] === "C2"}
+                        value="C2"
+                      >
+                        C2
+                      </option>
+                      <option
+                        selected={userLanguagesLevels[i] === "Native"}
+                        value="Native"
+                      >
+                        Native
+                      </option>
+                    </select>
+                    <FontAwesomeIcon
+                      className={classNames(
+                        cx("aboutme-form-languages-change-button-remove")
+                      )}
+                      onClick={removeLanguageHandler}
+                      icon={faRemove}
+                      language={language}
+                      level={userLanguagesLevels[i]}
+                    />
+                  </div>
+                );
+              })}
+            </div>
 
-          <button style={{ marginTop: "1rem" }} className="btn-outline-small">
-            Change languages
-          </button>
-        </form>
-
+            <button style={{ marginTop: "1rem" }} className="btn-solid-small">
+              Change languages
+            </button>
+          </form>
+        ) : (
+          ""
+        )}
         <form
           className={classNames(cx("aboutme-form-languages"))}
           onSubmit={addLanguageSubmitHandler}
@@ -275,7 +345,7 @@ function AboutMe() {
               <option value="5">Native</option>
             </select>
           </div>
-          <button style={{ marginTop: "1rem" }} className="btn-outline-small">
+          <button style={{ marginTop: "1rem" }} className="btn-solid-small">
             Add new language
           </button>
         </form>
@@ -287,16 +357,21 @@ function AboutMe() {
             <li key={i}>
               <p>
                 {language} {userLanguagesLevels[i]}
+                {language === "" ? "Add languages which you know" : ""}
               </p>
             </li>
           );
         })}
       </ul>
     );
-  console.log(allLanguages.current);
+
   const content = (
     <div className={classNames(cx("aboutme-container"))}>
-      <FontAwesomeIcon onClick={changeTextIconHandler} icon={textareaIcon} />
+      <FontAwesomeIcon
+        style={{ cursor: "pointer" }}
+        onClick={changeTextIconHandler}
+        icon={textareaIcon}
+      />
       <div className={classNames(cx("aboutme-container-info"))}>
         <h1>About Me:</h1>
         {aboutMeTextComponent}
@@ -308,6 +383,7 @@ function AboutMe() {
     </div>
   );
 
+  // * ALL INFORMATION RENDERED DEPENDING ON MOBILE OR DESKTOP VERSION
   return (
     <div className={classNames(cx("aboutme"))}>
       {minWidth1000 ? (

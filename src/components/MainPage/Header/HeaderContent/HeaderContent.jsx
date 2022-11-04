@@ -32,7 +32,7 @@ function HeaderContent(props) {
             to={props.currentUser ? "/user" : "/register"}
           >
             {props.currentUser
-              ? props.currentUser.email.toUpperCase()
+              ? props.currentUser.nick.toUpperCase()
               : "SIGN UP"}
           </Link>
         </div>
