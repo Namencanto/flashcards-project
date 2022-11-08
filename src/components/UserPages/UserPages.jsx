@@ -9,6 +9,7 @@ import AboutMe from "./UserMainPage/AboutMe/AboutMe";
 import LastLearned from "./UserMainPage/LastLearned/LastLearned";
 import Statistics from "./UserMainPage/Statistics/Statistics";
 import Ranking from "./UserMainPage/Ranking/Ranking";
+import UserTechcards from "./UserTechcards/UserTechcards";
 
 function UserPages() {
   return (
@@ -21,6 +22,7 @@ function UserPages() {
         <Route path="last-learned" element={<LastLearned />}></Route>
         <Route path="statistics" element={<Statistics />}></Route>
         <Route path="ranking" element={<Ranking />}></Route>
+        <Route path="techcards" element={<UserTechcards />}></Route>
 
         {/* desktop way */}
         <Route path="" element={<UserMainPage />}></Route>

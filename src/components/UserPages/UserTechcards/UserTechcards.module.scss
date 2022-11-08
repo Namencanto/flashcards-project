@@ -1,0 +1,170 @@
+@import "../../../assets/base.scss";
+.techcards {
+  background-color: $color-purple;
+  height: 100vh;
+  width: 100vw;
+
+  @media only screen and (min-width: $bp-1000) {
+    height: 100%;
+    width: 100%;
+    background-color: $color-white;
+  }
+  &-container {
+    overflow: auto;
+    background-color: $color-white;
+    border-radius: 1rem;
+    padding: 1rem 1rem 9rem 1rem;
+  }
+  &-main {
+    & ul {
+      padding: 1rem;
+      & li {
+        border-bottom: 1px solid #555;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 25%;
+      }
+    }
+    &-folder {
+      & h2 {
+        color: $color-black;
+      }
+      & ul {
+        & li {
+          display: flex;
+          text-decoration: none;
+          & a {
+            text-decoration: none;
+          }
+          & p {
+            margin-left: 1rem;
+          }
+        }
+      }
+    }
+    &-progress-bar {
+      margin-top: 0.5rem;
+      display: flex;
+      font-size: 1.2rem;
+      text-align: center;
+
+      @mixin progress-bar-part {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+          scale: 1.1;
+        }
+      }
+      &-message {
+        width: 10rem;
+        position: absolute;
+      }
+
+      &-new {
+        @include progress-bar-part;
+        background-color: rgb(112, 174, 255);
+        height: 1.5rem;
+        width: 2.5rem;
+        position: relative;
+      }
+      &-learned {
+        @include progress-bar-part;
+        background-color: green;
+        height: 1.5rem;
+        width: 2.5rem;
+      }
+      &-to-learn {
+        @include progress-bar-part;
+        background-color: orange;
+        height: 1.5rem;
+        width: 2.5rem;
+      }
+      &-hard {
+        @include progress-bar-part;
+        background-color: red;
+        height: 1.5rem;
+        width: 2.5rem;
+      }
+
+      // * list version
+
+      &-list {
+        display: flex;
+        font-size: 1.2rem;
+        text-align: center;
+        width: 5rem;
+        margin-right: auto;
+
+        &-new {
+          @include progress-bar-part;
+          height: 0.5rem;
+          background-color: rgb(112, 174, 255);
+
+          position: relative;
+          display: inline-block;
+          border-bottom: 1px dotted black;
+
+          //TODO
+          & span {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+
+            /* Position the tooltip text - see examples below! */
+            position: absolute;
+            z-index: 1;
+            &:hover {
+              visibility: visible;
+            }
+          }
+        }
+        &-learned {
+          @include progress-bar-part;
+          height: 0.5rem;
+          background-color: green;
+        }
+        &-to-learn {
+          @include progress-bar-part;
+          height: 0.5rem;
+          background-color: orange;
+        }
+        &-hard {
+          @include progress-bar-part;
+          height: 0.5rem;
+          background-color: red;
+        }
+      }
+    }
+  }
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

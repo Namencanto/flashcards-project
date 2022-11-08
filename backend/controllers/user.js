@@ -93,25 +93,3 @@ export const addLanguage = (req, res) => {
     });
   });
 };
-
-export const removeLanguage = (req, res) => {
-  const token = req.cookies.jwt;
-  console.log(token);
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
-    const q =
-      "UPDATE `user_description` SET `languages` = " +
-      query +
-      " WHERE (`uid` = '" +
-      userInfo.id +
-      "')";
-
-    db.query(q, (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.json("Post has been created.");
-    });
-  });
-};

@@ -1,7 +1,7 @@
 import express from "express";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
-import postRoutes from "./routes/posts.js";
+import techcardRoutes from "./routes/techcards.js";
 
 import cors from "cors";
 import path from "path";
@@ -32,6 +32,6 @@ app.use(express.static(path.join(__dirname, "../build")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/posts", postRoutes);
+app.use("/api/techcards", techcardRoutes);
 
 app.listen(port, console.log(`Server running on port ${port}`));

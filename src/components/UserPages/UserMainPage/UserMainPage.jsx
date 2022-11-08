@@ -11,6 +11,7 @@ import {
   faUser,
   faChartLine,
   faRankingStar,
+  faRocket,
 } from "@fortawesome/free-solid-svg-icons";
 
 import MediaQueries from "../../../HelperComponents/MediaQueries";
@@ -82,6 +83,16 @@ function UserMainPage() {
                       icon={faRankingStar}
                     />
                     <p>Ranking</p>
+                  </Link>
+                  <Link
+                    to="techcards"
+                    className={classNames(cx("user-main-box"))}
+                  >
+                    <FontAwesomeIcon
+                      className={classNames(cx("price-card-body-icons-check"))}
+                      icon={faRocket}
+                    />
+                    <p>Created techcards</p>
                   </Link>
                 </div>
               </>
