@@ -23,24 +23,18 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        width: 25%;
+        width: 40%;
       }
     }
-    &-folder {
-      & h2 {
-        color: $color-black;
+
+    &-list-container {
+      display: flex;
+      align-items: center;
+      & p {
+        font-size: 1.2rem;
       }
-      & ul {
-        & li {
-          display: flex;
-          text-decoration: none;
-          & a {
-            text-decoration: none;
-          }
-          & p {
-            margin-left: 1rem;
-          }
-        }
+      & input {
+        margin-left: 1rem;
       }
     }
     &-progress-bar {
@@ -97,34 +91,40 @@
         font-size: 1.2rem;
         text-align: center;
         width: 5rem;
-        margin-right: auto;
+        margin-left: 0.5rem;
+        border-radius: 2.5rem !important;
+        overflow: hidden;
+        & div {
+          display: inline-block;
+
+          &:hover {
+            & span {
+              visibility: visible;
+            }
+          }
+          span {
+            visibility: hidden;
+            width: auto;
+
+            background-color: rgba(black, 0.7);
+            color: #fff;
+            text-align: center;
+            padding: 0.5rem;
+
+            top: 105%;
+            left: 50%;
+            margin-left: -75%;
+            position: absolute;
+            z-index: 1000;
+          }
+        }
 
         &-new {
           @include progress-bar-part;
           height: 0.5rem;
           background-color: rgb(112, 174, 255);
 
-          position: relative;
           display: inline-block;
-          border-bottom: 1px dotted black;
-
-          //TODO
-          & span {
-            visibility: hidden;
-            width: 120px;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            padding: 5px 0;
-            border-radius: 6px;
-
-            /* Position the tooltip text - see examples below! */
-            position: absolute;
-            z-index: 1;
-            &:hover {
-              visibility: visible;
-            }
-          }
         }
         &-learned {
           @include progress-bar-part;
@@ -141,30 +141,12 @@
           height: 0.5rem;
           background-color: red;
         }
+        &-empty {
+          @include progress-bar-part;
+          height: 0.5rem;
+          border: 1px solid rgba(black, 0.5);
+        }
       }
     }
   }
-}
-
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
-}
-.tooltip:hover .tooltiptext {
-  visibility: visible;
 }

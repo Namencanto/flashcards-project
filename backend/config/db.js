@@ -12,4 +12,5 @@ export const db = mysql.createConnection({
   user: process.env.MYSQL_CREATE_CONNECTION_USER,
   password: process.env.MYSQL_CREATE_CONNECTION_PASSWORD,
   database: process.env.MYSQL_CREATE_CONNECTION_DATABASE,
+  multipleStatements: true,
 });
