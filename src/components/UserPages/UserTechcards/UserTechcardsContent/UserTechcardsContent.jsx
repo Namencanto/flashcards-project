@@ -8,11 +8,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../../context/AuthContext";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGear,
-  faArrowLeft,
-  faRemove,
-} from "@fortawesome/free-solid-svg-icons";
+import { faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 import { useRef } from "react";
@@ -20,6 +16,8 @@ import { useRef } from "react";
 function UserTechcardsContent() {
   const cx = classNames.bind(classes);
   const { currentUser } = useContext(AuthContext);
+
+  const [userMessage, setUserMessage] = useState([]);
 
   const [techcards, setTechcards] = useState();
   const [techcardsFolders, setTechcardsFolders] = useState([]);
@@ -49,7 +47,6 @@ function UserTechcardsContent() {
       res.data.forEach(({ folder, list, first_side, second_side }) => {
         folders.push(folder);
         lists.push(list);
-        console.log(first_side);
         firstSides.push(first_side);
         secondSides.push(second_side);
       });
@@ -88,7 +85,6 @@ function UserTechcardsContent() {
       let hardSum = 0;
       let learnedSum = 0;
       techcards.forEach((arr, i) => {
-        console.log(arr.learned);
         if (arr.folder === folder) {
           newSum = newSum + +arr.new;
           toLearnSum = toLearnSum + +arr.to_learn;
@@ -119,6 +115,7 @@ function UserTechcardsContent() {
 
   const changeTechcardsconHandler = () => {
     if (changeTechcardsIsVisible === true) {
+      setUserMessage([]);
       setTechcardsChangeIcon(faGear);
       setTechcardsIsVisible(false);
       clearFormStates();
@@ -129,63 +126,117 @@ function UserTechcardsContent() {
     }
   };
 
+  /////////////////////////////////////////////////
+
   // * SUBMIT HANDLER
   const techcardsSubmitHandler = async (e) => {
     e.preventDefault();
     // * ADD
     if (addFormIsSelected) {
+      let anyFolderExists = techcardsFolders.length > 0 ? true : false;
       let listsToAdd = [];
-      let allInputs = Array.from(e.target.newList);
-      allInputs.forEach((input) => {
-        if (input.value.length > 0)
-          listsToAdd.push([input.attributes.folder.value, input.value]);
-      });
 
-      if (allInputs.length > 0) {
-        try {
-          const res = await axios.post("/techcards/add", {
-            list: listsToAdd,
+      if (anyFolderExists) {
+        let allInputs = Array.from(e.target.newList);
+        // if only one folder exist case
+        if (e.target.newList.value && e.target.newList.length === undefined)
+          allInputs.push(e.target.newList);
+
+        allInputs.forEach((input) => {
+          let listExists = false;
+          // check if list name already exists
+          techcards.forEach(({ folder, list }) => {
+            if (folder === input.attributes.folder.value)
+              if (list === input.value) return (listExists = true);
           });
-          fetchTechcards();
-          console.log(res);
-        } catch (err) {
-          console.log(err);
+          if (input.value.length > 0)
+            if (!listExists)
+              listsToAdd.push([input.attributes.folder.value, input.value]);
+            else setUserMessage(["red", "List name arleady exists"]);
+          else setUserMessage(["red", "List name cannot be empty"]);
+        });
+
+        // * LIST ADD
+        if (listsToAdd.length > 0) {
+          try {
+            const res = await axios.post("/techcards/add", {
+              list: listsToAdd,
+            });
+            fetchTechcards();
+            setUserMessage(["green", res.data]);
+            for (const list of allInputs) {
+              list.value = "";
+            }
+          } catch (err) {
+            setUserMessage(["red", "Something went wrong..."]);
+          }
         }
       }
+      // * FOLDER ADD
       const newFolder = techcardAddFolderRef.current.value;
+      if (uniqFolders.find((folder) => folder === newFolder))
+        return setUserMessage(["red", "Folder name already exists"]);
+
       if (newFolder.length > 0 && newFolder.length < 30) {
         try {
           const res = await axios.post("/techcards/add", {
             folder: newFolder,
           });
           fetchTechcards();
-          console.log(res);
+          setUserMessage(["green", res.data]);
+          techcardAddFolderRef.current.value = "";
         } catch (err) {
-          console.log(err);
+          setUserMessage(["red", "Something went wrong..."]);
         }
       }
     }
     // * CHANGE
     else if (changeFormIsSelected) {
+      const allLists = Array.from(e.target.changeList);
+      const allFolders = Array.from(e.target.changeFolder);
       let listsToChange = [];
       let foldersToChange = [];
-      let allLists = Array.from(e.target.changeList);
-      let allFolders = Array.from(e.target.changeFolder);
-      allLists.forEach((list) => {
-        if (list.value.length === 0) return;
-        if (list.value === list.attributes.oldList.value) return;
+
+      allLists.forEach((inputList) => {
+        if (inputList.value.length === 0)
+          return setUserMessage(["red", "List name cannot be empty"]);
+
+        let listExists = false;
+
+        // check if list name already exists
+        techcards.forEach(({ folder, list }) => {
+          console.log(folder);
+          if (folder === inputList.attributes.folder.value)
+            if (list === inputList.value) return (listExists = true);
+        });
+
+        if (inputList.value === inputList.attributes.oldList.value) return;
+        if (listExists)
+          return setUserMessage(["red", "List name arleady exists"]);
         listsToChange.push([
-          list.attributes.folder.value,
-          list.attributes.oldList.value,
-          list.value,
+          inputList.attributes.folder.value,
+          inputList.attributes.oldList.value,
+          inputList.value,
         ]);
       });
-      allFolders.forEach((folder) => {
-        if (folder.value.length === 0) return;
-        if (folder.value === folder.attributes.oldFolder.value) return;
-        foldersToChange.push([folder.attributes.oldFolder.value, folder.value]);
+      let folderExists = false;
+      allFolders.forEach((inputFolder) => {
+        if (inputFolder.value.length === 0)
+          return setUserMessage(["red", "Folder name cannot be empty"]);
+
+        if (inputFolder.value === inputFolder.attributes.oldFolder.value)
+          return;
+        foldersToChange.push([
+          inputFolder.attributes.oldFolder.value,
+          inputFolder.value,
+        ]);
+
+        for (const folder of uniqFolders) {
+          for (const folderToChange of foldersToChange) {
+            if (folder === folderToChange[1]) return (folderExists = true);
+          }
+        }
       });
-      console.log("folder", foldersToChange);
 
       if (listsToChange.length > 0) {
         try {
@@ -193,30 +244,47 @@ function UserTechcardsContent() {
             list: listsToChange,
           });
           fetchTechcards();
-          console.log(res);
+          return setUserMessage(["green", res.data]);
         } catch (err) {
-          console.log(err);
+          setUserMessage(["red", "Something went wrong..."]);
         }
       }
+
       if (foldersToChange.length > 0) {
+        if (folderExists)
+          return setUserMessage(["red", "Folder name already exists"]);
         try {
           const res = await axios.post("/techcards/update", {
             folder: foldersToChange,
           });
           fetchTechcards();
-          console.log(res);
+          return setUserMessage(["green", res.data]);
         } catch (err) {
-          console.log(err);
+          setUserMessage(["red", "Something went wrong..."]);
         }
       }
     }
     // * DELETE
     else if (deleteFormIsSelected) {
-      const listToDeleteInputs = Array.from(e.target.listToDeleteInput);
-      const folderToDeleteInputs = Array.from(e.target.folderToDeleteInput);
-
+      const anyListExist = e.target.listToDeleteInput ? true : false;
+      let listToDeleteInputs = anyListExist
+        ? Array.from(e.target.listToDeleteInput)
+        : [];
+      let folderToDeleteInputs = Array.from(e.target.folderToDeleteInput);
       let listToDelete = [];
       let folderToDelete = [];
+      if (
+        e.target.folderToDeleteInput.value &&
+        e.target.folderToDeleteInput.length === undefined
+      )
+        folderToDeleteInputs.push(e.target.folderToDeleteInput);
+      if (
+        anyListExist &&
+        e.target.listToDeleteInput.value &&
+        e.target.listToDeleteInput.length === undefined
+      )
+        listToDeleteInputs.push(e.target.listToDeleteInput);
+
       listToDeleteInputs.forEach((list, i) => {
         if (list.checked === true) {
           listToDelete.push(list.value.split("/"));
@@ -227,16 +295,16 @@ function UserTechcardsContent() {
           folderToDelete.push(folder.value);
         }
       });
-      console.log(listToDelete);
+      console.log(folderToDelete);
       if (listToDelete.length > 0) {
         try {
           const res = await axios.post("/techcards/delete", {
             list: listToDelete,
           });
           fetchTechcards();
-          console.log(res);
+          return setUserMessage(["green", res.data]);
         } catch (err) {
-          console.log(err);
+          setUserMessage(["red", "Something went wrong..."]);
         }
       }
       if (folderToDelete.length > 0) {
@@ -245,9 +313,9 @@ function UserTechcardsContent() {
             folder: folderToDelete,
           });
           fetchTechcards();
-          console.log(res);
+          return setUserMessage(["green", res.data]);
         } catch (err) {
-          console.log(err);
+          setUserMessage(["red", "Something went wrong..."]);
         }
       }
     } else return;
@@ -447,45 +515,50 @@ function UserTechcardsContent() {
             ) : (
               ""
             )}
-
-            <div>
-              <label htmlFor="add">Add</label>
-              <input
-                ref={addFormRadio}
-                type="radio"
-                name="formType"
-                id="add"
-                checked={addFormIsSelected}
-                onClick={() => {
-                  clearFormStates();
-                  setAddFormIsSelected(true);
-                }}
-              />
-              <label htmlFor="change">Change</label>
-              <input
-                ref={changeFormRadio}
-                type="radio"
-                name="formType"
-                id="change"
-                checked={changeFormIsSelected}
-                onClick={() => {
-                  clearFormStates();
-                  setChangeFormIsSelected(true);
-                }}
-              />
-              <label htmlFor="delete">Delete</label>
-              <input
-                ref={deleteFormRadio}
-                type="radio"
-                name="formType"
-                id="delete"
-                checked={deleteFormIsSelected}
-                onClick={() => {
-                  clearFormStates();
-                  setDeleteFormIsSelected(true);
-                }}
-              />
+            <div className={cx("techcards-settings-container")}>
+              <div className={cx("techcards-settings")}>
+                <input
+                  ref={addFormRadio}
+                  type="radio"
+                  name="formType"
+                  id="add"
+                  checked={addFormIsSelected}
+                  onClick={() => {
+                    setUserMessage([]);
+                    clearFormStates();
+                    setAddFormIsSelected(true);
+                  }}
+                />
+                <label htmlFor="add">Add</label>
+                <input
+                  ref={changeFormRadio}
+                  type="radio"
+                  name="formType"
+                  id="change"
+                  checked={changeFormIsSelected}
+                  onClick={() => {
+                    setUserMessage([]);
+                    clearFormStates();
+                    setChangeFormIsSelected(true);
+                  }}
+                />
+                <label htmlFor="change">Change</label>
+                <input
+                  ref={deleteFormRadio}
+                  type="radio"
+                  name="formType"
+                  id="delete"
+                  checked={deleteFormIsSelected}
+                  onClick={() => {
+                    setUserMessage([]);
+                    clearFormStates();
+                    setDeleteFormIsSelected(true);
+                  }}
+                />
+                <label htmlFor="delete">Delete</label>
+              </div>
             </div>
+            <p style={{ color: userMessage[0] }}>{userMessage[1]}</p>
             <button className="btn-solid-small">Confirm</button>
           </>
         ) : (

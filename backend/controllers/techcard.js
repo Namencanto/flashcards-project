@@ -6,14 +6,16 @@ export const getTechcards = (req, res) => {
   const token = req.cookies["jwt"];
   if (!token) return res.status(401).json("Not authenticated!");
 
-  const decoded = jwt_decode(token);
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
 
-  const q = "SELECT * FROM users_techcards WHERE uid = ?";
+    const q = "SELECT * FROM users_techcards WHERE uid = ?";
+    console.log(userInfo.id);
+    db.query(q, [userInfo.id], (err, data) => {
+      if (err) return res.status(500).send(err);
 
-  db.query(q, [22], (err, data) => {
-    if (err) return res.status(500).send(err);
-
-    return res.status(200).json(data);
+      return res.status(200).json(data);
+    });
   });
 };
 
@@ -29,14 +31,8 @@ export const addTechcards = (req, res) => {
     const folderToAdd = req.body.folder;
     // * ADD LIST
     if (listToAdd) {
-      // * IF USER WANT TO ADD FOLDER AND LISTS AT THE SAME TIME CASE
-      let allAddQueries = folderToAdd
-        ? "INSERT INTO `users_techcards` (`folder`, `uid`) VALUES ('" +
-          folderToAdd +
-          "', '" +
-          22 +
-          "');"
-        : "";
+      let allAddQueries = "";
+
       listToAdd.forEach((list, i) => {
         allAddQueries +=
           "INSERT INTO `users_techcards` (`folder`, `list`, `uid`) VALUES ('" +
@@ -44,15 +40,14 @@ export const addTechcards = (req, res) => {
           "', '" +
           list[1] +
           "', '" +
-          22 +
+          userInfo.id +
           "');";
       });
-      console.log(allAddQueries);
+
       db.query(allAddQueries, (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.json("Post has been created.");
+        return res.json("All lists have been successfully added");
       });
-      console.log(req.body.list);
     }
 
     // * ADD FOLDER
@@ -62,14 +57,13 @@ export const addTechcards = (req, res) => {
         "INSERT INTO `users_techcards` (`folder`, `uid`) VALUES ('" +
         folderToAdd +
         "', '" +
-        22 +
+        userInfo.id +
         "');";
 
       db.query(addFolderQuery, (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.json("Post has been created.");
+        return res.json("Folder has been successfully added");
       });
-      console.log(req.body.list);
     }
   });
 };
@@ -97,18 +91,22 @@ export const deleteTechcards = (req, res) => {
           list[0] +
           "') AND  (`list` = '" +
           list[1] +
+          "') AND (`uid` = '" +
+          userInfo.id +
           "');";
       });
       folderToAdd?.forEach((folder, i) => {
         allElementsToDelete +=
-          "DELETE FROM `users_techcards` WHERE (`folder` = '" + folder + "');";
+          "DELETE FROM `users_techcards` WHERE (`folder` = '" +
+          folder +
+          "') AND (`uid` = '" +
+          userInfo.id +
+          "');";
       });
       db.query(allElementsToDelete, (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.json("Post has been created.");
+        return res.json("All elements have been successfully deleted");
       });
-
-      console.log(allElementsToDelete);
     }
   });
 };
@@ -141,18 +139,18 @@ export const updateTechcards = (req, res) => {
           list[1] +
           "');";
       });
-      // folderToChange?.forEach((folder, i) => {
-      //   console.log(folder[1]);
-      //   allElementsToChange +=
-      //     "UPDATE `users_techcards` SET `folder` = '" +
-      //     folder[1] +
-      //     "' WHERE (`folder` = '" +
-      //     folder[0] +
-      //     "');";
-      // });
+      folderToChange?.forEach((folder, i) => {
+        console.log(folder[1]);
+        allElementsToChange +=
+          "UPDATE `users_techcards` SET `folder` = '" +
+          folder[1] +
+          "' WHERE (`folder` = '" +
+          folder[0] +
+          "');";
+      });
       db.query(allElementsToChange, (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.json("Post has been created.");
+        return res.json("All elements have been successfully changed");
       });
 
       console.log(allElementsToChange);
