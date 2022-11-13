@@ -10,7 +10,7 @@ import LastLearned from "./UserMainPage/LastLearned/LastLearned";
 import Statistics from "./UserMainPage/Statistics/Statistics";
 import Ranking from "./UserMainPage/Ranking/Ranking";
 import UserTechcards from "./UserTechcards/UserTechcards";
-
+import UserTechcardsList from "./UserTechcardsList/UserTechcardsList";
 function UserPages() {
   return (
     <>
@@ -23,6 +23,10 @@ function UserPages() {
         <Route path="statistics" element={<Statistics />}></Route>
         <Route path="ranking" element={<Ranking />}></Route>
         <Route path="techcards" element={<UserTechcards />}></Route>
+        <Route
+          path="techcards/:folder/:list"
+          element={<UserTechcardsList />}
+        ></Route>
 
         {/* desktop way */}
         <Route path="" element={<UserMainPage />}></Route>

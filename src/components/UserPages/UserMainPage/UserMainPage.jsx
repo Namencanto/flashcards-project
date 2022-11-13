@@ -12,6 +12,7 @@ import {
   faChartLine,
   faRankingStar,
   faRocket,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
 
 import MediaQueries from "../../../HelperComponents/MediaQueries";
@@ -94,6 +95,16 @@ function UserMainPage() {
                     />
                     <p>Created techcards</p>
                   </Link>
+                  <Link
+                    to="settings"
+                    className={classNames(cx("user-main-box"))}
+                  >
+                    <FontAwesomeIcon
+                      className={classNames(cx("price-card-body-icons-check"))}
+                      icon={faGear}
+                    />
+                    <p>Settings</p>
+                  </Link>
                 </div>
               </>
             ) : (
@@ -136,7 +147,7 @@ function UserMainPage() {
             ></path>
           </svg>
         </div>
-        <div className={cx("user-main-frame")}>
+        {/* <div className={cx("user-main-frame")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="none"
@@ -159,7 +170,7 @@ function UserMainPage() {
               transform="translate(0 -0.188)"
             ></path>
           </svg>
-        </div>
+        </div> */}
       </div>
     </>
   );

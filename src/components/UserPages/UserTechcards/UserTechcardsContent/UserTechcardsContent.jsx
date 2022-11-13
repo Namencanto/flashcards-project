@@ -331,11 +331,18 @@ function UserTechcardsContent() {
     <div className={classNames(cx("techcards-container"))}>
       <div className={classNames(cx("techcards-title"))}>
         <FontAwesomeIcon
-          style={{ cursor: "pointer" }}
+          className={classNames(cx("techcards-title-icon"))}
           onClick={changeTechcardsconHandler}
           icon={techcardsChangeIcon}
         />
         <h1>TECHCARDS</h1>
+        {!changeTechcardsIsVisible && techcardsFolders.length === 0 ? (
+          <h3>
+            It look like you don't have any techcards, click gear to add some
+          </h3>
+        ) : (
+          ""
+        )}
       </div>
 
       <form onSubmit={techcardsSubmitHandler}>
@@ -559,7 +566,12 @@ function UserTechcardsContent() {
               </div>
             </div>
             <p style={{ color: userMessage[0] }}>{userMessage[1]}</p>
-            <button className="btn-solid-small">Confirm</button>
+            <button
+              style={{ width: "15rem", height: "4rem", fontSize: "1.6rem" }}
+              className="btn-solid-small"
+            >
+              Confirm
+            </button>
           </>
         ) : (
           ""

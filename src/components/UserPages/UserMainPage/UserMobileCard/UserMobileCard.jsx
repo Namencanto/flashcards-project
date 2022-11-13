@@ -11,7 +11,7 @@ function UserMobileCard(props) {
   return (
     <div className={classNames(cx("card"))}>
       <div className={classNames(cx("card-navbar"))}>
-        <Link to="/user">
+        <Link to={props.backPath ? props.backPath : "/user"}>
           <FontAwesomeIcon icon={faArrowLeft} />
         </Link>
 
