@@ -89,7 +89,7 @@ export const deleteTechcards = (req, res) => {
         allElementsToDelete +=
           "DELETE FROM `users_techcards` WHERE (`folder` = '" +
           list[0] +
-          "') AND  (`list` = '" +
+          "') AND (`list` = '" +
           list[1] +
           "') AND (`uid` = '" +
           userInfo.id +

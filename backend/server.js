@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import techcardRoutes from "./routes/techcards.js";
+import techcardListRoutes from "./routes/techcardsLists.js";
 
 import cors from "cors";
 import path from "path";
@@ -19,12 +20,12 @@ dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "./uploads")));
+// app.use(express.static("backend/uploads"));
 
 /**
  * * PRODUCTION
  */
-console.log(path.join(__dirname, "../public"));
-app.use(express.static(path.join(__dirname, "../build")));
 
 // app.get("*", (req, res) =>
 //   res.sendFile(path.join(__dirname, "../build/index.html"))
@@ -33,5 +34,6 @@ app.use(express.static(path.join(__dirname, "../build")));
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/techcards", techcardRoutes);
+app.use("/api/techcards/lists", techcardListRoutes);
 
 app.listen(port, console.log(`Server running on port ${port}`));
