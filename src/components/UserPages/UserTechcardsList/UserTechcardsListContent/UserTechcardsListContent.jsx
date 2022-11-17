@@ -15,16 +15,15 @@ import {
   faGear,
   faArrowLeft,
   faPencil,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import ReactCountryFlag from "react-country-flag";
 import { useRef } from "react";
+import { handleFileSelect } from "./UserTechcardsListContentHelpers";
 function UserTechcardsListContent() {
   const cx = classNames.bind(classes);
   const { folder, list } = useParams();
-
-  const [firstSidesData, setFirstSidesData] = useState();
-  const [secondSidesData, setSecondSidesData] = useState();
 
   const [listData, setListData] = useState();
 
@@ -40,6 +39,10 @@ function UserTechcardsListContent() {
   const [formType, setFormType] = useState();
   const [formDefaultFirstSide, setFormDefaultFirstSide] = useState("");
   const [formDefaultSecondSide, setFormDefaultSecondSide] = useState("");
+  const [formDefaultTechcardIndex, setFormDefaultTechcardIndex] = useState("");
+
+  const [formListIcon, setFormListIcon] = useState(faTrashCan);
+  const [formListTypeIsDelete, setFormListTypeIsDelete] = useState(false);
 
   const [image, setImage] = useState(
     "https://miro.medium.com/max/250/1*DSNfSDcOe33E2Aup1Sww2w.jpeg"
@@ -55,10 +58,8 @@ function UserTechcardsListContent() {
         },
       });
       res.data.forEach(({ first_side, second_side }) => {
-        setFirstSidesData(first_side);
-        setSecondSidesData(second_side);
-        setFirstSides(first_side.split("/"));
-        setSecondSides(second_side.split("/"));
+        setFirstSides(first_side);
+        setSecondSides(second_side);
       });
 
       setListData(res.data.first_side.split("/"));
@@ -66,11 +67,9 @@ function UserTechcardsListContent() {
       console.log(err);
     }
   };
-  console.log(firstSides);
+
   useEffect(() => {
     fetchTechcards();
-
-    console.log(listData);
   }, []);
 
   const changeListHandler = () => {
@@ -91,6 +90,10 @@ function UserTechcardsListContent() {
     e.preventDefault();
 
     const image = e.target.file.files[0];
+
+    const oldFirstSide = e.target.firstSide.attributes.oldValue.value;
+    const oldSecondSide = e.target.firstSide.attributes.oldValue.value;
+    const techcardIndex = e.target.firstSide.attributes.index.value;
     const firstSide = e.target.firstSide.value;
     const secondSide = e.target.secondSide.value;
 
@@ -109,16 +112,28 @@ function UserTechcardsListContent() {
 
       let firstSidesToUpdate;
       let secondSidesToUpdate;
-      if (firstSidesData === null && formType === "ADD") {
+      if (firstSide.includes("/") || secondSide.includes("/")) {
+        return;
+      }
+      if (firstSides === null && formType === "ADD") {
         firstSidesToUpdate = firstSide;
         secondSidesToUpdate = secondSide;
       }
-      if (firstSidesData !== null && formType === "ADD") {
-        firstSidesToUpdate = firstSidesData + "/" + firstSide;
-        secondSidesToUpdate = secondSidesData + "/" + secondSide;
+      if (firstSides !== null && formType === "ADD") {
+        firstSidesToUpdate = firstSides + "/" + firstSide;
+        secondSidesToUpdate = secondSides + "/" + secondSide;
       }
 
-      console.log(secondSidesToUpdate);
+      if (formType === "CHANGE") {
+        let firstSidesArr = firstSides.split("/");
+        firstSidesArr[techcardIndex] = firstSide;
+        firstSidesToUpdate = firstSidesArr.join("/");
+
+        let secondSidesArr = secondSides.split("/");
+        secondSidesArr[techcardIndex] = secondSide;
+        secondSidesToUpdate = secondSidesArr.join("/");
+      }
+      //TODO: delete logic
       const resData = await axios.post("/techcards/lists/upload", {
         list,
         folder,
@@ -130,7 +145,6 @@ function UserTechcardsListContent() {
 
       if (resData.status === 200) {
         setTechcardsImages(imagePath);
-        // setImage(process.env.REACT_APP_URL + imagePath);
         fetchTechcards();
         setFormIsVisible(false);
       }
@@ -140,23 +154,45 @@ function UserTechcardsListContent() {
     }
   };
 
-  const handleFileSelect = (event) => {
-    console.log("asf");
-    let reader = new FileReader();
-    reader.onload = (event) => setImage(event.target.result);
-    reader.readAsDataURL(event.target.files[0]);
-  };
+  // const deleteTechcardsHandler = (e) => {
+  //   e.preventDefault();
+  //   const techcardsToDelete = e.target.techcardToDelete.value;
+
+  //   for (techcardToDelete of techcardsToDelete) {
+  //   }
+  //   console.log(e.target.techcardToDelete);
+  // };
 
   return (
     <div className={classNames(cx("techcards-list-container"))}>
-      <div className={classNames(cx("techcards-title"))}>
+      <div className={classNames(cx("techcards-list-title"))}>
         <FontAwesomeIcon
-          className={classNames(cx("techcards-title-icon"))}
-          onClick={changeListHandler}
+          className={classNames(cx("techcards-list-title-icon"))}
+          onClick={() => {
+            changeListHandler();
+            setFormListTypeIsDelete(false);
+          }}
           icon={listChangeIcon}
         />
         {/* <p>{folder}</p> */}
-        <h1>{list}</h1>
+        <div style={{ display: "flex" }}>
+          <h1>{list}</h1>
+          {console.log(formIsVisible)}
+          {changeListIsVisible ? (
+            <FontAwesomeIcon
+              className={classNames(cx("techcards-list-title-icon-form"))}
+              icon={formListIcon}
+              onClick={() => {
+                return formListIcon === faTrashCan
+                  ? (setFormListIcon(faPencil), setFormListTypeIsDelete(true))
+                  : (setFormListIcon(faTrashCan),
+                    setFormListTypeIsDelete(false));
+              }}
+            />
+          ) : (
+            ""
+          )}
+        </div>
       </div>
       <main className={classNames(cx("techcards-list-main"))}>
         {!formIsVisible ? (
@@ -169,30 +205,63 @@ function UserTechcardsListContent() {
                 Second side <ReactCountryFlag svg countryCode={"PL"} />
               </div>
             </div>
-            <ul>
-              {firstSides?.map((side, i) => {
-                if (!renderAll && i > 15) return;
-                return (
-                  <li>
-                    <div>{side}</div>
-                    <div>{secondSides[i]}</div>
-                    {changeListIsVisible ? (
-                      <FontAwesomeIcon
-                        onClick={() => {
-                          changeListElementHandler();
-                          setFormDefaultFirstSide(side);
-                          setFormDefaultSecondSide(secondSides[i]);
-                          setFormType("CHANGE");
-                        }}
-                        icon={faPencil}
-                      />
-                    ) : (
-                      ""
+            <form onSubmit={formListHandler}>
+              <ul>
+                {firstSides?.split("/").map((side, i) => {
+                  if (!renderAll && i > 15) return;
+                  return (
+                    <li>
+                      <div>{side}</div>
+                      <div>{secondSides.split("/")[i]}</div>
+                      {changeListIsVisible ? (
+                        !formListTypeIsDelete ? (
+                          <FontAwesomeIcon
+                            onClick={() => {
+                              changeListElementHandler();
+                              setFormType("CHANGE");
+                              setFormDefaultFirstSide(side);
+                              setFormDefaultSecondSide(
+                                secondSides.split("/")[i]
+                              );
+                              setFormDefaultTechcardIndex([i]);
+                            }}
+                            icon={faPencil}
+                          />
+                        ) : (
+                          ""
+                        )
+                      ) : (
+                        ""
+                      )}
+                      {formListTypeIsDelete ? (
+                        <input type="checkbox" id="techcardToDelete" />
+                      ) : (
+                        ""
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+              <>
+                {changeListIsVisible && formListIcon !== faTrashCan ? (
+                  <div
+                    className={classNames(
+                      cx("techcards-list-btn-form-container")
                     )}
-                  </li>
-                );
-              })}
-            </ul>
+                  >
+                    <button
+                      style={{ color: "darkred" }}
+                      onClick={setFormType("ADD")}
+                      className={classNames(cx("techcards-list-btn-form"))}
+                    >
+                      Delete selected
+                    </button>
+                  </div>
+                ) : (
+                  ""
+                )}
+              </>
+            </form>
           </>
         ) : (
           <form
@@ -207,7 +276,7 @@ function UserTechcardsListContent() {
                 <label>
                   <input
                     onChange={(e) => {
-                      handleFileSelect(e);
+                      handleFileSelect(e, setImage);
                       // setImage(techcardsImages);
                     }}
                     type="file"
@@ -229,6 +298,8 @@ function UserTechcardsListContent() {
                 <label htmlFor="firstSide">First side</label>
                 <input
                   defaultValue={formDefaultFirstSide}
+                  oldValue={formDefaultFirstSide}
+                  index={formDefaultTechcardIndex}
                   type="text"
                   id="firstSide"
                 />
@@ -239,6 +310,7 @@ function UserTechcardsListContent() {
                 <label htmlFor="secondSide">Second side</label>
                 <input
                   defaultValue={formDefaultSecondSide}
+                  oldValue={formDefaultSecondSide}
                   type="text"
                   id="secondSide"
                 />
@@ -250,15 +322,30 @@ function UserTechcardsListContent() {
 
         {!formIsVisible ? (
           changeListIsVisible ? (
-            <button
-              onClick={() => {
-                setFormType("ADD");
-                changeListElementHandler();
-              }}
-              className="btn-solid-small"
-            >
-              Add new
-            </button>
+            <>
+              {formListIcon === faTrashCan ? (
+                <div
+                  className={classNames(
+                    cx("techcards-list-btn-form-container")
+                  )}
+                >
+                  <button
+                    onClick={() => {
+                      setFormType("ADD");
+                      setFormDefaultSecondSide("");
+                      setFormDefaultFirstSide("");
+
+                      changeListElementHandler();
+                    }}
+                    className={classNames(cx("techcards-list-btn-form"))}
+                  >
+                    Add new...
+                  </button>
+                </div>
+              ) : (
+                ""
+              )}
+            </>
           ) : (
             <button className="btn-solid-small">Start</button>
           )

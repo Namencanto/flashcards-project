@@ -522,8 +522,8 @@ function UserTechcardsContent() {
             ) : (
               ""
             )}
-            <div className={cx("techcards-settings-container")}>
-              <div className={cx("techcards-settings")}>
+            <div className="radio-techcards-container">
+              <div className="radio-techcards">
                 <input
                   ref={addFormRadio}
                   type="radio"

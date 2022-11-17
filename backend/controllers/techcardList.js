@@ -74,9 +74,14 @@ export const uploadImage = (req, res) => {
         secondSidesToUpdate,
       } = req.body;
 
-      let q;
+      if (
+        firstSidesToUpdate.includes("/") ||
+        secondSidesToUpdate.includes("/")
+      ) {
+        return res.status(500).send('"/" character is not allowed');
+      }
 
-      q =
+      const q =
         "UPDATE `users_techcards` SET `techcard_image` = '" +
         imagePath +
         "', first_side = '" +
