@@ -270,3 +270,12 @@
     transition: 0.3s;
   }
 }
+
+// MESSAGES TO USER
+.message {
+  &-to-user {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 2.4rem;
+  }
+}
