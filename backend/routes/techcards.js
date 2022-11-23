@@ -1,7 +1,9 @@
-import { getTechcards } from "../controllers/techcard.js";
-import { addTechcards } from "../controllers/techcard.js";
-import { deleteTechcards } from "../controllers/techcard.js";
-import { updateTechcards } from "../controllers/techcard.js";
+import {
+  getTechcards,
+  addTechcards,
+  deleteTechcards,
+  updateTechcards,
+} from "../controllers/techcard.js";
 
 import express from "express";
 

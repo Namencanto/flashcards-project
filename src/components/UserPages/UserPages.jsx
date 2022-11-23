@@ -24,7 +24,7 @@ function UserPages() {
         <Route path="ranking" element={<Ranking />}></Route>
         <Route path="techcards" element={<UserTechcards />}></Route>
         <Route
-          path="techcards/:folder/:list"
+          path="techcards/:folder/:list/:id"
           element={<UserTechcardsList />}
         ></Route>
 

@@ -3,18 +3,35 @@ import jwt from "jsonwebtoken";
 import jwt_decode from "jwt-decode";
 
 export const getTechcards = (req, res) => {
-  const token = req.cookies["jwt"];
-  if (!token) return res.status(401).json("Not authenticated!");
+  const qFolders = "SELECT * FROM folders WHERE uid = '" + "4" + "'";
 
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
+  db.query(qFolders, (err, foldersData) => {
+    if (err) return res.status(500).send(err);
+    // console.log(foldersData);
+    let qLists = "";
+    for (const { id } of foldersData) {
+      qLists += "SELECT * FROM lists WHERE uid = '" + id + "';";
+    }
 
-    const q = "SELECT * FROM users_techcards WHERE uid = ?";
-    console.log(userInfo.id);
-    db.query(q, [userInfo.id], (err, data) => {
+    db.query(qLists, (err, listsData) => {
       if (err) return res.status(500).send(err);
 
-      return res.status(200).json(data);
+      if (listsData.length > 0) {
+        let qTechcards = "";
+        if (foldersData.length === 1) listsData = [listsData];
+        for (let i = 0; i < listsData.length; i++) {
+          for (const listData of listsData[i]) {
+            qTechcards +=
+              "SELECT * FROM techcards WHERE uid = '" + listData.id + "';";
+          }
+        }
+
+        db.query(qTechcards, (err, techcardsData) => {
+          if (err) return res.status(500).send(err);
+
+          return res.status(200).json([foldersData, listsData, techcardsData]);
+        });
+      } else return res.status(200).json([foldersData, listsData]);
     });
   });
 };
@@ -35,12 +52,10 @@ export const addTechcards = (req, res) => {
 
       listToAdd.forEach((list, i) => {
         allAddQueries +=
-          "INSERT INTO `users_techcards` (`folder`, `list`, `uid`) VALUES ('" +
-          list[0] +
-          "', '" +
+          "INSERT INTO `lists` (`list`, `uid`) VALUES ('" +
           list[1] +
           "', '" +
-          userInfo.id +
+          list[0] +
           "');";
       });
 
@@ -54,7 +69,7 @@ export const addTechcards = (req, res) => {
     if (folderToAdd && !listToAdd) {
       console.log(folderToAdd);
       const addFolderQuery =
-        "INSERT INTO `users_techcards` (`folder`, `uid`) VALUES ('" +
+        "INSERT INTO `folders` (`folder`, `uid`) VALUES ('" +
         folderToAdd +
         "', '" +
         userInfo.id +
@@ -79,29 +94,29 @@ export const deleteTechcards = (req, res) => {
   jwt.verify(token, "jwtkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const listToAdd = req.body.list;
-    const folderToAdd = req.body.folder;
+    const listToDelete = req.body.list;
+    const folderToDelete = req.body.folder;
 
-    if (listToAdd || folderToAdd) {
+    if (listToDelete || folderToDelete) {
       let allElementsToDelete = "";
 
-      listToAdd?.forEach((list, i) => {
+      listToDelete?.forEach((listID, i) => {
         allElementsToDelete +=
-          "DELETE FROM `users_techcards` WHERE (`folder` = '" +
-          list[0] +
-          "') AND (`list` = '" +
-          list[1] +
-          "') AND (`uid` = '" +
-          userInfo.id +
-          "');";
+          "DELETE FROM `lists` WHERE (`id` = '" + listID + "');";
+        allElementsToDelete +=
+          "DELETE FROM `techcards` WHERE (`uid` = '" + listID + "');";
       });
-      folderToAdd?.forEach((folder, i) => {
+      folderToDelete?.forEach((folderID, i) => {
         allElementsToDelete +=
-          "DELETE FROM `users_techcards` WHERE (`folder` = '" +
-          folder +
+          "DELETE FROM `folders` WHERE (`id` = '" +
+          folderID +
           "') AND (`uid` = '" +
           userInfo.id +
           "');";
+        allElementsToDelete +=
+          "DELETE FROM `lists` WHERE (`id` = '" + folderID + "');";
+        allElementsToDelete +=
+          "DELETE FROM `techcards` WHERE (`folder_uid` = '" + folderID + "');";
       });
       db.query(allElementsToDelete, (err, data) => {
         if (err) return res.status(500).json(err);
@@ -129,31 +144,29 @@ export const updateTechcards = (req, res) => {
       let allElementsToChange = "";
 
       listToChange?.forEach((list, i) => {
-        console.log(list[0], list[1], list[2]);
+        const listID = list[0];
+        const listNameToChange = list[1];
         allElementsToChange +=
-          "UPDATE `users_techcards` SET `list` = '" +
-          list[2] +
-          "' WHERE (`folder` = '" +
-          list[0] +
-          "') AND (`list` = '" +
-          list[1] +
+          "UPDATE `lists` SET `list` = '" +
+          listNameToChange +
+          "' WHERE (`id` = '" +
+          listID +
           "');";
       });
       folderToChange?.forEach((folder, i) => {
-        console.log(folder[1]);
+        const folderID = folder[0];
+        const folderNameToChange = folder[1];
         allElementsToChange +=
-          "UPDATE `users_techcards` SET `folder` = '" +
-          folder[1] +
-          "' WHERE (`folder` = '" +
-          folder[0] +
+          "UPDATE `folders` SET `folder` = '" +
+          folderNameToChange +
+          "' WHERE (`id` = '" +
+          folderID +
           "');";
       });
       db.query(allElementsToChange, (err, data) => {
         if (err) return res.status(500).json(err);
         return res.json("All elements have been successfully changed");
       });
-
-      console.log(allElementsToChange);
     }
   });
 };

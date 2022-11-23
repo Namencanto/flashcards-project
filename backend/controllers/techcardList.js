@@ -12,25 +12,23 @@ export const getTechcardList = (req, res) => {
   jwt.verify(token, "jwtkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const q =
-      "SELECT * FROM users_techcards WHERE uid = '" +
-      userInfo.id +
-      "' AND folder = '" +
-      req.query.folder +
-      "' AND list = '" +
-      req.query.list +
-      "'";
-
-    db.query(q, [userInfo.id], (err, data) => {
+    const qLists = "SELECT * FROM lists WHERE id = '" + req.query.id + "'";
+    db.query(qLists, (err, listsData) => {
       if (err) return res.status(500).send(err);
 
-      return res.status(200).json(data);
+      const qTechcards =
+        "SELECT * FROM techcards WHERE uid = '" + listsData[0].id + "'";
+      db.query(qTechcards, (err, techcardsData) => {
+        if (err) return res.status(500).send(err);
+
+        return res
+          .status(200)
+          .json({ techcardsData, folderID: listsData[0].uid });
+      });
     });
   });
 };
 
-//////////////////////////////////
-//////////////////////////////////
 // * uploading image
 import path from "path";
 import { dirname } from "path";
@@ -67,76 +65,141 @@ export const uploadImage = (req, res) => {
     } else {
       // * add new
 
-      const { folder, list, formType, imagesToRemove } = req.body;
-      let { firstSidesToUpdate, secondSidesToUpdate, imagesToUpdate } =
-        req.body;
-      if (
-        firstSidesToUpdate.includes("/") ||
-        secondSidesToUpdate.includes("/")
-      ) {
-        return res.status(500).send('"/" character is not allowed');
-      }
-      if (firstSidesToUpdate !== "") {
-        firstSidesToUpdate = firstSidesToUpdate?.join("/");
-        secondSidesToUpdate = secondSidesToUpdate?.join("/");
+      const {
+        folderID,
+        id,
+        techcardsToAdd,
+        techcardsToUpdate,
+        techcardsToDelete,
+      } = req.body;
 
-        imagesToUpdate = imagesToUpdate?.join("|");
-      }
-      console.log(imagesToUpdate);
-      console.log(imagesToUpdate.length);
+      const deleteImageFunction = async (path) => {
+        try {
+          await unlink(path);
+          console.log(`successfully deleted `);
+        } catch (error) {
+          console.error("there was an error:", error.message);
+        }
+      };
 
-      if (formType !== "DELETE" && imagesToUpdate.length === 0) {
-        imagesToUpdate = "|";
-      }
-      if (
-        (imagesToRemove && formType === "CHANGE") ||
-        (imagesToRemove && formType === "DELETE")
-      ) {
-        console.log("ej");
-        // for (let i = 0; i < imagesToRemove.length; i++) {
-        //   console.log(imagesToRemove);
-        //   if (imagesToRemove[i].length > 0) {
-        //     console.log("ej");
-        //     try {
-        //       await unlink(`${UPLOAD_PATH}/${imagesToRemove[i]}`);
-        //       console.log(`successfully deleted `);
-        //     } catch (error) {
-        //       console.error("there was an error:", error.message);
-        //     }
-        //   }
-        // }
-        console.log(typeof imagesToRemove);
-        for (const imageToRemove of imagesToRemove) {
-          console.log(imagesToRemove);
-          if (imageToRemove.length > 0) {
-            console.log("ej");
-            try {
-              await unlink(`${UPLOAD_PATH}/${imageToRemove}`);
-              console.log(`successfully deleted `);
-            } catch (error) {
-              console.error("there was an error:", error.message);
-            }
-          }
+      let q = "";
+
+      // * ADD CASE
+      if (techcardsToAdd) {
+        const { firstSide, secondSide, image } = techcardsToAdd;
+
+        if (image) {
+          let imageToDB = image;
+          if (image.startsWith("image-"))
+            imageToDB = `${process.env.REACT_APP_URL}/${image}`;
+          q =
+            "INSERT INTO `techcards` (`first_side`, `second_side`, `image`, `uid`, `folder_uid`) VALUES ('" +
+            firstSide +
+            "', '" +
+            secondSide +
+            "', '" +
+            imageToDB +
+            "', '" +
+            id +
+            "', '" +
+            folderID +
+            "');";
+        } else {
+          q =
+            "INSERT INTO `techcards` (`first_side`, `second_side`, `uid`, `folder_uid`) VALUES ('" +
+            firstSide +
+            "', '" +
+            secondSide +
+            "', '" +
+            id +
+            "', '" +
+            folderID +
+            "');";
         }
       }
 
-      const q =
-        "UPDATE `users_techcards` SET `techcard_image` = '" +
-        imagesToUpdate +
-        "', first_side = '" +
-        firstSidesToUpdate +
-        "', second_side = '" +
-        secondSidesToUpdate +
-        "' WHERE (`uid` = '" +
-        userInfo.id +
-        "') AND (`folder` = '" +
-        folder +
-        "') AND (`list` = '" +
-        list +
-        "');";
+      // * UPDATE CASE
+      if (techcardsToUpdate) {
+        const {
+          firstSide,
+          secondSide,
+          image,
+          deleteImage,
+          oldImage,
+          techcardID,
+        } = techcardsToUpdate;
 
+        if (oldImage) {
+          deleteImageFunction(
+            `${UPLOAD_PATH}/${oldImage.replace(
+              `${process.env.REACT_APP_URL}/`,
+              ""
+            )}`
+          );
+        }
+        if (image) {
+          let imageToDB = image;
+          if (image.startsWith("image-"))
+            imageToDB = `${process.env.REACT_APP_URL}/${image}`;
+
+          q =
+            "UPDATE `techcards` SET `first_side` = '" +
+            firstSide +
+            "', `second_side` = '" +
+            secondSide +
+            "', `image` = '" +
+            imageToDB +
+            "' WHERE (`id` = '" +
+            techcardID +
+            "');";
+        } else if (!deleteImage) {
+          q =
+            "UPDATE `techcards` SET `first_side` = '" +
+            firstSide +
+            "', `second_side` = '" +
+            secondSide +
+            "' WHERE (`id` = '" +
+            techcardID +
+            "');";
+        } else {
+          if (oldImage) {
+            deleteImageFunction(
+              `${UPLOAD_PATH}/${oldImage.replace(
+                `${process.env.REACT_APP_URL}/`,
+                ""
+              )}`
+            );
+          }
+          q =
+            "UPDATE `techcards` SET `image` = NULL WHERE (`id` = '" +
+            techcardID +
+            "');";
+        }
+      }
+
+      // * DELETE CASE
+      if (techcardsToDelete) {
+        const { techcardsIDS, images } = techcardsToDelete;
+
+        for (const techcardID of techcardsIDS) {
+          console.log(techcardID);
+          q += "DELETE FROM `techcards` WHERE (`id` = '" + techcardID + "');";
+        }
+
+        for (const image of images) {
+          if (image) {
+            deleteImageFunction(
+              `${UPLOAD_PATH}/${image.replace(
+                `${process.env.REACT_APP_URL}/`,
+                ""
+              )}`
+            );
+          }
+        }
+      }
+      console.log(q);
       db.query(q, (err, data) => {
-        if (err) return res.status(500).send("Something went wrong...");
+        if (err) return res.status(500).send(err);
 
         return res.status(200).json(data);
       });

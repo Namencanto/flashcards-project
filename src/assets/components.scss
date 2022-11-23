@@ -44,8 +44,18 @@
     color: $color-offWhite;
   }
 }
+@mixin btn-transparent {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}
 
 .btn {
+  &-transparent {
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+  }
   &-outline {
     &-small {
       @include btn-outline;

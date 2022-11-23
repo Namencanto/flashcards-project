@@ -17,10 +17,12 @@ function UserTechcardsContent() {
   const cx = classNames.bind(classes);
   const { currentUser } = useContext(AuthContext);
 
+  const [techcardsFolders, setTechcardsFolders] = useState([]);
+  const [techcardsLists, setTechcardsLists] = useState([]);
+  const [techcardsAllSides, setTechcardsAllSides] = useState([]);
+
   const [userMessage, setUserMessage] = useState([]);
 
-  const [techcards, setTechcards] = useState();
-  const [techcardsFolders, setTechcardsFolders] = useState([]);
   const [techcardsChangeIcon, setTechcardsChangeIcon] = useState(faGear);
   const [changeTechcardsIsVisible, setTechcardsIsVisible] = useState(false);
 
@@ -39,20 +41,9 @@ function UserTechcardsContent() {
     try {
       const res = await axios.get("/techcards/get");
 
-      let folders = [];
-      let lists = [];
-      let firstSides = [];
-      let secondSides = [];
-
-      res.data.forEach(({ folder, list, first_side, second_side }) => {
-        folders.push(folder);
-        lists.push(list);
-        firstSides.push(first_side);
-        secondSides.push(second_side);
-      });
-
-      setTechcards(res.data);
-      setTechcardsFolders(folders.sort());
+      setTechcardsFolders(res.data[0]);
+      setTechcardsLists(res.data[1]);
+      setTechcardsAllSides(res?.data[2]);
     } catch (err) {
       console.log(err);
     }
@@ -61,57 +52,6 @@ function UserTechcardsContent() {
   useEffect(() => {
     fetchTechcards();
   }, []);
-
-  const uniqFolders = [...new Set(techcardsFolders)];
-  let uniqPerFolderList = [];
-  uniqFolders.forEach((folder, folderI) => {
-    uniqPerFolderList.push([{ folder }]);
-    techcards.forEach((arr, arrI) => {
-      return arr.folder === folder
-        ? uniqPerFolderList[folderI].push({ list: arr.list })
-        : "";
-    });
-  });
-
-  let countFolderNew = "";
-  let countFolderToLearn = "";
-  let countFolderHard = "";
-  let countFolderLearned = "";
-
-  const counterFunction = () => {
-    uniqFolders.forEach((folder, iFolder) => {
-      let newSum = 0;
-      let toLearnSum = 0;
-      let hardSum = 0;
-      let learnedSum = 0;
-      techcards.forEach((arr, i) => {
-        if (arr.folder === folder) {
-          newSum = newSum + +arr.new;
-          toLearnSum = toLearnSum + +arr.to_learn;
-          hardSum = hardSum + +arr.hard;
-          learnedSum = learnedSum + +arr.learned;
-        }
-        if (i === techcards.length - 1) {
-          countFolderNew += +newSum;
-          countFolderToLearn += +toLearnSum;
-          countFolderHard += +hardSum;
-          countFolderLearned += +learnedSum;
-
-          countFolderNew += "|";
-          countFolderToLearn += "|";
-          countFolderHard += "|";
-          countFolderLearned += "|";
-        }
-      });
-    });
-  };
-
-  techcards && counterFunction();
-
-  countFolderNew = countFolderNew?.slice(0, -1).split("|");
-  countFolderToLearn = countFolderToLearn?.slice(0, -1).split("|");
-  countFolderHard = countFolderHard?.slice(0, -1).split("|");
-  countFolderLearned = countFolderLearned?.slice(0, -1).split("|");
 
   const changeTechcardsconHandler = () => {
     if (changeTechcardsIsVisible === true) {
@@ -131,6 +71,7 @@ function UserTechcardsContent() {
   // * SUBMIT HANDLER
   const techcardsSubmitHandler = async (e) => {
     e.preventDefault();
+
     // * ADD
     if (addFormIsSelected) {
       let anyFolderExists = techcardsFolders.length > 0 ? true : false;
@@ -144,15 +85,20 @@ function UserTechcardsContent() {
 
         allInputs.forEach((input) => {
           let listExists = false;
-          // check if list name already exists
-          techcards.forEach(({ folder, list }) => {
-            if (folder === input.attributes.folder.value)
-              if (list === input.value) return (listExists = true);
+          techcardsLists.forEach((arr) => {
+            arr.forEach(({ list, uid }) => {
+              if (+input.attributes.folderID.value === uid) {
+                if (list === input.value) {
+                  return (listExists = true);
+                }
+              }
+            });
           });
+
           if (input.value.length > 0)
             if (!listExists)
-              listsToAdd.push([input.attributes.folder.value, input.value]);
-            else setUserMessage(["red", "List name arleady exists"]);
+              listsToAdd.push([input.attributes.folderID.value, input.value]);
+            else setUserMessage(["red", "List name already exists"]);
           else setUserMessage(["red", "List name cannot be empty"]);
         });
 
@@ -164,6 +110,8 @@ function UserTechcardsContent() {
             });
             fetchTechcards();
             setUserMessage(["green", res.data]);
+
+            // vanish fields after submit
             for (const list of allInputs) {
               list.value = "";
             }
@@ -174,7 +122,7 @@ function UserTechcardsContent() {
       }
       // * FOLDER ADD
       const newFolder = techcardAddFolderRef.current.value;
-      if (uniqFolders.find((folder) => folder === newFolder))
+      if (techcardsFolders.find(({ folder }) => folder === newFolder))
         return setUserMessage(["red", "Folder name already exists"]);
 
       if (newFolder.length > 0 && newFolder.length < 30) {
@@ -190,6 +138,9 @@ function UserTechcardsContent() {
         }
       }
     }
+
+    /////////////////////////////////////////////////
+
     // * CHANGE
     else if (changeFormIsSelected) {
       const allLists = Array.from(e.target.changeList);
@@ -201,21 +152,23 @@ function UserTechcardsContent() {
         if (inputList.value.length === 0)
           return setUserMessage(["red", "List name cannot be empty"]);
 
-        let listExists = false;
-
         // check if list name already exists
-        techcards.forEach(({ folder, list }) => {
-          console.log(folder);
-          if (folder === inputList.attributes.folder.value)
-            if (list === inputList.value) return (listExists = true);
+        let listExists = false;
+        techcardsLists.forEach((arr) => {
+          arr.forEach(({ list, uid }) => {
+            if (+inputList.attributes.folderID.value === uid) {
+              if (list === inputList.value) {
+                return (listExists = true);
+              }
+            }
+          });
         });
 
         if (inputList.value === inputList.attributes.oldList.value) return;
         if (listExists)
           return setUserMessage(["red", "List name arleady exists"]);
         listsToChange.push([
-          inputList.attributes.folder.value,
-          inputList.attributes.oldList.value,
+          inputList.attributes.listID.value,
           inputList.value,
         ]);
       });
@@ -227,11 +180,11 @@ function UserTechcardsContent() {
         if (inputFolder.value === inputFolder.attributes.oldFolder.value)
           return;
         foldersToChange.push([
-          inputFolder.attributes.oldFolder.value,
+          inputFolder.attributes.folderID.value,
           inputFolder.value,
         ]);
 
-        for (const folder of uniqFolders) {
+        for (const { folder } of techcardsFolders) {
           for (const folderToChange of foldersToChange) {
             if (folder === folderToChange[1]) return (folderExists = true);
           }
@@ -264,6 +217,9 @@ function UserTechcardsContent() {
         }
       }
     }
+
+    /////////////////////////////////////////////////
+
     // * DELETE
     else if (deleteFormIsSelected) {
       const anyListExist = e.target.listToDeleteInput ? true : false;
@@ -295,7 +251,7 @@ function UserTechcardsContent() {
           folderToDelete.push(folder.value);
         }
       });
-      console.log(folderToDelete);
+
       if (listToDelete.length > 0) {
         try {
           const res = await axios.post("/techcards/delete", {
@@ -327,6 +283,25 @@ function UserTechcardsContent() {
     setDeleteFormIsSelected(false);
   };
 
+  let allSidesStatus = [];
+
+  for (let firstI = 0; firstI < techcardsAllSides?.length; firstI++) {
+    let newCard = 0;
+    let toLearnCard = 0;
+    let learnedCard = 0;
+    let hardCard = 0;
+    let uidCard;
+
+    for (const { status, uid } of techcardsAllSides[firstI]) {
+      if (status === 0) newCard += 1;
+      if (status === 1) learnedCard += 1;
+      if (status === 2) toLearnCard += 1;
+      if (status === 3) hardCard += 1;
+      uidCard = uid;
+    }
+    allSidesStatus.push([uidCard, newCard, toLearnCard, learnedCard, hardCard]);
+  }
+
   return (
     <div className={classNames(cx("techcards-container"))}>
       <div className={classNames(cx("techcards-title"))}>
@@ -346,7 +321,21 @@ function UserTechcardsContent() {
       </div>
 
       <form onSubmit={techcardsSubmitHandler}>
-        {uniqFolders.map((folder, iFolder) => {
+        {techcardsFolders.map(({ folder, id }, iFolder) => {
+          const folderID = id;
+          let counter = [];
+          if (techcardsAllSides) {
+            for (const techcardAllSides of techcardsAllSides) {
+              for (const { folder_uid, status } of techcardAllSides) {
+                if (folder_uid === id) counter.push(status);
+              }
+            }
+          }
+          const counts = {};
+          for (const num of counter) {
+            counts[num] = counts[num] ? counts[num] + 1 : 1;
+          }
+
           return (
             <div key={folder} className={classNames(cx("techcards-main"))}>
               <div style={{ display: "flex" }}>
@@ -355,6 +344,7 @@ function UserTechcardsContent() {
                     id="changeFolder"
                     type="text"
                     defaultValue={folder}
+                    folderID={id}
                     oldFolder={folder}
                   ></input>
                 ) : (
@@ -365,7 +355,7 @@ function UserTechcardsContent() {
                     style={{ marginLeft: "0.8rem" }}
                     id="folderToDeleteInput"
                     type="checkbox"
-                    value={folder}
+                    value={id}
                   />
                 ) : (
                   ""
@@ -376,130 +366,143 @@ function UserTechcardsContent() {
                 <div
                   className={classNames(cx("techcards-main-progress-bar-new"))}
                 >
-                  {countFolderNew[iFolder]}
+                  {!counts[0] ? 0 : counts[0]}
                 </div>
                 <div
                   className={classNames(
                     cx("techcards-main-progress-bar-learned")
                   )}
                 >
-                  {countFolderLearned[iFolder]}
+                  {!counts[1] ? 0 : counts[1]}
                 </div>
                 <div
                   className={classNames(
                     cx("techcards-main-progress-bar-to-learn")
                   )}
                 >
-                  {countFolderToLearn[iFolder]}
+                  {!counts[2] ? 0 : counts[2]}
                 </div>
                 <div
                   className={classNames(cx("techcards-main-progress-bar-hard"))}
                 >
-                  {countFolderHard[iFolder]}
+                  {!counts[3] ? 0 : counts[3]}
                 </div>
               </div>
               <ul>
-                {techcards.map((arr, i) => {
-                  const techcardsCount =
-                    arr.first_side !== null
-                      ? arr.first_side.split("/").length
-                      : 0;
-
-                  if (arr.folder === folder && arr.list !== null)
-                    return (
-                      <li key={i}>
-                        {changeFormIsSelected ? (
-                          <input
-                            id="changeList"
-                            folder={arr.folder}
-                            type="text"
-                            oldList={arr.list}
-                            defaultValue={arr.list}
-                          />
-                        ) : (
-                          <Link to={`${arr.folder}/${arr.list}`}>
-                            {arr.list}
-                          </Link>
+                {techcardsLists[iFolder]?.map(({ list, id }, iList) => {
+                  let actualStatus = [];
+                  for (const allsideStatus of allSidesStatus) {
+                    if (allsideStatus[0] === id)
+                      actualStatus = allsideStatus.slice(1);
+                  }
+                  const listCount = actualStatus.reduce((a, b) => a + b, 0);
+                  return (
+                    <li key={iList}>
+                      {changeFormIsSelected ? (
+                        <input
+                          id="changeList"
+                          folderID={folderID}
+                          listID={id}
+                          folderName={folder}
+                          type="text"
+                          oldList={list}
+                          defaultValue={list}
+                        />
+                      ) : (
+                        <Link to={`${folder}/${list}/${id}`}>{list}</Link>
+                      )}
+                      <div
+                        className={classNames(
+                          cx("techcards-main-list-container")
                         )}
+                      >
+                        <p>{listCount}</p>
 
                         <div
                           className={classNames(
-                            cx("techcards-main-list-container")
+                            cx("techcards-main-progress-bar-list")
                           )}
                         >
-                          <p>{techcardsCount}</p>
-                          <div
-                            className={classNames(
-                              cx("techcards-main-progress-bar-list")
-                            )}
-                          >
-                            {techcardsCount > 0 ? (
-                              <>
-                                <div
-                                  style={{ width: `${arr.new * 100}%` }}
-                                  className={classNames(
-                                    cx("techcards-main-progress-bar-list-new")
-                                  )}
-                                >
-                                  <span>New techcards:{arr.new}</span>
-                                </div>
-                                <div
-                                  style={{ width: `${arr.learned * 100}%` }}
-                                  className={classNames(
-                                    cx(
-                                      "techcards-main-progress-bar-list-learned"
-                                    )
-                                  )}
-                                >
-                                  <span>Learned techcards:{arr.learned}</span>
-                                </div>
-                                <div
-                                  style={{ width: `${arr.to_learn * 100}%` }}
-                                  className={classNames(
-                                    cx(
-                                      "techcards-main-progress-bar-list-to-learn"
-                                    )
-                                  )}
-                                >
-                                  <span>To learn techcards:{arr.to_learn}</span>
-                                </div>
-                                <div
-                                  style={{ width: `${arr.hard * 100}%` }}
-                                  className={classNames(
-                                    cx("techcards-main-progress-bar-list-hard")
-                                  )}
-                                >
-                                  <span>Hard techcards:{arr.hard}</span>
-                                </div>
-                              </>
-                            ) : (
+                          {listCount > 0 ? (
+                            <>
                               <div
-                                style={{ width: "100%" }}
+                                style={{
+                                  width: `${actualStatus[0] * 100}%`,
+                                }}
                                 className={classNames(
-                                  cx("techcards-main-progress-bar-list-empty")
+                                  cx("techcards-main-progress-bar-list-new")
                                 )}
-                              ></div>
-                            )}
-                          </div>
-                          {deleteFormIsSelected ? (
-                            <input
-                              id="listToDeleteInput"
-                              type="checkbox"
-                              value={`${arr.folder}/${arr.list}`}
-                            />
+                              >
+                                <span>New techcards:{actualStatus[0]}</span>
+                              </div>
+                              <div
+                                style={{
+                                  width: `${actualStatus[1] * 100}%`,
+                                }}
+                                className={classNames(
+                                  cx("techcards-main-progress-bar-list-learned")
+                                )}
+                              >
+                                <span>
+                                  Learned techcards:
+                                  {actualStatus[1]}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  width: `${actualStatus[2] * 100}%`,
+                                }}
+                                className={classNames(
+                                  cx(
+                                    "techcards-main-progress-bar-list-to-learn"
+                                  )
+                                )}
+                              >
+                                <span>
+                                  To learn techcards:
+                                  {actualStatus[2]}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  width: `${actualStatus[3] * 100}%`,
+                                }}
+                                className={classNames(
+                                  cx("techcards-main-progress-bar-list-hard")
+                                )}
+                              >
+                                <span>Hard techcards:{actualStatus[3]}</span>
+                              </div>
+                            </>
                           ) : (
-                            ""
+                            <div
+                              style={{ width: "100%" }}
+                              className={classNames(
+                                cx("techcards-main-progress-bar-list-empty")
+                              )}
+                            ></div>
                           )}
                         </div>
-                      </li>
-                    );
+                        {deleteFormIsSelected ? (
+                          <input
+                            id="listToDeleteInput"
+                            type="checkbox"
+                            value={id}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </li>
+                  );
                 })}
                 {addFormIsSelected ? (
                   <li style={{ border: "none", marginTop: "0.8rem" }}>
                     <input
                       id="newList"
                       type="text"
-                      folder={folder}
+                      folderID={id}
+                      folderName={folder}
                       placeholder="New list"
                     />
                   </li>

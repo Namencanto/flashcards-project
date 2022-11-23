@@ -17,6 +17,4 @@ export const deleteTechcardsHandler = (e, firstSides, secondSides) => {
       secondSidesArr[techcardToDelete.value] = "";
     }
   }
-  const newFirstSidesArr = firstSidesArr.filter((tCard) => tCard !== "");
-  const newSecondSidesArr = secondSidesArr.filter((tCard) => tCard !== "");
 };

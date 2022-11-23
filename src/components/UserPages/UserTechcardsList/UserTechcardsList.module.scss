@@ -1,9 +1,11 @@
 @import "../../../assets/base.scss";
+@import "../../../assets/components.scss";
 
 .techcards-list {
   background-color: $color-purple;
   min-height: 100vh;
   height: 100%;
+  padding-bottom: 1.5rem;
 
   @media only screen and (min-width: $bp-1000) {
     padding-top: 13.8rem;
@@ -128,6 +130,23 @@
         }
       }
     }
+    &-render {
+      margin: 1rem 0;
+      text-align: center;
+      width: 100%;
+
+      & p {
+        color: $color-black;
+        font-size: 2rem;
+      }
+      & button {
+        color: $color-black;
+        margin: 0 auto;
+        display: block;
+        @include btn-transparent;
+        font-size: 1.8rem;
+      }
+    }
 
     //  * form part
 
@@ -182,9 +201,11 @@
       &-image {
         display: flex;
         justify-content: center;
+        flex-direction: column;
         width: 100%;
         text-align: center;
         & label {
+          margin: 0 auto;
           & input {
             display: none;
           }
@@ -197,7 +218,6 @@
               height: 15rem;
             }
             & img {
-              cursor: pointer;
               width: 12.5rem;
               height: 12.5rem;
               box-sizing: border-box;
@@ -234,17 +254,47 @@
               }
             }
           }
+        }
+
+        & button {
+          @include btn-transparent;
+          color: darkred;
+          margin-top: auto;
+          width: auto;
+          margin-top: auto;
+          height: 2rem;
+        }
+        &-link-input {
+          display: flex;
+          justify-content: center;
+          align-items: baseline;
+
+          & input {
+            outline: none;
+            background-color: white;
+            height: 3rem;
+            width: 40rem;
+            // margin-left: 5rem;
+            border: solid black 1px;
+            padding-top: 0.2rem;
+            &::placeholder {
+              font-size: 1.5rem;
+            }
+          }
           & button {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            color: darkred;
-            margin-top: auto;
+            background-color: #ccc;
+            color: $color-black;
+            margin-left: -5rem;
+            border: solid black 1px;
+
+            font-size: 1.5rem;
+            height: 3rem;
+            width: 5rem;
           }
         }
       }
       & button {
-        margin-top: 3rem;
+        margin-top: 1rem;
       }
     }
   }
