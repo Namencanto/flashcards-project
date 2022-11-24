@@ -4,8 +4,7 @@ import classes from "./FeaturesPopup.module.scss";
 import classNames from "classnames/bind";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faX } from "@fortawesome/free-solid-svg-icons";
-import { faSquare } from "@fortawesome/free-solid-svg-icons";
+import { faSquare, faX } from "@fortawesome/free-solid-svg-icons";
 import { propTypes } from "infinite-react-carousel/lib/carousel/types";
 
 import lightBoxImg from "../../../images/details-lightbox.png";
@@ -14,15 +13,15 @@ function FeaturesPopup(props) {
   const cx = classNames.bind(classes);
 
   const popupRef = useRef();
-  const containerPopupRef = useRef();
+  const contentPopupRef = useRef();
 
   useEffect(() => {
     if (props.popupIsVisible === true) {
       setTimeout(() => {
         popupRef.current.style.opacity = 0.8;
 
-        containerPopupRef.current.style.opacity = 1;
-        containerPopupRef.current.style.transform = `translateY(${0}rem) perspective(${75}rem) rotateX(${0}deg)`;
+        contentPopupRef.current.style.opacity = 1;
+        contentPopupRef.current.style.transform = `translateY(${0}rem) perspective(${75}rem) rotateX(${0}deg)`;
       });
     }
   }, [props.popupIsVisible]);
@@ -30,8 +29,8 @@ function FeaturesPopup(props) {
   const exitPopupAnimation = () => {
     popupRef.current.style.opacity = 0;
 
-    containerPopupRef.current.style.opacity = 0;
-    containerPopupRef.current.style.transform = `translateY(${-2}rem) perspective(${75}rem) rotateX(${10}deg)`;
+    contentPopupRef.current.style.opacity = 0;
+    contentPopupRef.current.style.transform = `translateY(${-2}rem) perspective(${75}rem) rotateX(${10}deg)`;
 
     setTimeout(() => {
       props.hide();
@@ -55,10 +54,7 @@ function FeaturesPopup(props) {
       <div className={classNames(cx("popup"))} ref={popupRef}></div>
 
       <div className={classNames(cx("popup-container"))}>
-        <div
-          ref={containerPopupRef}
-          className={classNames(cx("popup-content"))}
-        >
+        <div ref={contentPopupRef} className={classNames(cx("popup-content"))}>
           <FontAwesomeIcon
             onClick={exitPopupAnimation}
             className={classNames(cx("popup-content-icon"))}

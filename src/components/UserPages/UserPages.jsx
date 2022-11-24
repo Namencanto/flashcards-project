@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import UserMainPage from "./UserMainPage/UserMainPage";
-import LearningPage from "./LearningPage/LearningPage";
+// import LearningPage from "./LearningPage/LearningPage";
 import UserSettingsPage from "./UserSettingsPage/UserSettingsPage";
 import UserHeader from "./UserHeader/Header";
 
@@ -30,7 +30,7 @@ function UserPages() {
 
         {/* desktop way */}
         <Route path="" element={<UserMainPage />}></Route>
-        <Route path="learning" element={<LearningPage />}></Route>
+        {/* <Route path="learning" element={<LearningPage />}></Route> */}
         <Route path="settings" element={<UserSettingsPage />}></Route>
       </Routes>
     </>

@@ -22,7 +22,7 @@ import ReactCountryFlag from "react-country-flag";
 import { useRef } from "react";
 import { handleFileSelect } from "./UserTechcardsListContentHelpers";
 
-function UserTechcardsListContent() {
+function UserTechcardsListContent({ displayLearningModal }) {
   const defaultImage =
     "https://miro.medium.com/max/250/1*DSNfSDcOe33E2Aup1Sww2w.jpeg";
 
@@ -568,7 +568,20 @@ function UserTechcardsListContent() {
               )}
             </>
           ) : firstSides !== null ? (
-            <button className="btn-solid-small">Start</button>
+            <button
+              onClick={() => {
+                displayLearningModal({
+                  techcardsIDS,
+                  firstSides,
+                  secondSides,
+                  techcardsImages,
+                  listTitle: list,
+                });
+              }}
+              className="btn-solid-small"
+            >
+              Start
+            </button>
           ) : (
             ""
           )
