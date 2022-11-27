@@ -3,6 +3,7 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import techcardRoutes from "./routes/techcards.js";
 import techcardListRoutes from "./routes/techcardsLists.js";
+import learningRoutes from "./routes/learnings.js";
 
 import cors from "cors";
 import path from "path";
@@ -35,5 +36,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/techcards", techcardRoutes);
 app.use("/api/techcards/lists", techcardListRoutes);
+app.use("/api/learnings", learningRoutes);
 
 app.listen(port, console.log(`Server running on port ${port}`));

@@ -57,6 +57,7 @@
       display: flex;
       align-items: center;
       border-bottom: 1px solid grey;
+
       & img {
         margin-right: 0.8rem;
         max-height: 3rem;
@@ -95,19 +96,60 @@
           height: 15rem;
         }
       }
-      &-buttons {
-        // margin-top: auto;
-        display: flex;
 
+      &-buttons {
+        display: flex;
         margin-top: 15rem;
         justify-content: center;
         & button {
+          cursor: pointer;
+          width: 12rem;
+          background-color: transparent;
+          padding: 1.2rem 0;
+          margin: 0.25rem;
+          border-radius: 0.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          & svg {
+            margin: 0;
+            padding: 0;
+          }
+        }
+        &-check {
+          width: 16rem !important;
+          border: 1px solid $color-purple;
+          & svg {
+            margin-left: 0.5rem !important;
+          }
+        }
+        &-know {
+          border: 1px solid rgb(11, 179, 11);
+          & svg {
+            margin-left: 0.5rem !important;
+          }
+        }
+        &-unknow {
+          border: 1px solid red;
+          & svg {
+            margin-right: 0.5rem !important;
+          }
         }
       }
+
       & p {
         text-align: center;
         font-size: 2.4rem;
         margin-top: 2.5rem;
+      }
+      &-round-info {
+        padding-top: 2rem;
+        padding-bottom: 9.8rem;
+        & p {
+          text-align: center;
+          margin: auto;
+          padding-top: 1rem;
+        }
       }
     }
     &-footer {

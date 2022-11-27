@@ -13,9 +13,19 @@ import {
   faGear,
   faRandom,
   faRightLeft,
+  faThumbsUp,
+  faThumbsDown,
+  faEye,
+  faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import logo from "../../../images/logo-purple.svg";
+import LearningModalTimer from "./LearningModalTimer";
+
+import {
+  sendKnowedTechcardToChange,
+  sendUnknowedTechcardToChange,
+} from "./LearningModalBackendFunctions";
 
 function LearningModal(props) {
   const cx = classNames.bind(classes);
@@ -24,8 +34,26 @@ function LearningModal(props) {
     props.techcardsInfo;
 
   // * DYNAMIC STATES FOR LEARNING ITSELF
+  const [techcardsToDisplay, setTechcardsToDisplay] = useState({
+    firstSides,
+    secondSides,
+    images: techcardsImages,
+    ids: techcardsIDS,
+  });
+  const [knownTechcards, setKnownTechcards] = useState({
+    firstSides: [],
+    secondSides: [],
+    images: [],
+    ids: [],
+  });
+  const [unknownTechcards, setUnknownTechcards] = useState({
+    firstSides: [],
+    secondSides: [],
+    images: [],
+    ids: [],
+  });
   const [round, setRound] = useState(1);
-  const [whichTechcard, setWhichTechcard] = useState(0);
+  const [whichTechcard, setWhichTechcard] = useState(1);
   const [learningTechcardsStatus, setLearningTechcardsStatus] = useState({
     all: firstSides.length,
     known: 0,
@@ -33,10 +61,21 @@ function LearningModal(props) {
   });
   const [firstSideIsVisible, setFirstSideIsVisible] = useState(true);
 
-  const [knownCounter, setKnownCounter] = useState(0);
-  const [unknownCounter, setUnknownCounter] = useState(0);
+  const [roundLength, setRoundLength] = useState(firstSides.length);
+  const [isRoundBreak, setIsRoundBreak] = useState(false);
+  const [listIsFinished, setListIsFinished] = useState(false);
+  const [roundsStatistics, setRoundsStatistics] = useState({
+    effectiveness: [],
+    times: [],
+  });
+  const [time, setTime] = useState(0);
+  const [roundTimes, setRoundTimes] = useState([]);
+
+  const [allSendedTechcards, setAllSendedTechcards] = useState([]);
 
   // *
+  console.log(techcardsToDisplay);
+  console.log(techcardsIDS);
 
   const [iconReverseFlip, setIconReverseFlip] = useState(false);
 
@@ -47,16 +86,29 @@ function LearningModal(props) {
     if (props.learningModalIsVisible) {
       setTimeout(() => {
         learningRef.current.style.opacity = 0.8;
-
         contentLearningRef.current.style.opacity = 1;
         contentLearningRef.current.style.transform = `translateY(${0}rem) perspective(${75}rem) rotateX(${0}deg)`;
       });
     }
-  }, [props.learningModalIsVisible]);
+
+    const lastUnknowedId =
+      unknownTechcards?.ids[unknownTechcards.ids.length - 1];
+    const lastKnowedId = knownTechcards?.ids[knownTechcards.ids.length - 1];
+    if (lastKnowedId) {
+      sendKnowedTechcardToChange(lastKnowedId, round);
+    }
+    let isSended = false;
+    for (const sendedTechcard of allSendedTechcards) {
+      if (sendedTechcard === lastUnknowedId) isSended = true;
+    }
+    if (lastUnknowedId && !isSended) {
+      setAllSendedTechcards([...allSendedTechcards, lastUnknowedId]);
+      sendUnknowedTechcardToChange(lastUnknowedId, round);
+    }
+  }, [props.learningModalIsVisible, unknownTechcards, knownTechcards]);
 
   const exitPopupAnimation = () => {
     learningRef.current.style.opacity = 0;
-
     contentLearningRef.current.style.opacity = 0;
     contentLearningRef.current.style.transform = `translateY(${-2}rem) perspective(${75}rem) rotateX(${10}deg)`;
 
@@ -65,6 +117,156 @@ function LearningModal(props) {
     }, 200);
   };
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  const collectTime = (timeFromTimer) => {
+    setTime(timeFromTimer);
+  };
+  const collectRoundTime = (timeFromTimer) => {
+    if (isRoundBreak === true) {
+      // if is more than one el in roundtime then sum all el without last and subtract from last timer value
+      if (roundTimes.length >= 1) {
+        let roundTimesSum = 0;
+        roundTimes.forEach((roundTime, i) => {
+          if (i === roundTimes.length) return;
+          roundTimesSum += roundTime;
+        });
+        const actualRoundTime = timeFromTimer - roundTimesSum;
+        return setRoundTimes([...roundTimes, actualRoundTime]);
+      } else {
+        return setRoundTimes([...roundTimes, timeFromTimer]);
+      }
+    }
+  };
+  const stopTimerForRoundBreak = () => {
+    return !isRoundBreak;
+  };
+
+  // * SET LIST IS FINISHED IF ALL TECHCARDS IS KNOWED
+  if (
+    listIsFinished !== true &&
+    learningTechcardsStatus.unknown === 0 &&
+    learningTechcardsStatus.known >= roundLength
+  ) {
+    setListIsFinished(true);
+  }
+
+  // * SET NEXT ROUND FUNCTION
+  const nextRound = () => {
+    const clearedObject = {
+      firstSides: [],
+      secondSides: [],
+      images: [],
+      ids: [],
+    };
+
+    // SET NEW TECHCARDS TO DISPLAY AND ROUND LENGTH AS EARLIER UNKNOWN TECHCARDS
+    setTechcardsToDisplay({
+      firstSides: unknownTechcards.firstSides,
+      secondSides: unknownTechcards.secondSides,
+      images: unknownTechcards.images,
+      ids: unknownTechcards.ids,
+    });
+    setRoundLength(unknownTechcards.firstSides.length);
+
+    // CLEAR UNKNOWN AND KNOWN ARRAYS
+    setUnknownTechcards(clearedObject);
+    setKnownTechcards(clearedObject);
+
+    // SET NEXT ROUND NUMBER
+    setRound(round + 1);
+
+    // RESET WHICH TECHCARD NUMBER AND PROGRESS BAR
+    setWhichTechcard(1);
+    setLearningTechcardsStatus({
+      all: unknownTechcards.firstSides.length,
+      unknown: 0,
+      known: 0,
+    });
+
+    // SET ROUND STATISTICS
+    setRoundsStatistics((prevState) => ({
+      effectiveness: [
+        ...prevState.effectiveness,
+        Math.round(
+          (knownTechcards.firstSides.length /
+            (knownTechcards.firstSides.length +
+              unknownTechcards.firstSides.length)) *
+            100
+        ),
+      ],
+      times: [...prevState.times],
+    }));
+
+    // EXIT FROM ROUND BREAK
+    setIsRoundBreak(false);
+  };
+
+  //////////////////////////
+
+  // * DISPLAY NEW TECHCARD FUNCTION
+  const newToDisplay = (setTechcards) => {
+    // IF ROUND LENGTH IS NOT ONLY ONE AND IF WHICHTECHCARD IS NOT LAST OF ROUND LENGTH
+    if (roundLength !== 1 && roundLength !== whichTechcard) {
+      setWhichTechcard(whichTechcard + 1);
+    }
+    // IF TECHCARD IS LAST SET ROUND BREAK
+    if (roundLength === whichTechcard) {
+      setIsRoundBreak(true);
+    }
+
+    // SET ACTUAL TECHCARD TO KNOWN OR UNKNOWN PROGRESS BAR STATUS
+    setLearningTechcardsStatus((prevState) => ({
+      ...prevState,
+      unknown:
+        setTechcards === setUnknownTechcards
+          ? prevState.unknown + 1
+          : prevState.unknown,
+      known:
+        setTechcards === setKnownTechcards
+          ? prevState.known + 1
+          : prevState.known,
+    }));
+
+    // SET ACTUAL TECHCARD TO KNOWN OR UNKNOWN ARR
+    setTechcards((prevState) => ({
+      firstSides: [...prevState.firstSides, techcardsToDisplay.firstSides[0]],
+      secondSides: [
+        ...prevState.secondSides,
+        techcardsToDisplay.secondSides[0],
+      ],
+      images: [...prevState.images, techcardsToDisplay.images[0]],
+      ids: [...prevState.ids, techcardsToDisplay.ids[0]],
+    }));
+
+    // DISPLAY NEXT
+    const newFirstSidesToDisplay = techcardsToDisplay.firstSides.filter(
+      function (el) {
+        return el !== techcardsToDisplay.firstSides[0];
+      }
+    );
+    const newSecondSidesToDisplay = techcardsToDisplay.secondSides.filter(
+      function (el) {
+        return el !== techcardsToDisplay.secondSides[0];
+      }
+    );
+    const newImagesToDisplay = techcardsToDisplay.images.filter(function (el) {
+      return el !== techcardsToDisplay.images[0];
+    });
+    const newIdsToDisplay = techcardsToDisplay.ids.filter(function (el) {
+      return el !== techcardsToDisplay.ids[0];
+    });
+    setTechcardsToDisplay({
+      firstSides: newFirstSidesToDisplay,
+      secondSides: newSecondSidesToDisplay,
+      images: newImagesToDisplay,
+      ids: newIdsToDisplay,
+    });
+  };
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <>
       <div
@@ -85,7 +287,7 @@ function LearningModal(props) {
             />
             <div>
               <span>
-                {whichTechcard + 1}/{firstSides.length} | Round {round}
+                {whichTechcard}/{roundLength} | Round {round}
               </span>
               <LearningModalStatusBar
                 all={learningTechcardsStatus.all}
@@ -93,6 +295,13 @@ function LearningModal(props) {
                 known={learningTechcardsStatus.known}
               />
             </div>
+
+            <LearningModalTimer
+              stopTimer={stopTimerForRoundBreak}
+              giveTime={collectTime}
+              giveRoundTime={collectRoundTime}
+            />
+
             <FontAwesomeIcon
               onClick={exitPopupAnimation}
               className={classNames(cx("learning-content-header-icon"))}
@@ -105,12 +314,44 @@ function LearningModal(props) {
             <div className={classNames(cx("learning-content-main-title"))}>
               <h1>{listTitle}</h1>
             </div>
-
-            {learningTechcardsStatus.known >= firstSides.length ? (
-              <p>
-                Congratulation. You ended in {round}
-                {round > 1 ? " rounds" : " round"}, 4:21 min,
-              </p>
+            {listIsFinished ? (
+              <>
+                <p>
+                  Congratulation. You ended in {round}
+                  {round > 1 ? " rounds" : " round"}
+                </p>
+                <p>
+                  Effectiveness:{" "}
+                  {roundsStatistics.effectiveness.reduce((a, b) => a + b) /
+                    roundsStatistics.effectiveness.length}
+                  %
+                </p>
+                <p>4:21 min</p>
+              </>
+            ) : isRoundBreak ? (
+              <div
+                className={classNames(cx("learning-content-main-round-info"))}
+              >
+                <p>End of {round} round</p>
+                <p>
+                  effectiveness{" "}
+                  {Math.round(
+                    (knownTechcards.firstSides.length /
+                      (knownTechcards.firstSides.length +
+                        unknownTechcards.firstSides.length)) *
+                      100
+                  )}
+                  %
+                </p>
+                <p>
+                  time:{" "}
+                  {roundTimes[roundTimes.length - 1]
+                    ? new Date(roundTimes[roundTimes.length - 1] * 1000)
+                        .toISOString()
+                        .substring(14, 19)
+                    : ""}
+                </p>
+              </div>
             ) : (
               <>
                 <div
@@ -119,88 +360,89 @@ function LearningModal(props) {
                   )}
                 >
                   <img
-                    src={techcardsImages[whichTechcard]}
+                    src={techcardsToDisplay.images[0]}
                     alt="techcard illustration"
                   />
                 </div>
                 <p>
                   {firstSideIsVisible
-                    ? firstSides[whichTechcard]
-                    : secondSides[whichTechcard]}
+                    ? techcardsToDisplay.firstSides[0]
+                    : techcardsToDisplay.secondSides[0]}
                 </p>
               </>
             )}
-
-            <div className={classNames(cx("learning-content-main-buttons"))}>
+            <>
               {/* BUTTONS */}
 
-              {learningTechcardsStatus.known <= firstSides.length ? (
+              {!listIsFinished ? (
                 <>
                   {firstSideIsVisible ? (
-                    <button
-                      onClick={() => {
-                        setFirstSideIsVisible(false);
-                      }}
-                      className="btn-solid-medium"
+                    <div
+                      className={classNames(
+                        cx("learning-content-main-buttons")
+                      )}
                     >
-                      Check answer
-                    </button>
-                  ) : (
-                    <>
                       <button
                         onClick={() => {
-                          setUnknownCounter(techcardsIDS[whichTechcard]);
-                          setWhichTechcard(whichTechcard + 1);
-                          setFirstSideIsVisible(true);
-                          setLearningTechcardsStatus((prevState) => ({
-                            ...prevState,
-                            unknown: prevState.unknown + 1,
-                          }));
-                          if (whichTechcard + 1 === firstSides.length) {
-                            setRound(round + 1);
-                            setWhichTechcard(learningTechcardsStatus.known);
-                            setLearningTechcardsStatus((prevState) => ({
-                              ...prevState,
-                              unknown: 0,
-                            }));
-                          }
+                          if (isRoundBreak) {
+                            nextRound();
+                          } else setFirstSideIsVisible(false);
                         }}
-                        className="btn-solid-medium"
+                        className={classNames(
+                          cx("learning-content-main-buttons-check")
+                        )}
                       >
-                        I don't know
+                        {isRoundBreak ? "Go to next round" : "Check answer"}
+                        <FontAwesomeIcon
+                          icon={isRoundBreak ? faArrowRight : faEye}
+                        />
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      className={classNames(
+                        cx("learning-content-main-buttons")
+                      )}
+                    >
+                      <button
+                        onClick={() => {
+                          setFirstSideIsVisible(true);
+                          newToDisplay(setUnknownTechcards);
+                        }}
+                        className={classNames(
+                          cx("learning-content-main-buttons-unknow")
+                        )}
+                      >
+                        <FontAwesomeIcon icon={faThumbsDown} />I don't know
                       </button>
                       <button
                         onClick={() => {
-                          setKnownCounter(techcardsIDS[whichTechcard]);
-                          setWhichTechcard(whichTechcard + 1);
                           setFirstSideIsVisible(true);
-                          setLearningTechcardsStatus((prevState) => ({
-                            ...prevState,
-                            known: prevState.known + 1,
-                          }));
-                          if (whichTechcard + 1 === firstSides.length) {
-                            setRound(round + 1);
-                            setWhichTechcard(learningTechcardsStatus.known);
-                            setLearningTechcardsStatus((prevState) => ({
-                              ...prevState,
-                              unknown: 0,
-                            }));
-                          }
+
+                          newToDisplay(setKnownTechcards);
                         }}
-                        className="btn-solid-medium"
+                        className={classNames(
+                          cx("learning-content-main-buttons-know")
+                        )}
                       >
                         I know
+                        <FontAwesomeIcon icon={faThumbsUp} />
                       </button>
-                    </>
+                    </div>
                   )}
                 </>
               ) : (
                 <>
-                  <button className="btn-solid-medium">Statistics</button>
                   <button className="btn-solid-medium">Try again</button>
+                  <button
+                    onClick={exitPopupAnimation}
+                    className="btn-solid-medium"
+                  >
+                    Back to list
+                  </button>
                 </>
               )}
-            </div>
+            </>
           </div>
 
           {/*  FOOTER */}
@@ -246,12 +488,3 @@ function LearningModal(props) {
 }
 
 export default LearningModal;
-
-{
-  /* <FeaturesPopup
-hide={setPopupIsUnvisibleHandler}
-image={props.image}
-title={props.title}
-popupIsVisible={popupIsVisible}
-/>, */
-}
