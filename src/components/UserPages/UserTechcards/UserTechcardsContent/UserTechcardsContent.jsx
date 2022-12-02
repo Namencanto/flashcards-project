@@ -288,20 +288,30 @@ function UserTechcardsContent() {
   for (let firstI = 0; firstI < techcardsAllSides?.length; firstI++) {
     let newCard = 0;
     let toLearnCard = 0;
+    let knowedCard = 0;
     let learnedCard = 0;
     let hardCard = 0;
     let uidCard;
 
     for (const { status, uid } of techcardsAllSides[firstI]) {
-      if (status === 0) newCard += 1;
-      if (status === 1) learnedCard += 1;
-      if (status === 2) toLearnCard += 1;
-      if (status === 3) hardCard += 1;
+      if (status === 5) newCard += 1;
+      if (status === 0) learnedCard += 1;
+      if (status === 1 || status === 2 || status === 3 || status === 4)
+        knowedCard += 1;
+      if (status === 6 || status === 7 || status === 8) toLearnCard += 1;
+      if (status === 9 || status === 10) hardCard += 1;
       uidCard = uid;
     }
-    allSidesStatus.push([uidCard, newCard, toLearnCard, learnedCard, hardCard]);
+    allSidesStatus.push([
+      uidCard,
+      newCard,
+      learnedCard,
+      knowedCard,
+      toLearnCard,
+      hardCard,
+    ]);
   }
-
+  console.log(allSidesStatus);
   return (
     <div className={classNames(cx("techcards-container"))}>
       <div className={classNames(cx("techcards-title"))}>
@@ -366,14 +376,14 @@ function UserTechcardsContent() {
                 <div
                   className={classNames(cx("techcards-main-progress-bar-new"))}
                 >
-                  {!counts[0] ? 0 : counts[0]}
+                  {!counts[1] ? 0 : counts[1]}
                 </div>
                 <div
                   className={classNames(
                     cx("techcards-main-progress-bar-learned")
                   )}
                 >
-                  {!counts[1] ? 0 : counts[1]}
+                  {!counts[0] ? 0 : counts[0]}
                 </div>
                 <div
                   className={classNames(
@@ -385,7 +395,7 @@ function UserTechcardsContent() {
                 <div
                   className={classNames(cx("techcards-main-progress-bar-hard"))}
                 >
-                  {!counts[3] ? 0 : counts[3]}
+                  {!counts[4] ? 0 : counts[4]}
                 </div>
               </div>
               <ul>
@@ -453,13 +463,11 @@ function UserTechcardsContent() {
                                   width: `${actualStatus[2] * 100}%`,
                                 }}
                                 className={classNames(
-                                  cx(
-                                    "techcards-main-progress-bar-list-to-learn"
-                                  )
+                                  cx("techcards-main-progress-bar-list-knowed")
                                 )}
                               >
                                 <span>
-                                  To learn techcards:
+                                  Knowed techcards:
                                   {actualStatus[2]}
                                 </span>
                               </div>
@@ -468,10 +476,25 @@ function UserTechcardsContent() {
                                   width: `${actualStatus[3] * 100}%`,
                                 }}
                                 className={classNames(
+                                  cx(
+                                    "techcards-main-progress-bar-list-to-learn"
+                                  )
+                                )}
+                              >
+                                <span>
+                                  To learn techcards:
+                                  {actualStatus[3]}
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  width: `${actualStatus[4] * 100}%`,
+                                }}
+                                className={classNames(
                                   cx("techcards-main-progress-bar-list-hard")
                                 )}
                               >
-                                <span>Hard techcards:{actualStatus[3]}</span>
+                                <span>Hard techcards:{actualStatus[4]}</span>
                               </div>
                             </>
                           ) : (

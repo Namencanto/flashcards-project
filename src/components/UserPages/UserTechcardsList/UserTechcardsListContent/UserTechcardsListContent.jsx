@@ -79,6 +79,7 @@ function UserTechcardsListContent({ displayLearningModal }) {
       let secondSidesArr = [];
       let idsArr = [];
       let imagesArr = [];
+
       for (const { id, first_side, second_side, image } of res.data
         .techcardsData) {
         firstSidesArr.push(first_side);
@@ -86,6 +87,7 @@ function UserTechcardsListContent({ displayLearningModal }) {
         imagesArr.push(image);
         idsArr.push(id);
       }
+
       setTechcardsIDS(idsArr);
       setFirstSides(firstSidesArr);
       setSecondSides(secondSidesArr);

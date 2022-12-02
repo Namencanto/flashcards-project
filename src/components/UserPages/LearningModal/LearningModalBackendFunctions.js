@@ -13,11 +13,12 @@ export const sendKnowedTechcardToChange = async (id, round) => {
   }
 };
 export const sendUnknowedTechcardToChange = async (id, round) => {
+  console.log(id);
   try {
     const res = await axios.post("/learnings/changeTechcardStatus", {
       id,
       round,
-      type: "UNKNOWNED",
+      type: "UNKNOWED",
     });
     console.log(res);
   } catch (err) {

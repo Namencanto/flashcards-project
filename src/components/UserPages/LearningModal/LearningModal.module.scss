@@ -103,14 +103,17 @@
         justify-content: center;
         & button {
           cursor: pointer;
-          width: 12rem;
+          display: flex;
+          width: 15rem;
           background-color: transparent;
-          padding: 1.2rem 0;
+          padding: 1.4rem 0;
           margin: 0.25rem;
           border-radius: 0.5rem;
-          display: flex;
           align-items: center;
           justify-content: center;
+          font-size: 1.6rem;
+          white-space: nowrap;
+
           & svg {
             margin: 0;
             padding: 0;

@@ -131,11 +131,15 @@
       }
       &-learned {
         @include progress-bar-part;
-        background-color: green;
+        background-color: rgb(0, 100, 0);
       }
       &-to-learn {
         @include progress-bar-part;
         background-color: orange;
+      }
+      &-knowed {
+        @include progress-bar-part;
+        background-color: rgb(0, 160, 0);
       }
       &-hard {
         @include progress-bar-part;
@@ -145,6 +149,7 @@
       // * list version
 
       &-list {
+        outline: 0.05rem solid $color-555;
         display: flex;
         font-size: 1.2rem;
         text-align: center;
@@ -188,11 +193,15 @@
         }
         &-learned {
           @include progress-bar-list-part;
-          background-color: green;
+          background-color: rgb(0, 100, 0);
         }
         &-to-learn {
           @include progress-bar-list-part;
           background-color: orange;
+        }
+        &-knowed {
+          @include progress-bar-list-part;
+          background-color: rgb(0, 160, 0);
         }
         &-hard {
           @include progress-bar-list-part;
@@ -201,7 +210,6 @@
         &-empty {
           @include progress-bar-list-part;
           cursor: default;
-          border: 1px solid rgba(black, 0.5);
           &:hover {
             scale: 1;
           }

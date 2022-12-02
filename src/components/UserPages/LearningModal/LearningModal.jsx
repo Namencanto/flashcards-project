@@ -30,8 +30,14 @@ import {
 function LearningModal(props) {
   const cx = classNames.bind(classes);
 
-  const { firstSides, secondSides, techcardsIDS, techcardsImages, listTitle } =
-    props.techcardsInfo;
+  const {
+    firstSides,
+    secondSides,
+    techcardsIDS,
+    techcardsImages,
+
+    listTitle,
+  } = props.techcardsInfo;
 
   // * DYNAMIC STATES FOR LEARNING ITSELF
   const [techcardsToDisplay, setTechcardsToDisplay] = useState({
@@ -40,12 +46,14 @@ function LearningModal(props) {
     images: techcardsImages,
     ids: techcardsIDS,
   });
+
   const [knownTechcards, setKnownTechcards] = useState({
     firstSides: [],
     secondSides: [],
     images: [],
     ids: [],
   });
+  console.log(techcardsToDisplay);
   const [unknownTechcards, setUnknownTechcards] = useState({
     firstSides: [],
     secondSides: [],
@@ -74,8 +82,6 @@ function LearningModal(props) {
   const [allSendedTechcards, setAllSendedTechcards] = useState([]);
 
   // *
-  console.log(techcardsToDisplay);
-  console.log(techcardsIDS);
 
   const [iconReverseFlip, setIconReverseFlip] = useState(false);
 
@@ -90,14 +96,16 @@ function LearningModal(props) {
         contentLearningRef.current.style.transform = `translateY(${0}rem) perspective(${75}rem) rotateX(${0}deg)`;
       });
     }
-
+  }, [props.learningModalIsVisible]);
+  useEffect(() => {
+    let isSended = false;
     const lastUnknowedId =
-      unknownTechcards?.ids[unknownTechcards.ids.length - 1];
-    const lastKnowedId = knownTechcards?.ids[knownTechcards.ids.length - 1];
+      unknownTechcards.ids[unknownTechcards.ids.length - 1];
+
+    const lastKnowedId = knownTechcards.ids[knownTechcards.ids.length - 1];
     if (lastKnowedId) {
       sendKnowedTechcardToChange(lastKnowedId, round);
     }
-    let isSended = false;
     for (const sendedTechcard of allSendedTechcards) {
       if (sendedTechcard === lastUnknowedId) isSended = true;
     }
@@ -105,7 +113,7 @@ function LearningModal(props) {
       setAllSendedTechcards([...allSendedTechcards, lastUnknowedId]);
       sendUnknowedTechcardToChange(lastUnknowedId, round);
     }
-  }, [props.learningModalIsVisible, unknownTechcards, knownTechcards]);
+  }, [unknownTechcards, knownTechcards]);
 
   const exitPopupAnimation = () => {
     learningRef.current.style.opacity = 0;
@@ -240,32 +248,32 @@ function LearningModal(props) {
     }));
 
     // DISPLAY NEXT
-    const newFirstSidesToDisplay = techcardsToDisplay.firstSides.filter(
-      function (el) {
-        return el !== techcardsToDisplay.firstSides[0];
-      }
-    );
-    const newSecondSidesToDisplay = techcardsToDisplay.secondSides.filter(
-      function (el) {
-        return el !== techcardsToDisplay.secondSides[0];
-      }
-    );
-    const newImagesToDisplay = techcardsToDisplay.images.filter(function (el) {
-      return el !== techcardsToDisplay.images[0];
-    });
-    const newIdsToDisplay = techcardsToDisplay.ids.filter(function (el) {
-      return el !== techcardsToDisplay.ids[0];
-    });
+
     setTechcardsToDisplay({
-      firstSides: newFirstSidesToDisplay,
-      secondSides: newSecondSidesToDisplay,
-      images: newImagesToDisplay,
-      ids: newIdsToDisplay,
+      firstSides: techcardsToDisplay.firstSides.slice(1),
+      secondSides: techcardsToDisplay.secondSides.slice(1),
+      images: techcardsToDisplay.images.slice(1),
+      ids: techcardsToDisplay.ids.slice(1),
     });
+
+    if (whichTechcard === firstSides.length) {
+      setRoundsStatistics((prevState) => ({
+        effectiveness: [
+          ...prevState.effectiveness,
+          Math.round(
+            (knownTechcards.firstSides.length /
+              (knownTechcards.firstSides.length +
+                unknownTechcards.firstSides.length)) *
+              100
+          ),
+        ],
+        times: [...prevState.times],
+      }));
+    }
   };
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
-
+  console.log(techcardsToDisplay);
   ///////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <>
@@ -383,6 +391,7 @@ function LearningModal(props) {
                       )}
                     >
                       <button
+                        style={{ padding: "1.4rem 9.5rem" }}
                         onClick={() => {
                           if (isRoundBreak) {
                             nextRound();

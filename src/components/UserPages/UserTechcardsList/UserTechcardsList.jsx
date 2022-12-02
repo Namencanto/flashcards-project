@@ -27,7 +27,7 @@ function UserTechcards() {
     setLearningModalIsVisible(false);
   };
   const cx = classNames.bind(classes);
-  console.log(learningModalIsVisible);
+
   return (
     <div className={classNames(cx("techcards-list"))}>
       <div className="grid-mainpage-ranking">
