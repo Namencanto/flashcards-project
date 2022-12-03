@@ -6,38 +6,36 @@ import classNames from "classnames/bind";
 import { useRef, useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import LearningModalStatusBar from "./LearningModalStatusBar/LearningModalStatusBar";
+import LearningModalStatusBar from "./StatusBar/LearningModalStatusBar";
 import {
-  faSquare,
+  faVolumeUp,
   faX,
-  faGear,
-  faRandom,
-  faRightLeft,
   faThumbsUp,
   faThumbsDown,
   faEye,
   faArrowRight,
+  faGear,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import logo from "../../../images/logo-purple.svg";
 import LearningModalTimer from "./LearningModalTimer";
 
 import {
   sendKnowedTechcardToChange,
   sendUnknowedTechcardToChange,
 } from "./LearningModalBackendFunctions";
+import LearningModalSettings from "./LearningModalSettings/LearningModalSettings";
+import MediaQueries from "../../../HelperComponents/MediaQueries";
+import CasualReviewing from "./LearningTypes/CasualReviewing";
+import CasualRewriting from "./LearningTypes/CasualRewriting";
+import IKnowIDontKnow from "./LearningTypes/IKnowIDontKnow";
+import Quiz from "./LearningTypes/Quiz";
+import Typing from "./LearningTypes/Typing";
 
 function LearningModal(props) {
+  const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
-
-  const {
-    firstSides,
-    secondSides,
-    techcardsIDS,
-    techcardsImages,
-
-    listTitle,
-  } = props.techcardsInfo;
+  const { firstSides, secondSides, techcardsIDS, techcardsImages, listTitle } =
+    props.techcardsInfo;
 
   // * DYNAMIC STATES FOR LEARNING ITSELF
   const [techcardsToDisplay, setTechcardsToDisplay] = useState({
@@ -83,11 +81,21 @@ function LearningModal(props) {
 
   // *
 
-  const [iconReverseFlip, setIconReverseFlip] = useState(false);
-
   const learningRef = useRef();
   const contentLearningRef = useRef();
 
+  // SOUNDS LOGIC
+  const [disableSpeechButton, setDisableSpeechButton] = useState(false);
+  const msg = new SpeechSynthesisUtterance();
+  const speechHandler = (text) => {
+    msg.text = text;
+    window.speechSynthesis.speak(msg);
+  };
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  const closePopupHandler = () => {
+    setModalIsVisible(false);
+  };
   useEffect(() => {
     if (props.learningModalIsVisible) {
       setTimeout(() => {
@@ -248,7 +256,6 @@ function LearningModal(props) {
     }));
 
     // DISPLAY NEXT
-
     setTechcardsToDisplay({
       firstSides: techcardsToDisplay.firstSides.slice(1),
       secondSides: techcardsToDisplay.secondSides.slice(1),
@@ -271,10 +278,25 @@ function LearningModal(props) {
       }));
     }
   };
+  const [learningType, setLearningType] = useState(4);
+  const setLearningTypeHandler = (type) => {
+    setLearningType(type);
+  };
+  const [learningOptions, setLearningOptions] = useState({
+    reverse: false,
+    random: false,
+  });
+  const setLearningOptionsHandler = (options) => {
+    setLearningOptions((prevState) => ({
+      reverse: options.hasOwnProperty("reverse")
+        ? options.reverse
+        : prevState.reverse,
+      random: options.hasOwnProperty("random")
+        ? options.random
+        : prevState.random,
+    }));
+  };
 
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
-  console.log(techcardsToDisplay);
-  ///////////////////////////////////////////////////////////////////////////////////////////////////
   return (
     <>
       <div
@@ -303,7 +325,19 @@ function LearningModal(props) {
                 known={learningTechcardsStatus.known}
               />
             </div>
-
+            {minWidth1000 ? (
+              <FontAwesomeIcon
+                onClick={() => {
+                  setModalIsVisible(true);
+                }}
+                className={classNames(
+                  cx("learning-content-header-icon-setting")
+                )}
+                icon={faGear}
+              />
+            ) : (
+              ""
+            )}
             <LearningModalTimer
               stopTimer={stopTimerForRoundBreak}
               giveTime={collectTime}
@@ -316,7 +350,6 @@ function LearningModal(props) {
               icon={faX}
             />
           </header>
-
           {/* MAIN CONTENT */}
           <div className={classNames(cx("learning-content-main"))}>
             <div className={classNames(cx("learning-content-main-title"))}>
@@ -334,7 +367,7 @@ function LearningModal(props) {
                     roundsStatistics.effectiveness.length}
                   %
                 </p>
-                <p>4:21 min</p>
+                <p>{time}</p>
               </>
             ) : isRoundBreak ? (
               <div
@@ -372,15 +405,46 @@ function LearningModal(props) {
                     alt="techcard illustration"
                   />
                 </div>
-                <p>
-                  {firstSideIsVisible
-                    ? techcardsToDisplay.firstSides[0]
-                    : techcardsToDisplay.secondSides[0]}
-                </p>
+                <div className={classNames(cx("learning-content-main-name"))}>
+                  <p>
+                    {firstSideIsVisible
+                      ? techcardsToDisplay.firstSides[0]
+                      : techcardsToDisplay.secondSides[0]}
+                  </p>
+                  <FontAwesomeIcon
+                    icon={faVolumeUp}
+                    onClick={() => {
+                      if (!disableSpeechButton) {
+                        setDisableSpeechButton(true);
+                        speechHandler(
+                          firstSideIsVisible
+                            ? techcardsToDisplay.firstSides[0]
+                            : techcardsToDisplay.secondSides[0]
+                        );
+                        setTimeout(() => {
+                          setDisableSpeechButton(false);
+                        }, 1000);
+                      }
+                    }}
+                  />
+                </div>
               </>
             )}
             <>
-              {/* BUTTONS */}
+              {/* LEARNING TYPE */}
+              {learningType === 1 ? (
+                <CasualReviewing />
+              ) : learningType === 2 ? (
+                <CasualRewriting />
+              ) : learningType === 3 ? (
+                <Quiz />
+              ) : learningType === 4 ? (
+                <IKnowIDontKnow />
+              ) : learningType === 5 ? (
+                <Typing />
+              ) : (
+                ""
+              )}
 
               {!listIsFinished ? (
                 <>
@@ -454,42 +518,13 @@ function LearningModal(props) {
             </>
           </div>
 
-          {/*  FOOTER */}
-          <footer className={classNames(cx("learning-content-footer"))}>
-            <div className={classNames(cx("learning-content-footer-icons"))}>
-              <FontAwesomeIcon
-                className={classNames(cx("learning-content-footer-icon"))}
-                icon={faSquare}
-              />
-              <FontAwesomeIcon
-                className={classNames(cx("learning-content-footer-icon"))}
-                icon={faSquare}
-              />
-              <FontAwesomeIcon
-                className={classNames(cx("learning-content-footer-icon"))}
-                icon={faSquare}
-              />
-              <FontAwesomeIcon
-                className={classNames(cx("learning-content-footer-icon"))}
-                icon={faRightLeft}
-                flip={iconReverseFlip ? "vertical" : ""}
-                onClick={() => {
-                  setIconReverseFlip(!iconReverseFlip);
-                }}
-              />
-              <FontAwesomeIcon
-                className={classNames(cx("learning-content-footer-icon"))}
-                icon={faRandom}
-              />
-              <FontAwesomeIcon
-                className={classNames(cx("learning-content-footer-icon"))}
-                icon={faGear}
-              />
-            </div>
-            <div className={classNames(cx("learning-content-footer-logo"))}>
-              <img src={logo} alt="logo" />
-            </div>
-          </footer>
+          {/*  FOOTER SETTINGS OR MOBILE MODAL SETTINGS*/}
+          <LearningModalSettings
+            modalIsVisible={modalIsVisible}
+            closePopup={closePopupHandler}
+            setLearningType={setLearningTypeHandler}
+            setLearningOptions={setLearningOptionsHandler}
+          />
         </div>
       </div>
     </>

@@ -72,10 +72,19 @@
         padding: 1rem;
         color: #707984;
         cursor: pointer;
+        &-setting {
+          margin-left: 2rem;
+        }
       }
     }
     &-main {
-      height: 87%;
+      height: 86.25%;
+      @media only screen and (min-width: $bp-1000) {
+        height: 85%;
+        @media only screen and (min-width: $bp-2000) {
+          height: 88%;
+        }
+      }
       &-title {
         padding-top: 1rem;
         border-bottom: 1px solid #ccc;
@@ -96,7 +105,19 @@
           height: 15rem;
         }
       }
-
+      &-name {
+        margin-top: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        & p {
+          font-size: 2.4rem;
+        }
+        & svg {
+          margin-left: 0.75rem;
+          cursor: pointer;
+        }
+      }
       &-buttons {
         display: flex;
         margin-top: 15rem;
@@ -140,11 +161,6 @@
         }
       }
 
-      & p {
-        text-align: center;
-        font-size: 2.4rem;
-        margin-top: 2.5rem;
-      }
       &-round-info {
         padding-top: 2rem;
         padding-bottom: 9.8rem;
@@ -155,22 +171,73 @@
         }
       }
     }
-    &-footer {
-      border-top: 1px solid grey;
-      background-color: $color-offWhite;
-      display: flex;
-      height: 100%;
-      &-icons {
-      }
-      &-icon {
+
+    &-mobile-settings {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      &-content {
         padding: 1rem;
-      }
-      &-logo {
-        display: flex;
-        margin: 0.5rem 0.8rem 0 auto;
-        & img {
-          width: 7.1rem;
-          height: 2.8rem;
+        background-color: white;
+        margin: auto;
+        width: 25rem;
+        margin-top: 12.5rem;
+        height: 40rem;
+        border: black 1px solid;
+        box-shadow: 0px 0px 24px 0px rgba(66, 68, 90, 0.5);
+
+        &-header {
+          padding-bottom: 1rem;
+          border-bottom: 1px solid $color-555;
+          display: flex;
+          & h2 {
+            text-align: center;
+            font-size: 3rem;
+            line-height: 3rem;
+            margin-right: -1.2rem;
+          }
+          & svg {
+            cursor: pointer;
+          }
+        }
+        &-body {
+          display: flex;
+          flex-direction: column;
+
+          &-option {
+            display: flex;
+            &:first-child {
+              margin-top: 1rem;
+            }
+            margin-top: 0.75rem;
+            & img {
+              margin: 1rem -0.3rem 1rem 0;
+              width: 2rem;
+            }
+            & svg {
+              width: 2rem;
+              padding: 1rem 0;
+              margin-right: auto;
+            }
+            & input {
+            }
+            &-text {
+              width: 95%;
+              margin: auto;
+              margin-left: 1rem;
+              & h3 {
+                font-size: 1.2rem;
+                line-height: 1.5rem;
+              }
+              & p {
+                line-height: 1rem;
+                font-size: 0.8rem;
+              }
+            }
+          }
         }
       }
     }

@@ -24,6 +24,7 @@ function LearningModalTimer({ giveRoundTime, stopTimer }) {
     } else if (!timerIsActive && timerSeconds !== 0) {
       clearInterval(interval);
     }
+
     return () => clearInterval(interval);
   }, [
     timerIsActive,
@@ -49,9 +50,12 @@ function LearningModalTimer({ giveRoundTime, stopTimer }) {
         {new Date(timerSeconds * 1000).toISOString().substring(14, 19)}
       </span>
       <FontAwesomeIcon
-        style={{ cursor: "pointer", marginLeft: "0.5rem" }}
-        icon={timerIcon}
-        onClick={timerManipulation}
+        style={{
+          cursor: stopTimer() ? "pointer" : "default",
+          marginLeft: "0.5rem",
+        }}
+        icon={stopTimer() ? timerIcon : faPlay}
+        onClick={stopTimer() ? timerManipulation : null}
       />
     </div>
   );
