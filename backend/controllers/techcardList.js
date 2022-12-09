@@ -21,9 +21,11 @@ export const getTechcardList = (req, res) => {
       db.query(qTechcards, (err, techcardsData) => {
         if (err) return res.status(500).send(err);
 
-        return res
-          .status(200)
-          .json({ techcardsData, folderID: listsData[0].uid });
+        return res.status(200).json({
+          techcardsData,
+          folderID: listsData[0].uid,
+          listImage: listsData[0].image,
+        });
       });
     });
   });
@@ -48,7 +50,7 @@ export const uploadImage = (req, res) => {
 
     if (req.file) {
       const { file } = req;
-      const fileName = `image-${Date.now()}.${file.originalname}`;
+      const fileName = `techcard-image-${Date.now()}.${file.originalname}`;
       const imagePath = UPLOAD_PATH + `/${fileName}`;
       fs.access(UPLOAD_PATH, (err) => {
         if (err) console.log(err);
@@ -197,6 +199,106 @@ export const uploadImage = (req, res) => {
           }
         }
       }
+      console.log(q);
+      db.query(q, (err, data) => {
+        if (err) return res.status(500).send(err);
+
+        return res.status(200).json(data);
+      });
+    }
+  });
+};
+
+////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////// *
+////////////////////////////////////////////////////////////////////////////
+
+export const uploadListImage = (req, res) => {
+  const token = req.cookies["jwt"];
+  if (!token) return res.status(401).json("Not authenticated!");
+
+  jwt.verify(token, "jwtkey", async (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+
+    if (req.file) {
+      const { file } = req;
+      const fileName = `list-image-${Date.now()}.${file.originalname}`;
+      const imagePath = UPLOAD_PATH + `/${fileName}`;
+      fs.access(UPLOAD_PATH, (err) => {
+        if (err) console.log(err);
+      });
+      await sharp(file.buffer)
+        .resize({
+          fit: sharp.fit.contain,
+          width: 400,
+        })
+        .jpeg({ quality: 50 })
+        .toFile(imagePath);
+
+      return res.status(200).json(fileName);
+    } else {
+      // * add new
+
+      const { image, id, oldImage, deleteType, setType } = req.body;
+
+      const deleteImageFunction = async (path) => {
+        try {
+          await unlink(path);
+          console.log(`successfully deleted `);
+        } catch (error) {
+          console.error("there was an error:", error.message);
+        }
+      };
+
+      let q = "";
+      console.log(setType);
+      // * UPDATE CASE
+      if (setType) {
+        if (oldImage) {
+          deleteImageFunction(
+            `${UPLOAD_PATH}/${oldImage.replace(
+              `${process.env.REACT_APP_URL}/`,
+              ""
+            )}`
+          );
+        }
+
+        if (image) {
+          let imageToDB = image;
+          if (image.startsWith("list-image-"))
+            imageToDB = `${process.env.REACT_APP_URL}/${image}`;
+
+          q =
+            "UPDATE `lists` SET `image` = '" +
+            imageToDB +
+            "' WHERE (`id` = '" +
+            id +
+            "');";
+        } else {
+          if (oldImage) {
+            deleteImageFunction(
+              `${UPLOAD_PATH}/${oldImage.replace(
+                `${process.env.REACT_APP_URL}/`,
+                ""
+              )}`
+            );
+          }
+          q = "UPDATE `lists` SET `image` = NULL WHERE (`id` = '" + id + "');";
+        }
+      }
+
+      // * DELETE CASE
+      if (deleteType) {
+        q = "UPDATE `lists` SET `image` = NULL WHERE (`id` = '" + id + "');";
+
+        deleteImageFunction(
+          `${UPLOAD_PATH}/${oldImage.replace(
+            `${process.env.REACT_APP_URL}/`,
+            ""
+          )}`
+        );
+      }
+
       console.log(q);
       db.query(q, (err, data) => {
         if (err) return res.status(500).send(err);

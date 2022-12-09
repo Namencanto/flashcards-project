@@ -289,3 +289,135 @@
     font-size: 2.4rem;
   }
 }
+
+// TOOLTIPS
+
+.tooltip {
+  @mixin tooltip {
+    position: absolute;
+    bottom: 120%;
+    width: 26rem;
+    padding: 0.75rem 1rem;
+    text-indent: 0;
+    white-space: normal;
+    text-align: center;
+    color: $color-555;
+    display: block;
+    visibility: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 250ms;
+    transform: rotateX(20deg) scale(0.8);
+    font-size: 1.2rem;
+    background: rgba(white, 0.9);
+    border: 1px solid black;
+
+    // margin: 0 auto;
+    transform-origin: center 120%;
+
+    &:after {
+      border: (20px / 2 + 1px) solid transparent;
+      content: " ";
+      display: block;
+      position: absolute;
+      z-index: 1;
+      border-top-color: black;
+    }
+    &:before {
+      border: (20px / 2) solid transparent;
+      content: " ";
+      display: block;
+      position: absolute;
+      z-index: 2;
+      border-top-color: white;
+    }
+  }
+
+  &-cloud {
+    position: relative;
+    font-style: normal;
+    &:hover {
+      cursor: help;
+      .tooltip {
+        visibility: visible;
+        opacity: 1;
+        transform: rotateX(0deg) scale(1);
+        pointer-events: auto;
+      }
+    }
+  }
+  &-hover {
+    display: inline-block;
+    padding: 1rem 1.6rem;
+    border-radius: 999px;
+    color: #f28e0a;
+    font-weight: bold;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  &-bottom {
+    &-left {
+      @include tooltip;
+      left: 20%;
+      &:after {
+        left: -0.6%;
+        top: 100%;
+      }
+      &:before {
+        left: -0.2%;
+        top: 100%;
+      }
+    }
+    &-middle {
+      @include tooltip;
+      left: -270%;
+      &:after {
+        top: 100%;
+        left: calc(50% - 20px);
+      }
+      &:before {
+        top: 100%;
+        left: calc(50% - 19px);
+      }
+    }
+    &-right {
+      @include tooltip;
+      left: -560%;
+      &:after {
+        left: 92%;
+        top: 100%;
+      }
+      &:before {
+        left: 92.2%;
+        top: 100%;
+      }
+    }
+  }
+  &-top {
+    &-left {
+    }
+    &-middle {
+    }
+    &-right {
+    }
+  }
+  &-left {
+    &-top {
+    }
+    &-middle {
+    }
+    &-bottom {
+    }
+  }
+  &-right {
+    &-top {
+    }
+    &-middle {
+    }
+    &-bottom {
+    }
+  }
+}

@@ -6,16 +6,36 @@
   width: 10.25rem;
   margin-left: 0.25rem;
   border-radius: 2.5rem !important;
-  overflow: hidden;
   background-color: $color-offWhite;
   outline: 1px solid $color-555;
+  &:hover {
+    & span {
+      visibility: visible;
+    }
+  }
+  span {
+    font-size: 1.2rem;
+    visibility: hidden;
+    width: auto;
+
+    background-color: rgba(black, 0.7);
+    color: #fff;
+    text-align: center;
+    padding: 0.5rem;
+
+    top: 105%;
+    left: 50%;
+    margin-left: 10%;
+    position: absolute;
+    z-index: 1000;
+  }
 
   @media only screen and (min-width: $bp-1000) {
     width: 15rem;
   }
 
   @mixin progress-bar-part {
-    cursor: pointer;
+    cursor: help;
     display: flex;
     align-items: center;
     justify-content: center;

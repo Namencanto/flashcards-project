@@ -1,0 +1,97 @@
+@import "../../../../../assets/base.scss";
+@import "../../../../../assets/components.scss";
+.image {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  text-align: center;
+  & label {
+    margin: 0 auto;
+    & input {
+      display: none;
+    }
+    & figure {
+      position: relative;
+      width: 12.5rem;
+      height: 12.5rem;
+      @media only screen and (min-width: $bp-500) {
+        width: 15rem;
+        height: 15rem;
+      }
+      & img {
+        width: 12.5rem;
+        height: 12.5rem;
+        box-sizing: border-box;
+        border: 2px solid transparent;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
+        transition: all ease-in-out 0.3s;
+
+        &:hover {
+          box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
+        }
+        @media only screen and (min-width: $bp-500) {
+          width: 15rem;
+          height: 15rem;
+        }
+      }
+      & figcaption {
+        cursor: pointer;
+        position: absolute;
+        top: 0px;
+        width: inherit;
+        height: inherit;
+
+        opacity: 0;
+        background-color: rgba(0, 0, 0, 0);
+        transition: all ease-in-out 0.3s;
+        &:hover {
+          opacity: 1;
+          background-color: rgba(0, 0, 0, 0.5);
+        }
+        & img {
+          margin-top: 32.5px;
+          width: 50px;
+          height: 50px;
+        }
+      }
+    }
+  }
+
+  & button {
+    @include btn-transparent;
+    color: darkred;
+    margin-top: auto;
+    width: auto;
+    margin-top: auto;
+    height: 2rem;
+  }
+  &-link-input {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+
+    & input {
+      outline: none;
+      background-color: white;
+      height: 3rem;
+      width: 40rem;
+      // margin-left: 5rem;
+      border: solid black 1px;
+      padding-top: 0.2rem;
+      &::placeholder {
+        font-size: 1.5rem;
+      }
+    }
+    & button {
+      background-color: #ccc;
+      color: $color-black;
+      margin-left: -5rem;
+      border: solid black 1px;
+
+      font-size: 1.5rem;
+      height: 3rem;
+      width: 5rem;
+    }
+  }
+}

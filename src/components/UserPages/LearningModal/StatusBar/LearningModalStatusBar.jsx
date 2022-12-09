@@ -14,7 +14,7 @@ function LearningModalStatusBar({ all, unknown, known }) {
         }}
         className={classNames(cx("learning-progress-bar-known"))}
       >
-        {/* <span>New techcards:{known}</span> */}
+        <span>Known:{known}</span>
       </div>
       <div
         style={{
@@ -22,7 +22,7 @@ function LearningModalStatusBar({ all, unknown, known }) {
         }}
         className={classNames(cx("learning-progress-bar-unknown"))}
       >
-        {/* <span>Hard techcards:{known}</span> */}
+        <span>Unknown:{unknown}</span>
       </div>
     </div>
   );

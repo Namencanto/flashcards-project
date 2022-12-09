@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -15,7 +15,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import logo from "../../../../images/logo-purple.svg";
 import writingIcon from "../../../../images/writing-icon.svg";
+import writingIconActive from "../../../../images/writing-icon-active.svg";
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
+
 function LearningModalSettings({
   modalIsVisible,
   closePopup,
@@ -42,6 +44,42 @@ function LearningModalSettings({
     setSelectedTypeIsKnownUnknown(false);
     setSelectedTypeIsTyping(false);
   };
+
+  const setLearningTypeReview = () => {
+    resetAllTypes();
+    setSelectedTypeIsReviewing(true);
+    setLearningType(1);
+  };
+  const setLearningTypeRewrite = () => {
+    resetAllTypes();
+    setSelectedTypeIsRewriting(true);
+    setLearningType(2);
+  };
+  const setLearningTypeQuiz = () => {
+    resetAllTypes();
+    setSelectedTypeIsQuiz(true);
+    setLearningType(3);
+  };
+  const setLearningTypeKnownUnknown = () => {
+    resetAllTypes();
+    setSelectedTypeIsKnownUnknown(true);
+    setLearningType(4);
+  };
+  const setLearningTypeTyping = () => {
+    resetAllTypes();
+    setSelectedTypeIsTyping(true);
+    setLearningType(5);
+  };
+  const setLearningOptionReverse = () => {
+    setIconReverseFlip(!iconReverseFlip);
+    setReverseOption(!reverseOption);
+    setLearningOptions({ reverse: !reverseOption });
+  };
+  const setLearningOptionRandom = () => {
+    setRandomOption(!randomOption);
+    setLearningOptions({ random: !randomOption });
+  };
+
   return minWidth1000 ? (
     <>
       {modalIsVisible ? (
@@ -76,11 +114,7 @@ function LearningModalSettings({
                   name="type"
                   type="radio"
                   checked={selectedTypeIsReviewing}
-                  onClick={() => {
-                    resetAllTypes();
-                    setSelectedTypeIsReviewing(true);
-                    setLearningType(1);
-                  }}
+                  onClick={setLearningTypeReview}
                 ></input>
               </div>
               <div
@@ -107,11 +141,7 @@ function LearningModalSettings({
                   name="type"
                   type="radio"
                   checked={selectedTypeIsRewriting}
-                  onClick={() => {
-                    resetAllTypes();
-                    setSelectedTypeIsRewriting(true);
-                    setLearningType(2);
-                  }}
+                  onClick={setLearningTypeRewrite}
                 ></input>
               </div>
               <div
@@ -138,11 +168,7 @@ function LearningModalSettings({
                   name="type"
                   type="radio"
                   checked={selectedTypeIsQuiz}
-                  onClick={() => {
-                    resetAllTypes();
-                    setSelectedTypeIsQuiz(true);
-                    setLearningType(3);
-                  }}
+                  onClick={setLearningTypeQuiz}
                 ></input>
               </div>
               <div
@@ -169,11 +195,7 @@ function LearningModalSettings({
                   name="type"
                   type="radio"
                   checked={selectedTypeIsKnownUnknown}
-                  onClick={() => {
-                    resetAllTypes();
-                    setSelectedTypeIsKnownUnknown(true);
-                    setLearningType(4);
-                  }}
+                  onClick={setLearningTypeKnownUnknown}
                 ></input>
               </div>
               <div
@@ -197,11 +219,7 @@ function LearningModalSettings({
                   name="type"
                   type="radio"
                   checked={selectedTypeIsTyping}
-                  onClick={() => {
-                    resetAllTypes();
-                    setSelectedTypeIsTyping(true);
-                    setLearningType(5);
-                  }}
+                  onClick={setLearningTypeTyping}
                 ></input>
               </div>
               <div
@@ -224,10 +242,7 @@ function LearningModalSettings({
                   id="reverse"
                   type="checkbox"
                   checked={reverseOption}
-                  onClick={() => {
-                    setReverseOption(!reverseOption);
-                    setLearningOptions({ reverse: !reverseOption });
-                  }}
+                  onClick={setLearningOptionReverse}
                 ></input>
               </div>
               <div
@@ -250,10 +265,7 @@ function LearningModalSettings({
                   id="random"
                   type="checkbox"
                   checked={randomOption}
-                  onClick={() => {
-                    setRandomOption(!randomOption);
-                    setLearningOptions({ random: !randomOption });
-                  }}
+                  onClick={setLearningOptionRandom}
                 ></input>
               </div>
             </div>
@@ -266,40 +278,98 @@ function LearningModalSettings({
   ) : (
     <footer className={classNames(cx("footer"))}>
       <div className={classNames(cx("footer-icons"))}>
-        <div className={classNames(cx("footer-icons-box"))}>
-          <FontAwesomeIcon
-            className={classNames(cx("footer-icon"))}
-            icon={faMagnifyingGlass}
-          />
-          <FontAwesomeIcon
-            className={classNames(cx("footer-icon"))}
-            icon={faPencil}
-          />
-          <FontAwesomeIcon
-            className={classNames(cx("footer-icon"))}
-            icon={faList}
-          />
+        <div
+          style={{ display: "flex" }}
+          className={classNames(cx("footer-icons-box"))}
+        >
+          <div className="tooltip-cloud">
+            <p className="tooltip tooltip-bottom-left">
+              Is used to get familiar with the content, does not affect to
+              statistics
+            </p>
+            <FontAwesomeIcon
+              className={classNames(cx("footer-icon"), "tooltip-hover")}
+              icon={faMagnifyingGlass}
+              style={{ color: !selectedTypeIsReviewing ? "#888" : "#555" }}
+              onClick={setLearningTypeReview}
+            />
+          </div>
+          <div className="tooltip-cloud">
+            <p className="tooltip tooltip-bottom-left">
+              Is used to learn the content by quiz, does not affect statistics
+            </p>
+            <FontAwesomeIcon
+              className={classNames(cx("footer-icon"))}
+              icon={faPencil}
+              style={{ color: !selectedTypeIsRewriting ? "#888" : "#555" }}
+              onClick={setLearningTypeRewrite}
+            />
+          </div>
+          <div className="tooltip-cloud">
+            <p className="tooltip tooltip-bottom-left">
+              Is used to learn the content by quiz, does not affect statistics
+            </p>
+            <FontAwesomeIcon
+              className={classNames(cx("footer-icon"))}
+              icon={faList}
+              style={{ color: !selectedTypeIsQuiz ? "#888" : "#555" }}
+              onClick={setLearningTypeQuiz}
+            />
+          </div>
+          <div className="tooltip-cloud">
+            <p className="tooltip tooltip-bottom-middle">
+              Is used to learn through self-assessment, an extremely effective
+              way of teaching
+            </p>
+
+            <FontAwesomeIcon
+              className={classNames(cx("footer-icon"))}
+              icon={faLightbulb}
+              style={{ color: !selectedTypeIsKnownUnknown ? "#888" : "#555" }}
+              onClick={setLearningTypeKnownUnknown}
+            />
+          </div>
+          <div className="tooltip-cloud">
+            <p className="tooltip tooltip-bottom-middle">
+              Is used to teach correct writing
+            </p>
+            <img
+              src={!selectedTypeIsTyping ? writingIconActive : writingIcon}
+              onClick={setLearningTypeTyping}
+            />
+          </div>
         </div>
-        <div className={classNames(cx("footer-icons-box"))}>
-          <FontAwesomeIcon
-            className={classNames(cx("footer-icon"))}
-            icon={faLightbulb}
-          />
-          <img src={writingIcon} />
-          <FontAwesomeIcon
-            className={classNames(cx("footer-icon"))}
-            icon={faRightLeft}
-            flip={iconReverseFlip ? "vertical" : ""}
-            onClick={() => {
-              setIconReverseFlip(!iconReverseFlip);
-            }}
-          />
-          <FontAwesomeIcon
-            className={classNames(cx("footer-icon"))}
-            icon={faRandom}
-          />
+
+        <div
+          style={{ display: "flex" }}
+          className={classNames(cx("footer-icons-box"))}
+        >
+          <div className="tooltip-cloud">
+            <p className="tooltip tooltip-bottom-middle">
+              Learn in reverse order
+            </p>
+            <FontAwesomeIcon
+              className={classNames(cx("footer-icon"))}
+              icon={faRightLeft}
+              flip={iconReverseFlip ? "vertical" : ""}
+              onClick={setLearningOptionReverse}
+              style={{ color: !reverseOption ? "#888" : "#555" }}
+            />
+          </div>
+          <div className="tooltip-cloud">
+            <p className="tooltip tooltip-bottom-middle">
+              Learn in random order
+            </p>
+            <FontAwesomeIcon
+              className={classNames(cx("footer-icon"))}
+              onClick={setLearningOptionRandom}
+              icon={faRandom}
+              style={{ color: !randomOption ? "#888" : "#555" }}
+            />
+          </div>
         </div>
       </div>
+
       <div className={classNames(cx("footer-logo"))}>
         <img src={logo} alt="logo" />
       </div>

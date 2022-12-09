@@ -7,15 +7,7 @@ import { useRef, useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LearningModalStatusBar from "./StatusBar/LearningModalStatusBar";
-import {
-  faVolumeUp,
-  faX,
-  faThumbsUp,
-  faThumbsDown,
-  faEye,
-  faArrowRight,
-  faGear,
-} from "@fortawesome/free-solid-svg-icons";
+import { faVolumeUp, faX, faGear } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import LearningModalTimer from "./LearningModalTimer";
 
@@ -23,35 +15,38 @@ import {
   sendKnowedTechcardToChange,
   sendUnknowedTechcardToChange,
 } from "./LearningModalBackendFunctions";
+
 import LearningModalSettings from "./LearningModalSettings/LearningModalSettings";
 import MediaQueries from "../../../HelperComponents/MediaQueries";
 import CasualReviewing from "./LearningTypes/CasualReviewing";
-import CasualRewriting from "./LearningTypes/CasualRewriting";
+import WritingTypes from "./LearningTypes/WritingTypes";
 import IKnowIDontKnow from "./LearningTypes/IKnowIDontKnow";
-import Quiz from "./LearningTypes/Quiz";
-import Typing from "./LearningTypes/Typing";
+import Quiz from "./LearningTypes/Quiz/Quiz";
 
+import { useOptions } from "./LearningModalSettings/useOptions";
 function LearningModal(props) {
   const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
+
+  // * MAIN STATES
+  const [learningOptions, setLearningOptions] = useState({
+    reverse: false,
+    random: false,
+  });
   const { firstSides, secondSides, techcardsIDS, techcardsImages, listTitle } =
     props.techcardsInfo;
-
-  // * DYNAMIC STATES FOR LEARNING ITSELF
   const [techcardsToDisplay, setTechcardsToDisplay] = useState({
     firstSides,
     secondSides,
     images: techcardsImages,
     ids: techcardsIDS,
   });
-
   const [knownTechcards, setKnownTechcards] = useState({
     firstSides: [],
     secondSides: [],
     images: [],
     ids: [],
   });
-  console.log(techcardsToDisplay);
   const [unknownTechcards, setUnknownTechcards] = useState({
     firstSides: [],
     secondSides: [],
@@ -66,7 +61,6 @@ function LearningModal(props) {
     unknown: 0,
   });
   const [firstSideIsVisible, setFirstSideIsVisible] = useState(true);
-
   const [roundLength, setRoundLength] = useState(firstSides.length);
   const [isRoundBreak, setIsRoundBreak] = useState(false);
   const [listIsFinished, setListIsFinished] = useState(false);
@@ -74,28 +68,46 @@ function LearningModal(props) {
     effectiveness: [],
     times: [],
   });
+  const [allSendedTechcards, setAllSendedTechcards] = useState([]);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [learningType, setLearningType] = useState(4);
+
+  // * TIMER STATES
   const [time, setTime] = useState(0);
   const [roundTimes, setRoundTimes] = useState([]);
 
-  const [allSendedTechcards, setAllSendedTechcards] = useState([]);
-
-  // *
-
-  const learningRef = useRef();
-  const contentLearningRef = useRef();
-
-  // SOUNDS LOGIC
+  // * SOUND STATES
   const [disableSpeechButton, setDisableSpeechButton] = useState(false);
   const msg = new SpeechSynthesisUtterance();
   const speechHandler = (text) => {
     msg.text = text;
     window.speechSynthesis.speak(msg);
   };
-  const [modalIsVisible, setModalIsVisible] = useState(false);
 
-  const closePopupHandler = () => {
-    setModalIsVisible(false);
+  const learningRef = useRef();
+  const contentLearningRef = useRef();
+
+  // * OPTIONS LOGIC
+  // HOOK FOR MANIPULATE OPTIONS
+  useOptions(learningOptions, techcardsToDisplay, setTechcardsToDisplay);
+  // HANDLERS
+  const setLearningTypeHandler = (type) => {
+    setLearningType(type);
   };
+  const setLearningOptionsHandler = (options) => {
+    setLearningOptions((prevState) => ({
+      reverse: options.hasOwnProperty("reverse")
+        ? options.reverse
+        : prevState.reverse,
+      random: options.hasOwnProperty("random")
+        ? options.random
+        : prevState.random,
+    }));
+  };
+
+  ////////////////////////////////////////////////
+
+  // * ALL USE EFFECTS
   useEffect(() => {
     if (props.learningModalIsVisible) {
       setTimeout(() => {
@@ -106,22 +118,39 @@ function LearningModal(props) {
     }
   }, [props.learningModalIsVisible]);
   useEffect(() => {
-    let isSended = false;
-    const lastUnknowedId =
-      unknownTechcards.ids[unknownTechcards.ids.length - 1];
+    if (learningType === 4 || learningType === 5) {
+      let isSended = false;
+      const lastUnknowedId =
+        unknownTechcards.ids[unknownTechcards.ids.length - 1];
 
-    const lastKnowedId = knownTechcards.ids[knownTechcards.ids.length - 1];
-    if (lastKnowedId) {
-      sendKnowedTechcardToChange(lastKnowedId, round);
-    }
-    for (const sendedTechcard of allSendedTechcards) {
-      if (sendedTechcard === lastUnknowedId) isSended = true;
-    }
-    if (lastUnknowedId && !isSended) {
-      setAllSendedTechcards([...allSendedTechcards, lastUnknowedId]);
-      sendUnknowedTechcardToChange(lastUnknowedId, round);
+      const lastKnowedId = knownTechcards.ids[knownTechcards.ids.length - 1];
+      if (lastKnowedId) {
+        sendKnowedTechcardToChange(lastKnowedId, round);
+      }
+      for (const sendedTechcard of allSendedTechcards) {
+        if (sendedTechcard === lastUnknowedId) isSended = true;
+      }
+      if (lastUnknowedId && !isSended) {
+        setAllSendedTechcards([...allSendedTechcards, lastUnknowedId]);
+        sendUnknowedTechcardToChange(lastUnknowedId, round);
+      }
     }
   }, [unknownTechcards, knownTechcards]);
+  useEffect(() => {
+    // * SET LIST IS FINISHED IF ALL TECHCARDS IS KNOWED
+    if (
+      listIsFinished !== true &&
+      learningTechcardsStatus.unknown === 0 &&
+      learningTechcardsStatus.known >= roundLength
+    ) {
+      setListIsFinished(true);
+    }
+  }, [
+    setListIsFinished,
+    learningTechcardsStatus.unknown,
+    learningTechcardsStatus.known,
+    roundLength,
+  ]);
 
   const exitPopupAnimation = () => {
     learningRef.current.style.opacity = 0;
@@ -135,10 +164,9 @@ function LearningModal(props) {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-  const collectTime = (timeFromTimer) => {
-    setTime(timeFromTimer);
-  };
+  // * TIMER HANDLERS
   const collectRoundTime = (timeFromTimer) => {
+    setTime(timeFromTimer);
     if (isRoundBreak === true) {
       // if is more than one el in roundtime then sum all el without last and subtract from last timer value
       if (roundTimes.length >= 1) {
@@ -158,14 +186,7 @@ function LearningModal(props) {
     return !isRoundBreak;
   };
 
-  // * SET LIST IS FINISHED IF ALL TECHCARDS IS KNOWED
-  if (
-    listIsFinished !== true &&
-    learningTechcardsStatus.unknown === 0 &&
-    learningTechcardsStatus.known >= roundLength
-  ) {
-    setListIsFinished(true);
-  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////////
 
   // * SET NEXT ROUND FUNCTION
   const nextRound = () => {
@@ -278,24 +299,6 @@ function LearningModal(props) {
       }));
     }
   };
-  const [learningType, setLearningType] = useState(4);
-  const setLearningTypeHandler = (type) => {
-    setLearningType(type);
-  };
-  const [learningOptions, setLearningOptions] = useState({
-    reverse: false,
-    random: false,
-  });
-  const setLearningOptionsHandler = (options) => {
-    setLearningOptions((prevState) => ({
-      reverse: options.hasOwnProperty("reverse")
-        ? options.reverse
-        : prevState.reverse,
-      random: options.hasOwnProperty("random")
-        ? options.random
-        : prevState.random,
-    }));
-  };
 
   return (
     <>
@@ -311,11 +314,13 @@ function LearningModal(props) {
         >
           {/* HEADER */}
           <header className={classNames(cx("learning-content-header"))}>
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVUniuRf_sQs4iiCO_BVeDoQoRNA0tFew4Yg&usqp=CAU"
-              alt="list illustration"
-            />
-            <div>
+            {props.listImage ? (
+              <img src={props.listImage} alt="list illustration" />
+            ) : (
+              ""
+            )}
+
+            <div style={{ textAlign: "center" }}>
               <span>
                 {whichTechcard}/{roundLength} | Round {round}
               </span>
@@ -340,7 +345,6 @@ function LearningModal(props) {
             )}
             <LearningModalTimer
               stopTimer={stopTimerForRoundBreak}
-              giveTime={collectTime}
               giveRoundTime={collectRoundTime}
             />
 
@@ -356,19 +360,26 @@ function LearningModal(props) {
               <h1>{listTitle}</h1>
             </div>
             {listIsFinished ? (
-              <>
+              <div
+                className={classNames(cx("learning-content-main-round-info"))}
+              >
+                <h3>Congratulation</h3>
                 <p>
-                  Congratulation. You ended in {round}
+                  <br /> You ended in {round}
                   {round > 1 ? " rounds" : " round"}
                 </p>
                 <p>
                   Effectiveness:{" "}
-                  {roundsStatistics.effectiveness.reduce((a, b) => a + b) /
-                    roundsStatistics.effectiveness.length}
+                  {(
+                    roundsStatistics.effectiveness.reduce((a, b) => a + b) /
+                    roundsStatistics.effectiveness.length
+                  ).toFixed(2)}
                   %
                 </p>
-                <p>{time}</p>
-              </>
+                <p>
+                  Time: {new Date(time * 1000).toISOString().substring(14, 19)}
+                </p>
+              </div>
             ) : isRoundBreak ? (
               <div
                 className={classNames(cx("learning-content-main-round-info"))}
@@ -400,10 +411,14 @@ function LearningModal(props) {
                     cx("learning-content-main-illustration")
                   )}
                 >
-                  <img
-                    src={techcardsToDisplay.images[0]}
-                    alt="techcard illustration"
-                  />
+                  {techcardsToDisplay.images[0] ? (
+                    <img
+                      src={techcardsToDisplay.images[0]}
+                      alt="techcard illustration"
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <div className={classNames(cx("learning-content-main-name"))}>
                   <p>
@@ -431,89 +446,96 @@ function LearningModal(props) {
               </>
             )}
             <>
-              {/* LEARNING TYPE */}
-              {learningType === 1 ? (
-                <CasualReviewing />
-              ) : learningType === 2 ? (
-                <CasualRewriting />
-              ) : learningType === 3 ? (
-                <Quiz />
-              ) : learningType === 4 ? (
-                <IKnowIDontKnow />
-              ) : learningType === 5 ? (
-                <Typing />
-              ) : (
-                ""
-              )}
-
               {!listIsFinished ? (
                 <>
-                  {firstSideIsVisible ? (
-                    <div
-                      className={classNames(
-                        cx("learning-content-main-buttons")
-                      )}
-                    >
-                      <button
-                        style={{ padding: "1.4rem 9.5rem" }}
-                        onClick={() => {
-                          if (isRoundBreak) {
-                            nextRound();
-                          } else setFirstSideIsVisible(false);
-                        }}
-                        className={classNames(
-                          cx("learning-content-main-buttons-check")
-                        )}
-                      >
-                        {isRoundBreak ? "Go to next round" : "Check answer"}
-                        <FontAwesomeIcon
-                          icon={isRoundBreak ? faArrowRight : faEye}
-                        />
-                      </button>
-                    </div>
+                  {learningType === 1 ? (
+                    <CasualReviewing
+                      setFirstSideIsVisible={setFirstSideIsVisible}
+                      newToDisplay={newToDisplay}
+                      setUnknownTechcards={setUnknownTechcards}
+                      setKnownTechcards={setKnownTechcards}
+                      setWhichTechcard={setWhichTechcard}
+                      whichTechcard={whichTechcard}
+                      firstSides={firstSides}
+                      secondSides={secondSides}
+                      setTechcardsToDisplay={setTechcardsToDisplay}
+                      techcardsToDisplay={techcardsToDisplay}
+                      techcardsImages={techcardsImages}
+                      firstSideIsVisible={firstSideIsVisible}
+                    />
+                  ) : learningType === 2 || learningType === 5 ? (
+                    <WritingTypes
+                      learningType={learningType}
+                      setFirstSideIsVisible={setFirstSideIsVisible}
+                      newToDisplay={newToDisplay}
+                      setUnknownTechcards={setUnknownTechcards}
+                      setKnownTechcards={setKnownTechcards}
+                      setWhichTechcard={setWhichTechcard}
+                      whichTechcard={whichTechcard}
+                      firstSides={firstSides}
+                      secondSides={secondSides}
+                      setTechcardsToDisplay={setTechcardsToDisplay}
+                      techcardsToDisplay={techcardsToDisplay}
+                      techcardsImages={techcardsImages}
+                      firstSideIsVisible={firstSideIsVisible}
+                      setListIsFinished={setListIsFinished}
+                      listIsFinished={listIsFinished}
+                      isRoundBreak={isRoundBreak}
+                      nextRound={nextRound}
+                    />
+                  ) : learningType === 3 ? (
+                    <Quiz
+                      newToDisplay={newToDisplay}
+                      setUnknownTechcards={setUnknownTechcards}
+                      setKnownTechcards={setKnownTechcards}
+                      setWhichTechcard={setWhichTechcard}
+                      whichTechcard={whichTechcard}
+                      firstSides={firstSides}
+                      secondSides={secondSides}
+                      setTechcardsToDisplay={setTechcardsToDisplay}
+                      techcardsToDisplay={techcardsToDisplay}
+                      techcardsImages={techcardsImages}
+                      firstSideIsVisible={firstSideIsVisible}
+                      setListIsFinished={setListIsFinished}
+                      listIsFinished={listIsFinished}
+                      isRoundBreak={isRoundBreak}
+                      nextRound={nextRound}
+                      learningOptions={learningOptions}
+                    />
+                  ) : learningType === 4 ? (
+                    <IKnowIDontKnow
+                      firstSideIsVisible={firstSideIsVisible}
+                      isRoundBreak={isRoundBreak}
+                      nextRound={nextRound}
+                      setFirstSideIsVisible={setFirstSideIsVisible}
+                      newToDisplay={newToDisplay}
+                      setUnknownTechcards={setUnknownTechcards}
+                      setKnownTechcards={setKnownTechcards}
+                    />
                   ) : (
-                    <div
-                      className={classNames(
-                        cx("learning-content-main-buttons")
-                      )}
-                    >
-                      <button
-                        onClick={() => {
-                          setFirstSideIsVisible(true);
-                          newToDisplay(setUnknownTechcards);
-                        }}
-                        className={classNames(
-                          cx("learning-content-main-buttons-unknow")
-                        )}
-                      >
-                        <FontAwesomeIcon icon={faThumbsDown} />I don't know
-                      </button>
-                      <button
-                        onClick={() => {
-                          setFirstSideIsVisible(true);
-
-                          newToDisplay(setKnownTechcards);
-                        }}
-                        className={classNames(
-                          cx("learning-content-main-buttons-know")
-                        )}
-                      >
-                        I know
-                        <FontAwesomeIcon icon={faThumbsUp} />
-                      </button>
-                    </div>
+                    ""
                   )}
                 </>
               ) : (
-                <>
-                  <button className="btn-solid-medium">Try again</button>
+                <div
+                  className={classNames(cx("learning-content-main-buttons"))}
+                >
+                  <button
+                    className={classNames(
+                      cx("learning-content-main-buttons-default")
+                    )}
+                  >
+                    Try again
+                  </button>
                   <button
                     onClick={exitPopupAnimation}
-                    className="btn-solid-medium"
+                    className={classNames(
+                      cx("learning-content-main-buttons-default")
+                    )}
                   >
                     Back to list
                   </button>
-                </>
+                </div>
               )}
             </>
           </div>
@@ -521,7 +543,9 @@ function LearningModal(props) {
           {/*  FOOTER SETTINGS OR MOBILE MODAL SETTINGS*/}
           <LearningModalSettings
             modalIsVisible={modalIsVisible}
-            closePopup={closePopupHandler}
+            closePopup={() => {
+              setModalIsVisible(false);
+            }}
             setLearningType={setLearningTypeHandler}
             setLearningOptions={setLearningOptionsHandler}
           />

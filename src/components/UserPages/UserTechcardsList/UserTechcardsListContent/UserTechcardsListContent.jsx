@@ -3,12 +3,7 @@ import "../../../../assets/Global.scss";
 import classes from ".././UserTechcardsList.module.scss";
 import classNames from "classnames/bind";
 
-import { faRocket } from "@fortawesome/free-solid-svg-icons";
-
-import { useContext, useState } from "react";
-
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,20 +17,22 @@ import ReactCountryFlag from "react-country-flag";
 import { useRef } from "react";
 import { handleFileSelect } from "./UserTechcardsListContentHelpers";
 
-function UserTechcardsListContent({ displayLearningModal }) {
+function UserTechcardsListContent({
+  fetchTechcards,
+  list,
+  id,
+  folderID,
+  listImage,
+  techcardsIDS,
+  firstSides,
+  secondSides,
+  techcardsImages,
+  displayLearningModal,
+}) {
   const defaultImage =
     "https://miro.medium.com/max/250/1*DSNfSDcOe33E2Aup1Sww2w.jpeg";
 
   const cx = classNames.bind(classes);
-
-  const { folder, list, id } = useParams();
-
-  const [folderID, setFolderID] = useState();
-
-  const [techcardsIDS, setTechcardsIDS] = useState();
-  const [firstSides, setFirstSides] = useState();
-  const [secondSides, setSecondSides] = useState();
-  const [techcardsImages, setTechcardsImages] = useState();
 
   const [howManyTechcardsRender, setHowManyTechcardsRender] = useState(10);
   const howManyTechcardsLeft = firstSides?.length - howManyTechcardsRender;
@@ -63,45 +60,8 @@ function UserTechcardsListContent({ displayLearningModal }) {
   const imageInLinkRef = useRef();
   const [image, setImage] = useState(defaultImage);
   const [imageFormTypeIsFile, setImageFormTypeIsFile] = useState(true);
-  const [imageChangeDefaultValue, setImageChangeDefaultValue] = useState("");
   const [isImageInForm, setIsImageInForm] = useState(false);
   const [deleteImage, setDeleteImage] = useState(false);
-
-  const fetchTechcards = async () => {
-    try {
-      const res = await axios.get("/techcards/lists/get", {
-        params: {
-          id,
-        },
-      });
-
-      let firstSidesArr = [];
-      let secondSidesArr = [];
-      let idsArr = [];
-      let imagesArr = [];
-
-      for (const { id, first_side, second_side, image } of res.data
-        .techcardsData) {
-        firstSidesArr.push(first_side);
-        secondSidesArr.push(second_side);
-        imagesArr.push(image);
-        idsArr.push(id);
-      }
-
-      setTechcardsIDS(idsArr);
-      setFirstSides(firstSidesArr);
-      setSecondSides(secondSidesArr);
-      setTechcardsImages(imagesArr);
-
-      setFolderID(res.data.folderID);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchTechcards();
-  }, []);
 
   const changeListHandler = () => {
     setFormListTypeIsDelete(false);
@@ -126,6 +86,7 @@ function UserTechcardsListContent({ displayLearningModal }) {
   const changeListElementHandler = () => {
     formIsVisible ? setFormIsVisible(false) : setFormIsVisible(true);
   };
+
   const formListHandler = async (e) => {
     e.preventDefault();
 
@@ -146,6 +107,14 @@ function UserTechcardsListContent({ displayLearningModal }) {
       data.append("file", image);
       try {
         if (isImageInForm) {
+          if (formType === "LIST_IMAGE") {
+            const resImage = await axios.post(
+              "/techcards/lists/upload/to-list",
+              data
+            );
+            imagePath = resImage.data;
+          }
+        } else {
           const resImage = await axios.post("/techcards/lists/upload", data);
           imagePath = resImage.data;
         }
@@ -226,20 +195,46 @@ function UserTechcardsListContent({ displayLearningModal }) {
         };
       }
     }
-    try {
-      const resData = await axios.post("/techcards/lists/upload", {
-        folderID,
-        id,
-        techcardsToAdd,
-        techcardsToUpdate,
-        techcardsToDelete,
-      });
-      fetchTechcards();
-      setDeleteImage(false);
-      setMessageToUser({});
 
-      if (resData.status === 200) {
-        setFormIsVisible(false);
+    if (formType === "LIST_IMAGE") {
+      if (!imageInLink && !imagePath && !deleteImage)
+        return messageError("Change something before you update");
+    }
+
+    try {
+      if (formType === "LIST_IMAGE") {
+        const resData = await axios.post(
+          "/techcards/lists/upload/to-list/save-in-user",
+          {
+            image: !imagePath ? imageInLink : imagePath,
+            id,
+            oldImage: listImage,
+            deleteType: !imagePath && !imageInLink && listImage ? true : false,
+            setType: imageInLink || imagePath ? true : false,
+          }
+        );
+        fetchTechcards();
+        setDeleteImage(false);
+        setMessageToUser({});
+
+        if (resData.status === 200) {
+          setFormIsVisible(false);
+        }
+      } else {
+        const resData = await axios.post("/techcards/lists/upload", {
+          folderID,
+          id,
+          techcardsToAdd,
+          techcardsToUpdate,
+          techcardsToDelete,
+        });
+        fetchTechcards();
+        setDeleteImage(false);
+        setMessageToUser({});
+
+        if (resData.status === 200) {
+          setFormIsVisible(false);
+        }
       }
     } catch (err) {
       // * TECHCARDS ERROR MESSAGES
@@ -262,18 +257,62 @@ function UserTechcardsListContent({ displayLearningModal }) {
         {/* <p>{folder}</p> */}
         <div style={{ display: "flex" }}>
           <h1>{list}</h1>
+          {!changeListIsVisible && listImage ? (
+            <img
+              style={{ marginLeft: "auto", cursor: "default" }}
+              className={classNames(cx("techcards-list-title-icon-img"))}
+              src={listImage}
+              alt="list illustration"
+            />
+          ) : (
+            ""
+          )}
 
           {changeListIsVisible && !formIsVisible ? (
-            <FontAwesomeIcon
-              className={classNames(cx("techcards-list-title-icon-form"))}
-              icon={formListIcon}
-              onClick={() => {
-                return formListIcon === faTrashCan
-                  ? (setFormListIcon(faPencil), setFormListTypeIsDelete(true))
-                  : (setFormListIcon(faTrashCan),
-                    setFormListTypeIsDelete(false));
-              }}
-            />
+            <div className={classNames(cx("techcards-list-title-icons"))}>
+              <FontAwesomeIcon
+                className={classNames(cx("techcards-list-title-icon-form"))}
+                icon={formListIcon}
+                onClick={() => {
+                  return formListIcon === faTrashCan
+                    ? (setFormListIcon(faPencil), setFormListTypeIsDelete(true))
+                    : (setFormListIcon(faTrashCan),
+                      setFormListTypeIsDelete(false));
+                }}
+              />
+              <div
+                style={{ width: "auto", height: "auto" }}
+                className={classNames(cx("techcards-list-main-form-image"))}
+              >
+                <label>
+                  <figure style={{ width: "auto", height: "auto" }}>
+                    <img
+                      className={classNames(
+                        cx("techcards-list-title-icon-img")
+                      )}
+                      src={listImage ? listImage : defaultImage}
+                      alt="list illustration"
+                    />
+
+                    <figcaption
+                      onClick={() => {
+                        setFormType("LIST_IMAGE");
+                        setImageFormTypeIsFile(true);
+                        setImage(listImage ? listImage : defaultImage);
+                        changeListElementHandler();
+                      }}
+                      style={{
+                        margin: "-2rem 0rem 0 1.2rem",
+                        height: "7.3rem",
+                        width: "7.5rem",
+                      }}
+                    >
+                      <p style={{ color: "white" }}>Click to change image</p>
+                    </figcaption>
+                  </figure>
+                </label>
+              </div>
+            </div>
           ) : (
             ""
           )}
@@ -283,13 +322,14 @@ function UserTechcardsListContent({ displayLearningModal }) {
         {!formIsVisible ? (
           <>
             <div
-              style={{ border: firstSides === null ? "none" : "" }}
+              style={{ border: firstSides?.length === 0 ? "none" : "" }}
               className={classNames(cx("techcards-list-main-header"))}
             >
-              {firstSides === null ? (
+              {firstSides?.length === 0 ? (
                 <p style={{ marginTop: "1rem" }} className="message-to-user">
-                  It's looks like you don't have any techcards, click gear on
-                  top, to add some
+                  It's looks like you don't have any techcards, click
+                  {!changeListIsVisible ? " gear on top, " : ' "Add new...", '}
+                  to add some
                 </p>
               ) : (
                 <>
@@ -438,7 +478,6 @@ function UserTechcardsListContent({ displayLearningModal }) {
                       }}
                       type="file"
                       id="file"
-                      defaultValue={imageChangeDefaultValue}
                     />
                   ) : (
                     ""
@@ -514,30 +553,40 @@ function UserTechcardsListContent({ displayLearningModal }) {
                 )}
               </div>
 
-              <div
-                className={classNames(cx("techcards-list-main-form-element"))}
-              >
-                <label htmlFor="firstSide">First side</label>
-                <input
-                  defaultValue={formDefaultFirstSide}
-                  oldValue={formDefaultFirstSide}
-                  techcardID={formTechcardID}
-                  index={formTechcardIndex}
-                  type="text"
-                  id="firstSide"
-                />
-              </div>
-              <div
-                className={classNames(cx("techcards-list-main-form-element"))}
-              >
-                <label htmlFor="secondSide">Second side</label>
-                <input
-                  defaultValue={formDefaultSecondSide}
-                  oldValue={formDefaultSecondSide}
-                  type="text"
-                  id="secondSide"
-                />
-              </div>
+              {formType !== "LIST_IMAGE" ? (
+                <>
+                  <div
+                    className={classNames(
+                      cx("techcards-list-main-form-element")
+                    )}
+                  >
+                    <label htmlFor="firstSide">First side</label>
+                    <input
+                      defaultValue={formDefaultFirstSide}
+                      oldValue={formDefaultFirstSide}
+                      techcardID={formTechcardID}
+                      index={formTechcardIndex}
+                      type="text"
+                      id="firstSide"
+                    />
+                  </div>
+                  <div
+                    className={classNames(
+                      cx("techcards-list-main-form-element")
+                    )}
+                  >
+                    <label htmlFor="secondSide">Second side</label>
+                    <input
+                      defaultValue={formDefaultSecondSide}
+                      oldValue={formDefaultSecondSide}
+                      type="text"
+                      id="secondSide"
+                    />
+                  </div>
+                </>
+              ) : (
+                ""
+              )}
             </div>
             <button className="btn-solid-medium">Submit</button>
           </form>
@@ -547,6 +596,7 @@ function UserTechcardsListContent({ displayLearningModal }) {
             <>
               {formListIcon == faTrashCan ? (
                 <div
+                  style={{ flexDirection: "column" }}
                   className={classNames(
                     cx("techcards-list-btn-form-container")
                   )}
@@ -569,7 +619,7 @@ function UserTechcardsListContent({ displayLearningModal }) {
                 ""
               )}
             </>
-          ) : firstSides !== null ? (
+          ) : firstSides !== null && firstSides?.length !== 0 ? (
             <button
               onClick={() => {
                 displayLearningModal({

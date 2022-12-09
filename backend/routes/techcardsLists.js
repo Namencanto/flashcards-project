@@ -1,4 +1,8 @@
-import { getTechcardList, uploadImage } from "../controllers/techcardList.js";
+import {
+  getTechcardList,
+  uploadImage,
+  uploadListImage,
+} from "../controllers/techcardList.js";
 import multer from "multer";
 
 import sharp from "sharp";
@@ -37,7 +41,11 @@ const upload = multer({
 });
 
 router.get("/get", getTechcardList);
+
 router.post("/upload", upload.single("file"), uploadImage);
 router.post("/upload/save-in-user", uploadImage);
+
+router.post("/upload/to-list", upload.single("file"), uploadListImage);
+router.post("/upload/to-list/save-in-user", uploadListImage);
 
 export default router;

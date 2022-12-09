@@ -4,9 +4,7 @@ import classes from "../UserTechcards.module.scss";
 import classNames from "classnames/bind";
 
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../../../context/AuthContext";
-
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
@@ -15,7 +13,6 @@ import { useRef } from "react";
 
 function UserTechcardsContent() {
   const cx = classNames.bind(classes);
-  const { currentUser } = useContext(AuthContext);
 
   const [techcardsFolders, setTechcardsFolders] = useState([]);
   const [techcardsLists, setTechcardsLists] = useState([]);
@@ -372,7 +369,7 @@ function UserTechcardsContent() {
                 )}
               </div>
 
-              <div className={classNames(cx("techcards-main-progress-bar"))}>
+              {/* <div className={classNames(cx("techcards-main-progress-bar"))}>
                 <div
                   className={classNames(cx("techcards-main-progress-bar-new"))}
                 >
@@ -397,7 +394,7 @@ function UserTechcardsContent() {
                 >
                   {!counts[4] ? 0 : counts[4]}
                 </div>
-              </div>
+              </div> */}
               <ul>
                 {techcardsLists[iFolder]?.map(({ list, id }, iList) => {
                   let actualStatus = [];
