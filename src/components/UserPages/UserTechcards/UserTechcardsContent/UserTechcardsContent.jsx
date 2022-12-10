@@ -4,64 +4,38 @@ import classes from "../UserTechcards.module.scss";
 import classNames from "classnames/bind";
 
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import axios from "axios";
 import { useRef } from "react";
 
-function UserTechcardsContent() {
+function UserTechcardsContent({
+  deleteFormIsSelected,
+  changeFormIsSelected,
+  addFormIsSelected,
+  techcardsFolders,
+  techcardsLists,
+  techcardsAllSides,
+  userMessage,
+  techcardsChangeIcon,
+  fetchTechcards,
+  changeTechcardsIsVisible,
+  setUserMessage,
+  setAddFormIsSelected,
+  setDeleteFormIsSelected,
+  setChangeFormIsSelected,
+  clearFormStates,
+  changeTechcardsconHandler,
+  displayStatisticsModal,
+}) {
   const cx = classNames.bind(classes);
-
-  const [techcardsFolders, setTechcardsFolders] = useState([]);
-  const [techcardsLists, setTechcardsLists] = useState([]);
-  const [techcardsAllSides, setTechcardsAllSides] = useState([]);
-
-  const [userMessage, setUserMessage] = useState([]);
-
-  const [techcardsChangeIcon, setTechcardsChangeIcon] = useState(faGear);
-  const [changeTechcardsIsVisible, setTechcardsIsVisible] = useState(false);
-
-  // * Handling the form states
-  const [addFormIsSelected, setAddFormIsSelected] = useState(false);
-  const [changeFormIsSelected, setChangeFormIsSelected] = useState(false);
-  const [deleteFormIsSelected, setDeleteFormIsSelected] = useState(false);
 
   const addFormRadio = useRef();
   const changeFormRadio = useRef();
   const deleteFormRadio = useRef();
 
   const techcardAddFolderRef = useRef();
-
-  const fetchTechcards = async () => {
-    try {
-      const res = await axios.get("/techcards/get");
-
-      setTechcardsFolders(res.data[0]);
-      setTechcardsLists(res.data[1]);
-      setTechcardsAllSides(res?.data[2]);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchTechcards();
-  }, []);
-
-  const changeTechcardsconHandler = () => {
-    if (changeTechcardsIsVisible === true) {
-      setUserMessage([]);
-      setTechcardsChangeIcon(faGear);
-      setTechcardsIsVisible(false);
-      clearFormStates();
-    } else {
-      setTechcardsChangeIcon(faArrowLeft);
-      setTechcardsIsVisible(true);
-      setAddFormIsSelected(true);
-    }
-  };
 
   /////////////////////////////////////////////////
 
@@ -274,12 +248,6 @@ function UserTechcardsContent() {
     } else return;
   };
 
-  const clearFormStates = () => {
-    setAddFormIsSelected(false);
-    setChangeFormIsSelected(false);
-    setDeleteFormIsSelected(false);
-  };
-
   let allSidesStatus = [];
 
   for (let firstI = 0; firstI < techcardsAllSides?.length; firstI++) {
@@ -308,7 +276,7 @@ function UserTechcardsContent() {
       hardCard,
     ]);
   }
-  console.log(allSidesStatus);
+
   return (
     <div className={classNames(cx("techcards-container"))}>
       <div className={classNames(cx("techcards-title"))}>
@@ -355,7 +323,13 @@ function UserTechcardsContent() {
                     oldFolder={folder}
                   ></input>
                 ) : (
-                  <h2>{folder}</h2>
+                  <h2
+                    onClick={() => {
+                      displayStatisticsModal(id);
+                    }}
+                  >
+                    {folder}
+                  </h2>
                 )}
                 {deleteFormIsSelected ? (
                   <input

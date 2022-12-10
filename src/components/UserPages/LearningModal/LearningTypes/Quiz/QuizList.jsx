@@ -41,8 +41,8 @@ function QuizList({
       (el) => el !== correctAnswer
     );
     const sidesToDisplay = learningOptions.reverse
-      ? secondSidesWithoutCorrectAnswer
-      : firstSidesWithoutCorrectAnswer;
+      ? firstSidesWithoutCorrectAnswer
+      : secondSidesWithoutCorrectAnswer;
 
     //
 
@@ -73,7 +73,7 @@ function QuizList({
       const randomizedArr = randomArr(arrToRandomize);
       setQuizArr(randomizedArr);
     }
-  }, [techcardsToDisplay]);
+  }, [techcardsToDisplay, learningOptions.reverse]);
 
   return (
     <ol>

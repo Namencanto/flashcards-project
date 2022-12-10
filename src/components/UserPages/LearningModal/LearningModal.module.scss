@@ -17,7 +17,7 @@
     opacity: 1;
     top: 0;
     bottom: 0;
-    left: 0%;
+
     width: 100%;
     height: 100%;
     margin: auto;
@@ -41,7 +41,7 @@
     opacity: 1;
     transform: translateY(-2rem) perspective(75rem) rotateX(10deg);
 
-    overflow: hidden;
+    overflow: auto;
     margin: auto;
 
     @media only screen and (min-width: $bp-1000) {
@@ -127,6 +127,10 @@
             cursor: pointer;
             display: flex;
             background-color: transparent;
+            font-size: 1.4rem;
+            @media only screen and (min-width: $bp-600) {
+              font-size: 1.6rem;
+            }
           }
           &-i-was-right {
             border: none;
@@ -152,21 +156,33 @@
           & label {
             justify-content: center;
             display: flex;
-            margin-right: 28rem;
-            margin-top: 0.5rem;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
+            margin-right: 17rem;
+            padding: 0 1rem;
+
+            position: relative;
+            @media only screen and (min-width: $bp-600) {
+              margin-right: 28rem;
+
+              font-size: 1.4rem;
+            }
           }
           &-content {
+            padding: 1rem;
             justify-content: center;
             display: flex;
             & input[type="text"] {
               border-radius: 0.25rem;
               color: $color-555;
-              width: 30rem;
+              width: 20rem;
               height: 3rem;
-              font-size: 1.6rem;
+              font-size: 1.4rem;
               outline: none;
               border: 1px solid black;
+              @media only screen and (min-width: $bp-600) {
+                font-size: 1.6rem;
+                width: 30rem;
+              }
             }
           }
         }

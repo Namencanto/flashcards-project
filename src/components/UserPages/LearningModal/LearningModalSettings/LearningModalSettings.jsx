@@ -83,7 +83,11 @@ function LearningModalSettings({
   return minWidth1000 ? (
     <>
       {modalIsVisible ? (
-        <div className={classNames(cx("mobile-settings"))}>
+        <>
+          <div
+            onClick={closePopup}
+            className={classNames(cx("mobile-settings"))}
+          ></div>
           <div className={classNames(cx("mobile-settings-content"))}>
             <div className={classNames(cx("mobile-settings-content-header"))}>
               <h2>Learning settings</h2>
@@ -270,7 +274,7 @@ function LearningModalSettings({
               </div>
             </div>
           </div>
-        </div>
+        </>
       ) : (
         ""
       )}

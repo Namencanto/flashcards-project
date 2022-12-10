@@ -57,13 +57,31 @@
   position: absolute;
   top: 0;
   left: 0;
+  bottom: 0;
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh + 11rem);
+
+  @media only screen and (max-height: 500px) {
+    height: calc(100% + 50vh);
+  }
+  @media only screen and (max-height: 400px) {
+    height: calc(100% + 100vh);
+  }
+  @media only screen and (max-height: 300px) {
+    height: calc(100% + 140vh);
+  }
+  @media only screen and (max-height: 250px) {
+    height: calc(100% + 200vh);
+  }
   background-color: rgba(0, 0, 0, 0.5);
   &-content {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
     padding: 1rem;
     background-color: white;
-    margin: auto;
     width: 25rem;
     margin-top: 12.5rem;
     height: 40rem;
