@@ -88,7 +88,7 @@ export const getFolderOrListStats = (req, res) => {
       "') AND (`folder_uid` = '" +
       id +
       "') ";
-    console.log(q);
+
     db.query(q, (err, data) => {
       if (err) return res.status(500).send(err);
 

@@ -13,9 +13,11 @@ import { Bar, Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import StatisticsCharts from "./StatisticsCharts";
 function StatisticsModal({
+  statuses,
+  type,
   hideStatisticsModal,
   statisticsModalIsVisible,
-  folderID,
+  id,
 }) {
   const { currentUser } = useContext(AuthContext);
 
@@ -29,7 +31,7 @@ function StatisticsModal({
     try {
       const res = await axios.get("/statistics/folderOrList/get", {
         params: {
-          id: folderID,
+          id,
           folder: renderFolder,
           list: renderList,
         },
@@ -37,6 +39,7 @@ function StatisticsModal({
       let dateArr = [];
       let wrongArr = [];
       let rightArr = [];
+      console.log(res.data);
       for (const { date, wrong_answers, right_answers } of res.data) {
         dateArr.push(date);
         wrongArr.push(wrong_answers);
@@ -54,9 +57,8 @@ function StatisticsModal({
     }
   };
   useEffect(() => {
-    fetchStatistics(true, false);
-    // fetchStatistics(false, true);
-  }, [folderID]);
+    fetchStatistics(type === "FOLDER", type === "LIST");
+  }, [type, id]);
 
   useEffect(() => {
     if (statisticsModalIsVisible) {
@@ -93,10 +95,12 @@ function StatisticsModal({
             <FontAwesomeIcon icon={faX} onClick={exitPopupAnimation} />
           </header>
           <main>
-            {statisticsFolderData ? (
+            {statisticsFolderData || statisticsListData ? (
               <StatisticsCharts
-                listData={statisticsListData}
-                folderData={statisticsFolderData}
+                data={
+                  type === "FOLDER" ? statisticsFolderData : statisticsListData
+                }
+                statuses={statuses}
               />
             ) : (
               ""

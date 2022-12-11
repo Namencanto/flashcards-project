@@ -48,17 +48,41 @@
     }
   }
   &-main {
-    & h2 {
-      @media only screen and (min-width: $bp-1000) {
-        margin: 1rem 0;
-        font-size: 3.2rem;
+    &-folder-title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-bottom: 2px solid #888;
+      padding: 1.5rem 0;
+      & h2 {
+        @media only screen and (min-width: $bp-1000) {
+          margin: 1rem 0;
+          font-size: 5rem;
+          font-weight: 500;
+        }
+      }
+      & p {
+        cursor: pointer;
+        padding: 0 0.5rem 0 1rem;
+        font-size: 2rem;
+      }
+      & svg {
+        padding: 0 1rem;
+      }
+      &-stats {
+        padding-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
     }
+
     & ul {
       padding: 1rem;
       & li {
         padding: 0.25rem;
-        border-bottom: 1px solid #555;
+        border-bottom: 1px solid #ccc;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -77,6 +101,8 @@
 
       & p {
         font-size: 1.2rem;
+        padding: 0 1rem;
+        cursor: pointer;
         @media only screen and (min-width: $bp-1000) {
           font-size: 1.4rem;
         }
@@ -154,7 +180,7 @@
         font-size: 1.2rem;
         text-align: center;
         width: 5rem;
-        margin-left: 0.5rem;
+
         border-radius: 2.5rem !important;
         @media only screen and (min-width: $bp-1000) {
           width: 7.5rem;

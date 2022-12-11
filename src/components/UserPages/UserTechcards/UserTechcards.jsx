@@ -11,6 +11,7 @@ import UserTechcardsContent from "./UserTechcardsContent/UserTechcardsContent";
 import ReactDOM from "react-dom";
 import { faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { useCountStatus } from "../../../hooks/useCountStatus";
 
 function UserTechcards() {
   const { minWidth1000 } = MediaQueries();
@@ -33,7 +34,9 @@ function UserTechcards() {
 
   const [techcardsChangeIcon, setTechcardsChangeIcon] = useState(faGear);
   const [changeTechcardsIsVisible, setTechcardsIsVisible] = useState(false);
-  const [StatisticsFolderID, setStatisticsFolderID] = useState();
+  const [statisticsID, setStatisticsID] = useState();
+  const [statisticsStatuses, setStatisticsStatuses] = useState([]);
+
   const fetchTechcards = async () => {
     try {
       const res = await axios.get("/techcards/get");
@@ -67,14 +70,40 @@ function UserTechcards() {
     setChangeFormIsSelected(false);
     setDeleteFormIsSelected(false);
   };
-  const displayStatisticsModalHandler = (folderID) => {
+
+  const displayFolderStatisticsModalHandler = (folderID) => {
     setStatisticsModalIsVisible(true);
-    setStatisticsFolderID(folderID);
+    let statusesArr = [];
+    for (const allSides of techcardsAllSides) {
+      for (const side of allSides) {
+        if (side.folder_uid === folderID) statusesArr.push(side.status);
+      }
+    }
+    if (statusesArr.length > 1) {
+      setStatisticsStatuses(statusesArr);
+    }
+    setStatisticsID(folderID);
   };
+  const displayListStatisticsModalHandler = (listID) => {
+    setStatisticsModalIsVisible(true);
+    let statusesArr = [];
+    for (const allSides of techcardsAllSides) {
+      for (const side of allSides) {
+        if (side.uid === listID) statusesArr.push(side.status);
+        console.log(side);
+      }
+    }
+    if (statusesArr.length > 0) {
+      setStatisticsStatuses(statusesArr);
+    }
+    setStatisticsID(listID);
+  };
+
   const hideStatisticsModal = () => {
     setStatisticsModalIsVisible(false);
   };
-
+  const statuses = useCountStatus(statisticsStatuses);
+  console.log(statuses);
   return (
     <div className={classNames(cx("techcards"))}>
       <div className="grid-mainpage-ranking">
@@ -98,7 +127,10 @@ function UserTechcards() {
                 changeTechcardsconHandler={changeTechcardsconHandler}
                 clearFormStates={clearFormStates}
                 fetchTechcards={fetchTechcards}
-                displayStatisticsModal={displayStatisticsModalHandler}
+                displayFolderStatisticsModal={
+                  displayFolderStatisticsModalHandler
+                }
+                displayListStatisticsModal={displayListStatisticsModalHandler}
               />
             }
           </UserMobileCard>
@@ -120,13 +152,16 @@ function UserTechcards() {
             changeTechcardsconHandler={changeTechcardsconHandler}
             clearFormStates={clearFormStates}
             fetchTechcards={fetchTechcards}
-            displayStatisticsModal={displayStatisticsModalHandler}
+            displayFolderStatisticsModal={displayFolderStatisticsModalHandler}
+            displayListStatisticsModal={displayListStatisticsModalHandler}
           />
         )}
         {statisticsModalIsVisible
           ? ReactDOM.createPortal(
               <StatisticsModal
-                folderID={StatisticsFolderID}
+                type={"FOLDER"}
+                id={statisticsID}
+                statuses={statuses}
                 hideStatisticsModal={hideStatisticsModal}
                 statisticsModalIsVisible={statisticsModalIsVisible}
               />,

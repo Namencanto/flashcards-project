@@ -19,6 +19,7 @@
     "classnames": "^2.3.2",
     "dotenv": "^16.0.3",
     "framer-motion": "^7.5.2",
+    "highcharts": "^10.3.2",
     "infinite-react-carousel": "^1.2.11",
     "rc-tooltip": "^5.2.2",
     "react": "^18.2.0",

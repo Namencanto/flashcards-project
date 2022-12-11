@@ -6,10 +6,10 @@ import classNames from "classnames/bind";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useRef } from "react";
-
+import { countStatus } from "../helperFunctions/countStatus";
 function UserTechcardsContent({
   deleteFormIsSelected,
   changeFormIsSelected,
@@ -27,7 +27,8 @@ function UserTechcardsContent({
   setChangeFormIsSelected,
   clearFormStates,
   changeTechcardsconHandler,
-  displayStatisticsModal,
+  displayFolderStatisticsModal,
+  displayListStatisticsModal,
 }) {
   const cx = classNames.bind(classes);
 
@@ -306,14 +307,12 @@ function UserTechcardsContent({
               }
             }
           }
-          const counts = {};
-          for (const num of counter) {
-            counts[num] = counts[num] ? counts[num] + 1 : 1;
-          }
 
+          const status = countStatus(counter);
+          const count = counter.length;
           return (
             <div key={folder} className={classNames(cx("techcards-main"))}>
-              <div style={{ display: "flex" }}>
+              <div className={classNames(cx("techcards-main-folder-title"))}>
                 {changeFormIsSelected ? (
                   <input
                     id="changeFolder"
@@ -323,13 +322,103 @@ function UserTechcardsContent({
                     oldFolder={folder}
                   ></input>
                 ) : (
-                  <h2
-                    onClick={() => {
-                      displayStatisticsModal(id);
-                    }}
-                  >
-                    {folder}
-                  </h2>
+                  <div>
+                    <h2>{folder}</h2>
+                    <div
+                      className={classNames(
+                        cx("techcards-main-folder-title-stats")
+                      )}
+                    >
+                      <p
+                        onClick={() => {
+                          displayFolderStatisticsModal(id);
+                        }}
+                      >
+                        {count}
+                      </p>
+                      <div
+                        style={{ width: "15rem" }}
+                        onClick={() => {
+                          displayFolderStatisticsModal(id);
+                        }}
+                        className={classNames(
+                          cx("techcards-main-progress-bar-list")
+                        )}
+                      >
+                        <>
+                          <div
+                            style={{
+                              width: `${!status.new ? 0 : status.new * 100}%`,
+                            }}
+                            className={classNames(
+                              cx("techcards-main-progress-bar-list-new")
+                            )}
+                          >
+                            <span>
+                              New techcards:{!status.new ? 0 : status.new}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              width: `${
+                                !status.learned ? 0 : status.learned * 100
+                              }%`,
+                            }}
+                            className={classNames(
+                              cx("techcards-main-progress-bar-list-learned")
+                            )}
+                          >
+                            <span>
+                              Learned techcards:
+                              {!status.learned ? 0 : status.learned}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              width: `${
+                                !status.known ? 0 : status.known * 100
+                              }%`,
+                            }}
+                            className={classNames(
+                              cx("techcards-main-progress-bar-list-knowed")
+                            )}
+                          >
+                            <span>
+                              Knowed techcards:
+                              {!status.known ? 0 : status.known}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              width: `${
+                                !status.toLearn ? 0 : status.toLearn * 100
+                              }%`,
+                            }}
+                            className={classNames(
+                              cx("techcards-main-progress-bar-list-to-learn")
+                            )}
+                          >
+                            <span>
+                              To learn techcards:
+                              {!status.toLearn ? 0 : status.toLearn}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              width: `${!status.hard ? 0 : status.hard * 100}%`,
+                            }}
+                            className={classNames(
+                              cx("techcards-main-progress-bar-list-hard")
+                            )}
+                          >
+                            <span>
+                              Hard techcards:{!status.hard ? 0 : status.hard}
+                            </span>
+                          </div>
+                        </>
+                      </div>
+                    </div>
+                  </div>
                 )}
                 {deleteFormIsSelected ? (
                   <input
@@ -347,26 +436,26 @@ function UserTechcardsContent({
                 <div
                   className={classNames(cx("techcards-main-progress-bar-new"))}
                 >
-                  {!counts[1] ? 0 : counts[1]}
+                  {!status.new ? 0 : status.new}
                 </div>
                 <div
                   className={classNames(
                     cx("techcards-main-progress-bar-learned")
                   )}
                 >
-                  {!counts[0] ? 0 : counts[0]}
+                  {!status.learned ? 0 : status.learned}
                 </div>
                 <div
                   className={classNames(
                     cx("techcards-main-progress-bar-to-learn")
                   )}
                 >
-                  {!counts[2] ? 0 : counts[2]}
+                  {!status.known ? 0 : status.known}
                 </div>
                 <div
                   className={classNames(cx("techcards-main-progress-bar-hard"))}
                 >
-                  {!counts[4] ? 0 : counts[4]}
+                  {!status.toLearn ? 0 : status.toLearn}
                 </div>
               </div> */}
               <ul>
@@ -397,9 +486,18 @@ function UserTechcardsContent({
                           cx("techcards-main-list-container")
                         )}
                       >
-                        <p>{listCount}</p>
+                        <p
+                          onClick={() => {
+                            displayListStatisticsModal(id);
+                          }}
+                        >
+                          {listCount}
+                        </p>
 
                         <div
+                          onClick={() => {
+                            displayListStatisticsModal(id);
+                          }}
                           className={classNames(
                             cx("techcards-main-progress-bar-list")
                           )}

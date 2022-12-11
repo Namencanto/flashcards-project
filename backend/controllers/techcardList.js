@@ -92,7 +92,7 @@ export const uploadImage = (req, res) => {
 
         if (image) {
           let imageToDB = image;
-          if (image.startsWith("image-"))
+          if (image.startsWith("techcard-image-"))
             imageToDB = `${process.env.REACT_APP_URL}/${image}`;
           q =
             "INSERT INTO `techcards` (`first_side`, `second_side`, `image`, `uid`, `folder_uid`) VALUES ('" +
