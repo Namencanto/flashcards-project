@@ -35,7 +35,6 @@ export const getUserStats = (req, res) => {
   });
 };
 export const getFolderOrListStats = (req, res) => {
-  console.log("el;o");
   const token = req.cookies.jwt;
   if (!token) return res.status(401).json("Not authenticated!");
 
@@ -65,7 +64,26 @@ export const getFolderOrListStats = (req, res) => {
       " = '" +
       id +
       "' ";
-    console.log(q);
+
+    db.query(q, (err, data) => {
+      if (err) return res.status(500).send(err);
+
+      return res.status(200).json(data);
+    });
+  });
+};
+export const getUserStrike = (req, res) => {
+  const token = req.cookies.jwt;
+  if (!token) return res.status(401).json("Not authenticated!");
+
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+
+    const q =
+      "SELECT `date` FROM folders_statistics WHERE `user_uid` = '" +
+      userInfo.id +
+      "'";
+    console.log("safffffffffffffffffffffffffffffffffffff");
     db.query(q, (err, data) => {
       if (err) return res.status(500).send(err);
 
@@ -108,8 +126,7 @@ export const addFolderOrListStats = (req, res) => {
     const today = new Date();
     const todayShort = today.toISOString().replace(/T/, " ").slice(0, -14);
     const todayLong = today.toISOString().replace(/T/, " ").slice(0, -5);
-    console.log("today");
-    console.log(todayShort);
+
     const type = folder
       ? "folders_statistics"
       : list
@@ -177,7 +194,7 @@ export const addFolderOrListStats = (req, res) => {
         "' " +
         whereToUpdate +
         "";
-      console.log(setQuery);
+
       db.query(setQuery, (err, data) => {
         if (err) return res.status(500).json(err);
         return res.json(data);

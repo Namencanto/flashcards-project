@@ -21,7 +21,8 @@ import LastLearned from "./LastLearned/LastLearned";
 import AboutMe from "./AboutMe/AboutMe";
 import Statistics from "./Statistics/Statistics";
 import Ranking from "./Ranking/Ranking";
-
+import axios from "axios";
+import { useEffect } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 function UserMainPage() {
   const { minWidth1000 } = MediaQueries();
@@ -30,10 +31,42 @@ function UserMainPage() {
   const cx = classNames.bind(classes);
 
   const [boxIsOpen, setBoxIsOpen] = useState(false);
+  const [strike, setStrike] = useState(0);
 
   const setBoxIsOpenHandler = () => {
     setBoxIsOpen(true);
   };
+  useEffect(() => {
+    const fetchStrike = async () => {
+      try {
+        const res = await axios.get("/statistics/getStrike");
+
+        const dateSet = new Set(res.data.map((obj) => obj.date.slice(0, 10)));
+        const dateArr = [...dateSet];
+        const calculateStrike = () => {
+          function getPreviousDate(days) {
+            let today = new Date();
+            today.setDate(today.getDate() - days);
+            return today.toISOString().slice(0, 10);
+          }
+          console.log("2022-12-13" === getPreviousDate(3));
+          let strikeCounter = 0;
+          dateArr.forEach((date, i) => {
+            console.log(i);
+            if (date !== getPreviousDate(i - 1)) {
+              strikeCounter++;
+            } else return strikeCounter;
+          });
+          return strikeCounter;
+        };
+
+        console.log(setStrike(calculateStrike()));
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchStrike();
+  }, []);
 
   return (
     <>
@@ -43,7 +76,7 @@ function UserMainPage() {
             {minWidth1000 === true ? (
               <>
                 <h1>Welcome {currentUser.nick}</h1>
-                <h3>Your strike is 27 days!</h3>
+                <h3>Your strike is {strike} days!</h3>
                 <div className={classNames(cx("user-main-boxes"))}>
                   <Link
                     to="about-me"
@@ -112,7 +145,7 @@ function UserMainPage() {
                 <div className={cx("user-main-desktop-hello")}>
                   <div className={cx("user-main-desktop-hello-text")}>
                     <h1>Welcome {currentUser.nick}</h1>
-                    <h3>Your strike is 27 days!</h3>
+                    <h3>Your strike is {strike} days!</h3>
                   </div>
                 </div>
 
