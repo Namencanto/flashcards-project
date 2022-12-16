@@ -10,6 +10,11 @@ import ReactCountryFlag from "react-country-flag";
 import UserMobileCard from "../UserMobileCard/UserMobileCard";
 
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
+import { useState } from "react";
+import { useEffect } from "react";
+import axios from "axios";
+import SimpleBar from "simplebar-react";
+import "simplebar-react/dist/simplebar.min.css";
 const dummyUsersData = [
   {
     user_name: "Dave",
@@ -52,8 +57,47 @@ const dummyUsersData = [
 function Ranking() {
   const { minWidth1000 } = MediaQueries();
   const { currentUser } = useContext(AuthContext);
+  const [rankingData, setRankingData] = useState([
+    {
+      user_name: "",
+      ranking_score: "",
+      nationality: "",
+      uid: "",
+    },
+  ]);
 
-  dummyUsersData.sort((a, b) => b.ranking_score - a.ranking_score);
+  useEffect(() => {
+    const fetchRanking = async () => {
+      try {
+        const res = await axios.get("/users/getRanking");
+
+        let rankingDataObject = [];
+
+        res.data.dataFirst.forEach(({ user_uid, month_score }, i) => {
+          let nicks = [];
+          for (const arr of res.data.dataSecond) {
+            nicks.push(arr[0].nick);
+          }
+          const userObject = {
+            user_name: nicks[i],
+            ranking_score: month_score,
+            nationality: "PL",
+            uid: user_uid,
+          };
+          rankingDataObject = [...rankingDataObject, userObject];
+        });
+
+        rankingDataObject?.sort((a, b) => b.ranking_score - a.ranking_score);
+        setRankingData(rankingDataObject);
+
+        console.log(rankingDataObject);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchRanking();
+  }, []);
+
   const cx = classNames.bind(classes);
 
   const date = new Date();
@@ -73,12 +117,12 @@ function Ranking() {
         <h3>{rankingTitleFunction()}</h3>
       </div>
       <ul>
-        {dummyUsersData.map((user, i) => {
+        {rankingData.map((user, i) => {
           return (
             <li key={i}>
               <Link to={`/user/allusers/${user.uid}`}>
                 <div className={classNames(cx("ranking-description"))}>
-                  <ReactCountryFlag svg countryCode={user.nationality} />
+                  {/* <ReactCountryFlag svg countryCode={user.nationality} /> coming soon*/}
 
                   <p
                     style={{
@@ -95,7 +139,7 @@ function Ranking() {
                           ? "900"
                           : i === 1
                           ? "700"
-                          : i === 2
+                          : i === 2 || currentUser.nick === user.user_name
                           ? "600"
                           : "",
                     }}

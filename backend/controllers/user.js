@@ -93,3 +93,36 @@ export const addLanguage = (req, res) => {
     });
   });
 };
+
+export const getRanking = (req, res) => {
+  const token = req.cookies.jwt;
+
+  if (!token) return res.status(401).json("Not authenticated!");
+
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+    const today = new Date();
+    const month = today.toISOString().split("T")[0].slice(0, -3);
+    const qFirst =
+      "SELECT `month_score`, `user_uid` FROM `users_monthly_statistics` WHERE month = '" +
+      month +
+      "' ORDER BY month_score DESC LIMIT 10;";
+
+    db.query(qFirst, (err, dataFirst) => {
+      console.log(dataFirst);
+      if (err) return res.status(500).json(err);
+      let qSecond = "";
+      for (const data of dataFirst) {
+        qSecond +=
+          "SELECT `nick` FROM `users` WHERE id = " + data.user_uid + ";";
+      }
+
+      console.log(qSecond);
+      db.query(qSecond, (err, dataSecond) => {
+        if (err) return res.status(500).json(err);
+
+        return res.json({ dataFirst, dataSecond });
+      });
+    });
+  });
+};
