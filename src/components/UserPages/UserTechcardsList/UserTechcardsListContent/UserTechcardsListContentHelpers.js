@@ -18,3 +18,18 @@ export const deleteTechcardsHandler = (e, firstSides, secondSides) => {
     }
   }
 };
+
+// export const listStatsHandler = () => {
+//   e.preventDefault();
+
+//   let firstSidesArr = firstSides.split("/");
+//   let secondSidesArr = secondSides.split("/");
+
+//   const techcardsToDelete = e.target.techcardToDelete;
+//   for (const techcardToDelete of techcardsToDelete) {
+//     if (techcardToDelete.checked === true) {
+//       firstSidesArr[techcardToDelete.value] = "";
+//       secondSidesArr[techcardToDelete.value] = "";
+//     }
+//   }
+// };

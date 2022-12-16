@@ -2,7 +2,7 @@ export function countStatus(arr) {
   // create an object to store the count of each value
   const counts = {
     learned: 0,
-    knowed: 0,
+    known: 0,
     new: 0,
     toLearn: 0,
     hard: 0,

@@ -243,6 +243,10 @@ function LearningModal(props) {
 
   // * DISPLAY NEW TECHCARD FUNCTION
   const newToDisplay = (setTechcards) => {
+    props.listStatsAdd(
+      setTechcards === setUnknownTechcards,
+      setTechcards === setKnownTechcards
+    );
     // IF ROUND LENGTH IS NOT ONLY ONE AND IF WHICHTECHCARD IS NOT LAST OF ROUND LENGTH
     if (roundLength !== 1 && roundLength !== whichTechcard) {
       setWhichTechcard(whichTechcard + 1);

@@ -5,6 +5,7 @@ import {
   addMainStats,
   addUserStats,
   addFolderStats,
+  addFolderOrListStats,
 } from "../controllers/statistic.js";
 
 import express from "express";
@@ -17,6 +18,6 @@ router.get("/folderOrList/get", getFolderOrListStats);
 
 router.post("/add", addMainStats);
 router.post("/user/add", addUserStats);
-router.post("/folderOrList/add", addFolderStats);
+router.post("/folderOrList/add", addFolderOrListStats);
 
 export default router;

@@ -55,6 +55,7 @@
       border-bottom: 2px solid #888;
       padding: 1.5rem 0;
       & h2 {
+        cursor: pointer;
         @media only screen and (min-width: $bp-1000) {
           margin: 1rem 0;
           font-size: 5rem;
@@ -89,6 +90,7 @@
         @media only screen and (min-width: $bp-1000) {
           padding: 1rem 0.25rem;
           & a {
+            color: $color-555;
             font-size: 1.8rem;
           }
         }
@@ -163,7 +165,7 @@
         @include progress-bar-part;
         background-color: orange;
       }
-      &-knowed {
+      &-known {
         @include progress-bar-part;
         background-color: rgb(0, 160, 0);
       }
@@ -224,7 +226,7 @@
           @include progress-bar-list-part;
           background-color: orange;
         }
-        &-knowed {
+        &-known {
           @include progress-bar-list-part;
           background-color: rgb(0, 160, 0);
         }

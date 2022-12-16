@@ -9,7 +9,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useRef } from "react";
-import { countStatus } from "../helperFunctions/countStatus";
+import { countStatus } from "../../../../HelperComponents/countStatus";
+
 function UserTechcardsContent({
   deleteFormIsSelected,
   changeFormIsSelected,
@@ -254,7 +255,7 @@ function UserTechcardsContent({
   for (let firstI = 0; firstI < techcardsAllSides?.length; firstI++) {
     let newCard = 0;
     let toLearnCard = 0;
-    let knowedCard = 0;
+    let knownCard = 0;
     let learnedCard = 0;
     let hardCard = 0;
     let uidCard;
@@ -263,7 +264,7 @@ function UserTechcardsContent({
       if (status === 5) newCard += 1;
       if (status === 0) learnedCard += 1;
       if (status === 1 || status === 2 || status === 3 || status === 4)
-        knowedCard += 1;
+        knownCard += 1;
       if (status === 6 || status === 7 || status === 8) toLearnCard += 1;
       if (status === 9 || status === 10) hardCard += 1;
       uidCard = uid;
@@ -272,12 +273,12 @@ function UserTechcardsContent({
       uidCard,
       newCard,
       learnedCard,
-      knowedCard,
+      knownCard,
       toLearnCard,
       hardCard,
     ]);
   }
-
+  console.log("ALLO", allSidesStatus);
   return (
     <div className={classNames(cx("techcards-container"))}>
       <div className={classNames(cx("techcards-title"))}>
@@ -323,7 +324,13 @@ function UserTechcardsContent({
                   ></input>
                 ) : (
                   <div>
-                    <h2>{folder}</h2>
+                    <h2
+                      onClick={() => {
+                        displayFolderStatisticsModal(id);
+                      }}
+                    >
+                      {folder}
+                    </h2>
                     <div
                       className={classNames(
                         cx("techcards-main-folder-title-stats")
@@ -380,11 +387,11 @@ function UserTechcardsContent({
                               }%`,
                             }}
                             className={classNames(
-                              cx("techcards-main-progress-bar-list-knowed")
+                              cx("techcards-main-progress-bar-list-known")
                             )}
                           >
                             <span>
-                              Knowed techcards:
+                              Known techcards:
                               {!status.known ? 0 : status.known}
                             </span>
                           </div>
@@ -532,11 +539,11 @@ function UserTechcardsContent({
                                   width: `${actualStatus[2] * 100}%`,
                                 }}
                                 className={classNames(
-                                  cx("techcards-main-progress-bar-list-knowed")
+                                  cx("techcards-main-progress-bar-list-known")
                                 )}
                               >
                                 <span>
-                                  Knowed techcards:
+                                  known techcards:
                                   {actualStatus[2]}
                                 </span>
                               </div>

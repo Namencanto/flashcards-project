@@ -12,6 +12,7 @@ import ReactDOM from "react-dom";
 import { faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useCountStatus } from "../../../hooks/useCountStatus";
+import { countStatus } from "../../../HelperComponents/countStatus";
 
 function UserTechcards() {
   const { minWidth1000 } = MediaQueries();
@@ -34,8 +35,12 @@ function UserTechcards() {
 
   const [techcardsChangeIcon, setTechcardsChangeIcon] = useState(faGear);
   const [changeTechcardsIsVisible, setTechcardsIsVisible] = useState(false);
+
   const [statisticsID, setStatisticsID] = useState();
   const [statisticsStatuses, setStatisticsStatuses] = useState([]);
+  const [statisticsCreatedDate, setStatisticsCreatedDate] = useState("");
+  const [statisticsTitle, setStatisticsTitle] = useState("");
+  const [folderOrListStats, setFolderOrListStats] = useState("");
 
   const fetchTechcards = async () => {
     try {
@@ -43,7 +48,7 @@ function UserTechcards() {
 
       setTechcardsFolders(res.data[0]);
       setTechcardsLists(res.data[1]);
-      setTechcardsAllSides(res?.data[2]);
+      setTechcardsAllSides(res.data[2]);
     } catch (err) {
       console.log(err);
     }
@@ -65,105 +70,98 @@ function UserTechcards() {
       setAddFormIsSelected(true);
     }
   };
+
   const clearFormStates = () => {
     setAddFormIsSelected(false);
     setChangeFormIsSelected(false);
     setDeleteFormIsSelected(false);
   };
 
-  const displayFolderStatisticsModalHandler = (folderID) => {
-    setStatisticsModalIsVisible(true);
+  const setDataToStatistics = (id, type) => {
     let statusesArr = [];
     for (const allSides of techcardsAllSides) {
       for (const side of allSides) {
-        if (side.folder_uid === folderID) statusesArr.push(side.status);
-      }
-    }
-    if (statusesArr.length > 1) {
-      setStatisticsStatuses(statusesArr);
-    }
-    setStatisticsID(folderID);
-  };
-  const displayListStatisticsModalHandler = (listID) => {
-    setStatisticsModalIsVisible(true);
-    let statusesArr = [];
-    for (const allSides of techcardsAllSides) {
-      for (const side of allSides) {
-        if (side.uid === listID) statusesArr.push(side.status);
-        console.log(side);
+        if (side.uid === id && type === "LIST") statusesArr.push(side.status);
+        if (side.folder_uid === id && type === "FOLDER")
+          statusesArr.push(side.status);
       }
     }
     if (statusesArr.length > 0) {
-      setStatisticsStatuses(statusesArr);
-    }
-    setStatisticsID(listID);
+      setStatisticsStatuses(countStatus(statusesArr));
+    } else setStatisticsStatuses(countStatus([]));
+    setStatisticsID(id);
+    setFolderOrListStats(type);
+    setStatisticsModalIsVisible(true);
   };
 
+  const displayFolderStatisticsModalHandler = (folderID) => {
+    setDataToStatistics(folderID, "FOLDER");
+    console.log(techcardsFolders);
+    for (const techcardsFolder of techcardsFolders) {
+      if (techcardsFolder.id === folderID) {
+        setStatisticsTitle(techcardsFolder.folder);
+        const date = new Date(techcardsFolder.created_date);
+        setStatisticsCreatedDate(date);
+      }
+    }
+  };
+  const displayListStatisticsModalHandler = (listID) => {
+    setDataToStatistics(listID, "LIST");
+    for (const techcardsListArr of techcardsLists) {
+      for (const techcardsList of techcardsListArr) {
+        if (techcardsList.id === listID) {
+          setStatisticsTitle(techcardsList.list);
+          const date = new Date(techcardsList.created_date);
+          setStatisticsCreatedDate(date);
+        }
+      }
+    }
+  };
   const hideStatisticsModal = () => {
     setStatisticsModalIsVisible(false);
   };
-  const statuses = useCountStatus(statisticsStatuses);
-  console.log(statuses);
+  console.log("cjuj", statisticsStatuses);
+
+  const props = {
+    deleteFormIsSelected,
+    changeFormIsSelected,
+    addFormIsSelected,
+    techcardsFolders,
+    techcardsLists,
+    techcardsAllSides,
+    userMessage,
+    techcardsChangeIcon,
+    changeTechcardsIsVisible,
+    setUserMessage,
+    setAddFormIsSelected,
+    setDeleteFormIsSelected,
+    setChangeFormIsSelected,
+    changeTechcardsconHandler,
+    clearFormStates,
+    fetchTechcards,
+    displayFolderStatisticsModal: displayFolderStatisticsModalHandler,
+    displayListStatisticsModal: displayListStatisticsModalHandler,
+  };
   return (
     <div className={classNames(cx("techcards"))}>
       <div className="grid-mainpage-ranking">
         {minWidth1000 ? (
           <UserMobileCard icon={faRocket}>
-            {
-              <UserTechcardsContent
-                deleteFormIsSelected={deleteFormIsSelected}
-                changeFormIsSelected={changeFormIsSelected}
-                addFormIsSelected={addFormIsSelected}
-                techcardsFolders={techcardsFolders}
-                techcardsLists={techcardsLists}
-                techcardsAllSides={techcardsAllSides}
-                userMessage={userMessage}
-                techcardsChangeIcon={techcardsChangeIcon}
-                changeTechcardsIsVisible={changeTechcardsIsVisible}
-                setUserMessage={setUserMessage}
-                setAddFormIsSelected={setAddFormIsSelected}
-                setChangeFormIsSelected={setChangeFormIsSelected}
-                setDeleteFormIsSelected={setDeleteFormIsSelected}
-                changeTechcardsconHandler={changeTechcardsconHandler}
-                clearFormStates={clearFormStates}
-                fetchTechcards={fetchTechcards}
-                displayFolderStatisticsModal={
-                  displayFolderStatisticsModalHandler
-                }
-                displayListStatisticsModal={displayListStatisticsModalHandler}
-              />
-            }
+            {<UserTechcardsContent {...props} />}
           </UserMobileCard>
         ) : (
-          <UserTechcardsContent
-            deleteFormIsSelected={deleteFormIsSelected}
-            changeFormIsSelected={changeFormIsSelected}
-            addFormIsSelected={addFormIsSelected}
-            techcardsFolders={techcardsFolders}
-            techcardsLists={techcardsLists}
-            techcardsAllSides={techcardsAllSides}
-            userMessage={userMessage}
-            techcardsChangeIcon={techcardsChangeIcon}
-            changeTechcardsIsVisible={changeTechcardsIsVisible}
-            setUserMessage={setUserMessage}
-            setAddFormIsSelected={setAddFormIsSelected}
-            setDeleteFormIsSelected={setDeleteFormIsSelected}
-            setChangeFormIsSelected={setChangeFormIsSelected}
-            changeTechcardsconHandler={changeTechcardsconHandler}
-            clearFormStates={clearFormStates}
-            fetchTechcards={fetchTechcards}
-            displayFolderStatisticsModal={displayFolderStatisticsModalHandler}
-            displayListStatisticsModal={displayListStatisticsModalHandler}
-          />
+          <UserTechcardsContent {...props} />
         )}
         {statisticsModalIsVisible
           ? ReactDOM.createPortal(
               <StatisticsModal
-                type={"FOLDER"}
+                type={folderOrListStats}
                 id={statisticsID}
-                statuses={statuses}
+                statuses={statisticsStatuses}
                 hideStatisticsModal={hideStatisticsModal}
                 statisticsModalIsVisible={statisticsModalIsVisible}
+                created_date={statisticsCreatedDate}
+                title={statisticsTitle}
               />,
               document.getElementById("overlay-root")
             )

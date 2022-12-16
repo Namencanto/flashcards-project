@@ -7,17 +7,17 @@ import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../../../../context/AuthContext";
 import { useRef } from "react";
 import axios from "axios";
-import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 
-import { Bar, Line } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto";
 import StatisticsCharts from "./StatisticsCharts";
+
 function StatisticsModal({
   statuses,
   type,
   hideStatisticsModal,
   statisticsModalIsVisible,
   id,
+  created_date,
+  title,
 }) {
   const { currentUser } = useContext(AuthContext);
 
@@ -79,6 +79,11 @@ function StatisticsModal({
       hideStatisticsModal();
     }, 200);
   };
+  // const activityDate = statisticsListData.allDates?.[0]
+  const activityDate =
+    type === "FOLDER"
+      ? new Date(statisticsFolderData.allDates?.[0])
+      : new Date(statisticsListData.allDates?.[0]);
 
   return (
     <>
@@ -94,7 +99,21 @@ function StatisticsModal({
             <div style={{ textAlign: "center" }}></div>
             <FontAwesomeIcon icon={faX} onClick={exitPopupAnimation} />
           </header>
-          <main>
+          <main className={classNames(cx("statistics-main"))}>
+            <div className={classNames(cx("statistics-main-info"))}>
+              <p>
+                {type[0] + type.slice(1).toLowerCase()}: {title}
+              </p>
+              <p>
+                Created at: {created_date.toLocaleString(navigator.language)}
+              </p>
+              <p>
+                First activity:{" "}
+                {activityDate
+                  ? activityDate?.toLocaleString(navigator.language)
+                  : "Not started yet"}
+              </p>
+            </div>
             {statisticsFolderData || statisticsListData ? (
               <StatisticsCharts
                 data={

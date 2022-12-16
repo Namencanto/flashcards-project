@@ -3,5 +3,27 @@
     padding: 1rem;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #555;
+    & h2 {
+      font-size: 3.2rem;
+    }
+  }
+  &-main {
+    padding: 1rem;
+    &-info {
+      padding-bottom: 2rem;
+    }
+    &-charts {
+      // height: 210rem;
+      & canvas {
+        margin: 5rem 0;
+
+        // scale: 0.9;
+      }
+      & h2 {
+        font-weight: 400;
+      }
+    }
   }
 }
