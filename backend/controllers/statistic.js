@@ -2,35 +2,44 @@ import { db } from "../config/db.js";
 import jwt from "jsonwebtoken";
 import jwt_decode from "jwt-decode";
 
+function checkToken(req, res, next) {
+  const token = req.cookies.jwt;
+  if (!token) return res.status(401).json("Not authenticated!");
+
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+
+    next(userInfo);
+  });
+}
+
 export const getUserStats = (req, res) => {
-  const qFolders = "SELECT * FROM folders WHERE uid = '" + "4" + "'";
-
-  db.query(qFolders, (err, foldersData) => {
-    if (err) return res.status(500).send(err);
-    let qLists = "";
-    for (const { id } of foldersData) {
-      qLists += "SELECT * FROM lists WHERE uid = '" + id + "';";
-    }
-
-    db.query(qLists, (err, listsData) => {
+  checkToken(req, res, (userInfo) => {
+    const qLearned =
+      "SELECT status FROM `techcards` WHERE user_uid = " +
+      userInfo.id +
+      " AND status = 0;";
+    const qJoinedDate =
+      " SELECT joined_date FROM `users` WHERE id = " + userInfo.id + ";";
+    const qCountFolders =
+      " SELECT COUNT(*) FROM `folders` WHERE user_uid = " + userInfo.id + ";";
+    const qCountLists =
+      " SELECT COUNT(*) FROM `lists` WHERE user_uid = " + userInfo.id + ";";
+    const qCountTechcards =
+      " SELECT COUNT(*) FROM `techcards` WHERE user_uid = " + userInfo.id + ";";
+    const finalQ =
+      qLearned + qJoinedDate + qCountFolders + qCountLists + qCountTechcards;
+    db.query(finalQ, (err, data) => {
       if (err) return res.status(500).send(err);
-
-      if (listsData.length > 0) {
-        let qTechcards = "";
-        if (foldersData.length === 1) listsData = [listsData];
-        for (let i = 0; i < listsData.length; i++) {
-          for (const listData of listsData[i]) {
-            qTechcards +=
-              "SELECT * FROM techcards WHERE uid = '" + listData.id + "';";
-          }
-        }
-
-        db.query(qTechcards, (err, techcardsData) => {
-          if (err) return res.status(500).send(err);
-
-          return res.status(200).json([foldersData, listsData, techcardsData]);
-        });
-      } else return res.status(200).json([foldersData, listsData]);
+      return res.status(200).json({
+        learnedNumber: data[0].length,
+        joinedDate: data[1][0].joined_date,
+        timeSpend: 1000,
+        rankingPlace: 5,
+        createdFolders: data[2][0]["COUNT(*)"],
+        createdLists: data[3][0]["COUNT(*)"],
+        createdTechcards: data[4][0]["COUNT(*)"],
+      });
     });
   });
 };

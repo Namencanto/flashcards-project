@@ -6,7 +6,7 @@ import LoginPage from "./components/LoginPage/LoginPage";
 import UserPages from "./components/UserPages/UserPages";
 import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
-
+import { getCookie } from "./HelperComponents/getCookie";
 function App() {
   const { currentUser } = useContext(AuthContext);
   // page loading spinner
@@ -37,7 +37,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<Navigate to="/home" />}></Route> */}
+        {!getCookie("jwtTime") && (
+          <Route path="/user/*" element={<Navigate to="/login" />}></Route>
+        )}
 
         <Route
           path="/*"

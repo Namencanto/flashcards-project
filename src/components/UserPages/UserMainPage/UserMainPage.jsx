@@ -16,7 +16,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import MediaQueries from "../../../HelperComponents/MediaQueries";
-
 import LastLearned from "./LastLearned/LastLearned";
 import AboutMe from "./AboutMe/AboutMe";
 import Statistics from "./Statistics/Statistics";
@@ -40,20 +39,22 @@ function UserMainPage() {
     const fetchStrike = async () => {
       try {
         const res = await axios.get("/statistics/getStrike");
-
         const dateSet = new Set(res.data.map((obj) => obj.date.slice(0, 10)));
-        const dateArr = [...dateSet];
+        const dateArr = [...dateSet].reverse();
         const calculateStrike = () => {
           function getPreviousDate(days) {
             let today = new Date();
+
+            if (dateArr[0] !== today.toISOString().slice(0, 10)) {
+              today.setDate(today.getDate() - 1);
+            }
             today.setDate(today.getDate() - days);
             return today.toISOString().slice(0, 10);
           }
-          console.log("2022-12-13" === getPreviousDate(3));
+
           let strikeCounter = 0;
           dateArr.forEach((date, i) => {
-            console.log(i);
-            if (date !== getPreviousDate(i - 1)) {
+            if (date === getPreviousDate(i)) {
               strikeCounter++;
             } else return strikeCounter;
           });
@@ -75,7 +76,9 @@ function UserMainPage() {
           <div className={classNames(cx("user-main-container"))}>
             {minWidth1000 === true ? (
               <>
-                <h1>Welcome {currentUser.nick}</h1>
+                <h1>
+                  Welcome <br /> {currentUser.nick}
+                </h1>
                 <h3>Your strike is {strike} days!</h3>
                 <div className={classNames(cx("user-main-boxes"))}>
                   <Link

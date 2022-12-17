@@ -59,8 +59,8 @@ function UserTechcardsContent({
         allInputs.forEach((input) => {
           let listExists = false;
           techcardsLists.forEach((arr) => {
-            arr.forEach(({ list, uid }) => {
-              if (+input.attributes.folderID.value === uid) {
+            arr.forEach(({ list, folder_uid }) => {
+              if (+input.attributes.folderID.value === folder_uid) {
                 if (list === input.value) {
                   return (listExists = true);
                 }
@@ -128,8 +128,8 @@ function UserTechcardsContent({
         // check if list name already exists
         let listExists = false;
         techcardsLists.forEach((arr) => {
-          arr.forEach(({ list, uid }) => {
-            if (+inputList.attributes.folderID.value === uid) {
+          arr.forEach(({ list, folder_uid }) => {
+            if (+inputList.attributes.folderID.value === folder_uid) {
               if (list === inputList.value) {
                 return (listExists = true);
               }
@@ -260,14 +260,14 @@ function UserTechcardsContent({
     let hardCard = 0;
     let uidCard;
 
-    for (const { status, uid } of techcardsAllSides[firstI]) {
+    for (const { status, list_uid } of techcardsAllSides[firstI]) {
       if (status === 5) newCard += 1;
       if (status === 0) learnedCard += 1;
       if (status === 1 || status === 2 || status === 3 || status === 4)
         knownCard += 1;
       if (status === 6 || status === 7 || status === 8) toLearnCard += 1;
       if (status === 9 || status === 10) hardCard += 1;
-      uidCard = uid;
+      uidCard = list_uid;
     }
     allSidesStatus.push([
       uidCard,

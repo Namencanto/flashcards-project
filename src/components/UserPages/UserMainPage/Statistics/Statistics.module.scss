@@ -10,12 +10,14 @@
     background-color: $color-white;
   }
   &-container {
+    min-height: 70vh;
     overflow: auto;
     background-color: $color-white;
     border-radius: 1rem;
-    padding: 1rem 1rem 9rem 1rem;
+    padding: 1rem 1rem 5rem 1rem;
 
     @media only screen and (min-width: $bp-1000) {
+      min-height: 0;
       padding: 1rem;
       border-radius: 0;
       height: 40vh;

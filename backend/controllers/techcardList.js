@@ -17,13 +17,13 @@ export const getTechcardList = (req, res) => {
       if (err) return res.status(500).send(err);
 
       const qTechcards =
-        "SELECT * FROM techcards WHERE uid = '" + listsData[0].id + "'";
+        "SELECT * FROM techcards WHERE list_uid = '" + listsData[0].id + "'";
       db.query(qTechcards, (err, techcardsData) => {
         if (err) return res.status(500).send(err);
 
         return res.status(200).json({
           techcardsData,
-          folderID: listsData[0].uid,
+          folderID: listsData[0].folder_uid,
           listImage: listsData[0].image,
         });
       });
@@ -95,7 +95,7 @@ export const uploadImage = (req, res) => {
           if (image.startsWith("techcard-image-"))
             imageToDB = `${process.env.REACT_APP_URL}/${image}`;
           q =
-            "INSERT INTO `techcards` (`first_side`, `second_side`, `image`, `uid`, `folder_uid`) VALUES ('" +
+            "INSERT INTO `techcards` (`first_side`, `second_side`, `image`, `list_uid`, `folder_uid`, `user_uid`) VALUES ('" +
             firstSide +
             "', '" +
             secondSide +
@@ -105,10 +105,12 @@ export const uploadImage = (req, res) => {
             id +
             "', '" +
             folderID +
+            "', '" +
+            userInfo.id +
             "');";
         } else {
           q =
-            "INSERT INTO `techcards` (`first_side`, `second_side`, `uid`, `folder_uid`) VALUES ('" +
+            "INSERT INTO `techcards` (`first_side`, `second_side`, `list_uid`, `folder_uid`, `user_uid`) VALUES ('" +
             firstSide +
             "', '" +
             secondSide +
@@ -116,6 +118,8 @@ export const uploadImage = (req, res) => {
             id +
             "', '" +
             folderID +
+            "', '" +
+            userInfo.id +
             "');";
         }
       }

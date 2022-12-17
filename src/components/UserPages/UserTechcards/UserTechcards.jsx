@@ -81,7 +81,9 @@ function UserTechcards() {
     let statusesArr = [];
     for (const allSides of techcardsAllSides) {
       for (const side of allSides) {
-        if (side.uid === id && type === "LIST") statusesArr.push(side.status);
+        console.log(side);
+        if (side.list_uid === id && type === "LIST")
+          statusesArr.push(side.status);
         if (side.folder_uid === id && type === "FOLDER")
           statusesArr.push(side.status);
       }

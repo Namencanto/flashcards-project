@@ -3,42 +3,54 @@ import jwt from "jsonwebtoken";
 import jwt_decode from "jwt-decode";
 
 export const getTechcards = (req, res) => {
-  const qFolders = "SELECT * FROM folders WHERE uid = '" + "4" + "'";
+  const token = req.cookies.jwt;
 
-  db.query(qFolders, (err, foldersData) => {
-    if (err) return res.status(500).send(err);
-    // console.log(foldersData);
-    let qLists = "";
-    for (const { id } of foldersData) {
-      qLists += "SELECT * FROM lists WHERE uid = '" + id + "';";
-    }
+  if (!token) return res.status(401).json("Not authenticated!");
 
-    db.query(qLists, (err, listsData) => {
+  jwt.verify(token, "jwtkey", (err, userInfo) => {
+    if (err) return res.status(403).json("Token is not valid!");
+    const qFolders =
+      "SELECT * FROM folders WHERE user_uid = '" + userInfo.id + "'";
+    db.query(qFolders, (err, foldersData) => {
       if (err) return res.status(500).send(err);
 
-      if (listsData.length > 0) {
-        let qTechcards = "";
-        if (foldersData.length === 1) listsData = [listsData];
-        for (let i = 0; i < listsData.length; i++) {
-          for (const listData of listsData[i]) {
-            qTechcards +=
-              "SELECT * FROM techcards WHERE uid = '" + listData.id + "';";
+      let qLists = "";
+      for (const { id } of foldersData) {
+        qLists += "SELECT * FROM lists WHERE folder_uid = '" + id + "';";
+      }
+
+      db.query(qLists, (err, listsData) => {
+        if (err) return res.status(500).send(err);
+
+        if (listsData.length > 0) {
+          let qTechcards = "";
+          if (foldersData.length === 1) listsData = [listsData];
+          for (let i = 0; i < listsData.length; i++) {
+            for (const listData of listsData[i]) {
+              console.log(listData.id);
+              qTechcards +=
+                "SELECT * FROM techcards WHERE list_uid = '" +
+                listData.id +
+                "';";
+            }
           }
-        }
 
-        db.query(qTechcards, (err, techcardsData) => {
-          if (err) return res.status(500).send(err);
+          db.query(qTechcards, (err, techcardsData) => {
+            if (err) return res.status(500).send(err);
 
-          return res.status(200).json([foldersData, listsData, techcardsData]);
-        });
-      } else return res.status(200).json([foldersData, listsData]);
+            return res
+              .status(200)
+              .json([foldersData, listsData, techcardsData]);
+          });
+        } else return res.status(200).json([foldersData, listsData]);
+      });
     });
   });
 };
 
 export const addTechcards = (req, res) => {
   const token = req.cookies.jwt;
-  console.log(token);
+
   if (!token) return res.status(401).json("Not authenticated!");
 
   jwt.verify(token, "jwtkey", (err, userInfo) => {
@@ -52,10 +64,12 @@ export const addTechcards = (req, res) => {
 
       listToAdd.forEach((list, i) => {
         allAddQueries +=
-          "INSERT INTO `lists` (`list`, `uid`) VALUES ('" +
+          "INSERT INTO `lists` (`list`, `folder_uid`, user_uid) VALUES ('" +
           list[1] +
           "', '" +
           list[0] +
+          "', '" +
+          userInfo.id +
           "');";
       });
 
@@ -69,7 +83,7 @@ export const addTechcards = (req, res) => {
     if (folderToAdd && !listToAdd) {
       console.log(folderToAdd);
       const addFolderQuery =
-        "INSERT INTO `folders` (`folder`, `uid`) VALUES ('" +
+        "INSERT INTO `folders` (`folder`, `user_uid`) VALUES ('" +
         folderToAdd +
         "', '" +
         userInfo.id +
@@ -102,21 +116,37 @@ export const deleteTechcards = (req, res) => {
 
       listToDelete?.forEach((listID, i) => {
         allElementsToDelete +=
-          "DELETE FROM `lists` WHERE (`id` = '" + listID + "');";
+          "DELETE FROM `lists` WHERE (`id` = '" +
+          listID +
+          "') AND (`user_uid` = '" +
+          userInfo.id +
+          "');";
         allElementsToDelete +=
-          "DELETE FROM `techcards` WHERE (`uid` = '" + listID + "');";
+          "DELETE FROM `techcards` WHERE (`list_uid` = '" +
+          listID +
+          "') AND (`user_uid` = '" +
+          userInfo.id +
+          "');";
       });
       folderToDelete?.forEach((folderID, i) => {
         allElementsToDelete +=
           "DELETE FROM `folders` WHERE (`id` = '" +
           folderID +
-          "') AND (`uid` = '" +
+          "') AND (`user_uid` = '" +
           userInfo.id +
           "');";
         allElementsToDelete +=
-          "DELETE FROM `lists` WHERE (`id` = '" + folderID + "');";
+          "DELETE FROM `lists` WHERE (`id` = '" +
+          folderID +
+          "') AND (`user_uid` = '" +
+          userInfo.id +
+          "');";
         allElementsToDelete +=
-          "DELETE FROM `techcards` WHERE (`folder_uid` = '" + folderID + "');";
+          "DELETE FROM `techcards` WHERE (`list_uid` = '" +
+          folderID +
+          "') AND (`user_uid` = '" +
+          userInfo.id +
+          "');";
       });
       db.query(allElementsToDelete, (err, data) => {
         if (err) return res.status(500).json(err);
@@ -151,6 +181,8 @@ export const updateTechcards = (req, res) => {
           listNameToChange +
           "' WHERE (`id` = '" +
           listID +
+          "' AND user_uid = '" +
+          userInfo.id +
           "');";
       });
       folderToChange?.forEach((folder, i) => {
@@ -161,6 +193,8 @@ export const updateTechcards = (req, res) => {
           folderNameToChange +
           "' WHERE (`id` = '" +
           folderID +
+          "' AND user_uid = '" +
+          userInfo.id +
           "');";
       });
       db.query(allElementsToChange, (err, data) => {

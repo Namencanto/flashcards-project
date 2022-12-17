@@ -24,13 +24,14 @@
   }
 
   &-container {
-    min-height: 40rem;
+    min-height: 70vh;
     overflow: auto;
     background-color: $color-white;
     border-radius: 1rem;
-    padding: 1rem 1rem 9rem 1rem;
+    padding: 1rem 1rem 5rem 1rem;
     position: relative;
     margin: auto;
+    height: 100%;
 
     @media only screen and (min-width: $bp-1000) {
       // padding-bottom: calc(40vh - 9.6rem);
@@ -48,6 +49,8 @@
     }
   }
   &-main {
+    overflow: hidden;
+    position: relative;
     &-folder-title {
       display: flex;
       flex-direction: column;
@@ -55,8 +58,10 @@
       border-bottom: 2px solid #888;
       padding: 1.5rem 0;
       & h2 {
+        text-align: center;
         cursor: pointer;
         @media only screen and (min-width: $bp-1000) {
+          text-align: start;
           margin: 1rem 0;
           font-size: 5rem;
           font-weight: 500;

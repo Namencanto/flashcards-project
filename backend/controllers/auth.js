@@ -95,6 +95,10 @@ export const logout = (req, res) => {
       sameSite: "none",
       secure: true,
     })
+    .clearCookie("jwtTime", {
+      sameSite: "none",
+      secure: true,
+    })
     .status(200)
     .json("User has been logged out.");
 };

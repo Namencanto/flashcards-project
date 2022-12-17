@@ -15,19 +15,13 @@ import { useEffect } from "react";
 import axios from "axios";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
+import RankingContent from "./RankingContent";
 
 function Ranking() {
   const { minWidth1000 } = MediaQueries();
   const { currentUser } = useContext(AuthContext);
-  const [rankingData, setRankingData] = useState([
-    {
-      user_name: "",
-      ranking_score: "",
-      nationality: "",
-      uid: "",
-    },
-  ]);
-
+  const [rankingData, setRankingData] = useState([]);
+  const [fetchError, setFetchError] = useState(false);
   useEffect(() => {
     const fetchRanking = async () => {
       try {
@@ -51,10 +45,8 @@ function Ranking() {
 
         rankingDataObject?.sort((a, b) => b.ranking_score - a.ranking_score);
         setRankingData(rankingDataObject);
-
-        console.log(rankingDataObject);
       } catch (err) {
-        console.log(err);
+        setFetchError(true);
       }
     };
     fetchRanking();
@@ -72,58 +64,27 @@ function Ranking() {
     return rankingTitle;
   }
 
-  const content = (
-    <div className={classNames(cx("ranking-container"))}>
-      <div className={classNames(cx("ranking-title"))}>
-        <h1>RANKING</h1>
-        <h3>{rankingTitleFunction()}</h3>
-      </div>
-      <ul>
-        {rankingData.map((user, i) => {
-          return (
-            <li key={i}>
-              <Link to={`/user/allusers/${user.uid}`}>
-                <div className={classNames(cx("ranking-description"))}>
-                  {/* <ReactCountryFlag svg countryCode={user.nationality} /> coming soon*/}
-
-                  <p
-                    style={{
-                      color:
-                        i === 0
-                          ? "gold"
-                          : i === 1
-                          ? "silver"
-                          : i === 2
-                          ? "brown"
-                          : "",
-                      fontWeight:
-                        i === 0
-                          ? "900"
-                          : i === 1
-                          ? "700"
-                          : i === 2 || currentUser.nick === user.user_name
-                          ? "600"
-                          : "",
-                    }}
-                  >
-                    {user.user_name}
-                  </p>
-                  <span>Score: {user.ranking_score}</span>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
   return (
     <div className={classNames(cx("ranking"))}>
       <div className="grid-mainpage-ranking">
         {minWidth1000 ? (
-          <UserMobileCard icon={faRankingStar}>{content}</UserMobileCard>
+          <UserMobileCard icon={faRankingStar}>
+            {
+              <RankingContent
+                rankingTitleFunction={rankingTitleFunction}
+                rankingData={rankingData}
+                currentUserNick={currentUser.nick}
+                error={fetchError}
+              />
+            }
+          </UserMobileCard>
         ) : (
-          content
+          <RankingContent
+            rankingTitleFunction={rankingTitleFunction}
+            rankingData={rankingData}
+            currentUserNick={currentUser.nick}
+            error={fetchError}
+          />
         )}
       </div>
     </div>

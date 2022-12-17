@@ -1,7 +1,7 @@
 import classes from "./Statistics.module.scss";
 import classNames from "classnames/bind";
 
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 
 import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 
@@ -11,6 +11,9 @@ import { Bar, Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
+import axios from "axios";
+import StatisticsChart from "./StatisticsChart";
+import StatisticsData from "./StatisticsData";
 
 const dummyData = [
   {
@@ -33,10 +36,35 @@ const dummyData = [
 function Statistics() {
   const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
+  const [learnedNumber, setLearnedNumber] = useState(0);
+  const [joinedDate, setJoinedDate] = useState("");
+  const [allCounts, setAllCounts] = useState({
+    createdFolders: 0,
+    createdLists: 0,
+    createdTechcards: 0,
+  });
 
-  const radioAllDataRef = useRef();
-  const radioLearnedRed = useRef();
-  const radioTimeSpendRef = useRef();
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get("/statistics/user/get");
+        console.log(res.data[1]);
+        setLearnedNumber(res.data.learnedNumber);
+        const joined = new Date(res.data.joinedDate);
+        setJoinedDate(joined.toLocaleString(navigator.language));
+
+        setAllCounts({
+          createdFolders: res.data.createdFolders,
+          createdLists: res.data.createdLists,
+          createdTechcards: res.data.createdTechcards,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const [chartData, setChartData] = useState("techcards");
   const [chartType, setChartType] = useState("Line");
@@ -79,75 +107,43 @@ function Statistics() {
           ],
   };
 
-  //   if (radioAllDataRef.current.checked === true) {
-  //     setChartData("all");
-  //   }
-
-  const content = (
-    <div className={classNames(cx("statistics-container"))}>
-      {chartType === "Line" ? (
-        <Line data={userData} />
-      ) : (
-        <Bar data={userData} />
-      )}
-      <button
-        onClick={() => {
-          chartType === "Line" ? setChartType("Bar") : setChartType("Line");
-        }}
-        className="btn-solid-medium"
-      >
-        {chartType === "Line" ? "Switch to bar" : "Switch to line"}
-      </button>
-      <fieldset>
-        <legend>Select a maintenance drone:</legend>
-        <div>
-          <input
-            onClick={() => {
-              setChartData("all");
-            }}
-            checked={chartData === "all" ? true : false}
-            ref={radioAllDataRef}
-            type="radio"
-            id="charts-1"
-          />
-          <label htmlFor="charts-1">View all data</label>
-        </div>
-
-        <div>
-          <input
-            onClick={() => {
-              setChartData("techcards");
-            }}
-            checked={chartData === "techcards" ? true : false}
-            ref={radioLearnedRed}
-            type="radio"
-            id="charts-2"
-          />
-          <label htmlFor="charts-2">Learned techcards</label>
-        </div>
-
-        <div>
-          <input
-            onClick={() => {
-              setChartData("timeSpend");
-            }}
-            checked={chartData === "timeSpend" ? true : false}
-            ref={radioTimeSpendRef}
-            type="radio"
-            id="charts-3"
-          />
-          <label htmlFor="charts-3">Time spend</label>
-        </div>
-      </fieldset>
-    </div>
-  );
   return (
     <div className={classNames(cx("statistics"))}>
       <div className="grid-mainpage-statistics">
         {minWidth1000 ? (
-          <UserMobileCard icon={faChartLine}>{content}</UserMobileCard>
+          <UserMobileCard icon={faChartLine}>
+            {
+              <div className={classNames(cx("statistics-container"))}>
+                <StatisticsData
+                  allCounts={allCounts}
+                  joinedDate={joinedDate}
+                  learned={learnedNumber}
+                />
+                <StatisticsChart
+                  chartType={chartType}
+                  chartData={chartData}
+                  userData={userData}
+                  setChartData={setChartData}
+                  setChartType={setChartType}
+                />
+              </div>
+            }
+          </UserMobileCard>
         ) : (
-          content
+          <div className={classNames(cx("statistics-container"))}>
+            <StatisticsData
+              allCounts={allCounts}
+              joinedDate={joinedDate}
+              learned={learnedNumber}
+            />
+            <StatisticsChart
+              chartType={chartType}
+              chartData={chartData}
+              userData={userData}
+              setChartData={setChartData}
+              setChartType={setChartType}
+            />
+          </div>
         )}
       </div>
     </div>

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import Header from "./Header/Header";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getCookie } from "../../HelperComponents/getCookie";
 
 import classes from "./LoginPage.module.scss";
 import classNames from "classnames/bind";
@@ -12,7 +13,7 @@ import { Link } from "react-router-dom";
 function LoginPage(props) {
   const cx = classNames.bind(classes);
   const [loginIsVisible, setLoginIsVisible] = useState(true);
-
+  let navigate = useNavigate();
   let pathName = useLocation().pathname;
 
   if (loginIsVisible !== false && pathName === "/register") {
@@ -21,7 +22,11 @@ function LoginPage(props) {
   if (loginIsVisible !== true && pathName === "/login") {
     setLoginIsVisible(true);
   }
-
+  useEffect(() => {
+    if (getCookie("jwtTime")) {
+      navigate("/user");
+    }
+  }, [getCookie("jwtTime")]);
   return (
     <>
       {/* login && header login : reszta */}
