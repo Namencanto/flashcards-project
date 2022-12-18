@@ -39,16 +39,24 @@ function StatisticsModal({
       let dateArr = [];
       let wrongArr = [];
       let rightArr = [];
-      console.log(res.data);
-      for (const { date, wrong_answers, right_answers } of res.data) {
+      let timeArr = [];
+
+      for (const {
+        date,
+        wrong_answers,
+        right_answers,
+        time_spent,
+      } of res.data) {
         dateArr.push(date);
         wrongArr.push(wrong_answers);
         rightArr.push(right_answers);
+        timeArr.push(time_spent);
       }
       const statisticsObject = {
         allDates: dateArr,
         allWrong: wrongArr,
         allRight: rightArr,
+        allTimes: timeArr,
       };
       if (renderFolder) setStatisticFoldersData(statisticsObject);
       if (renderList) setStatisticListsData(statisticsObject);

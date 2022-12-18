@@ -27,19 +27,41 @@ export const getUserStats = (req, res) => {
       " SELECT COUNT(*) FROM `lists` WHERE user_uid = " + userInfo.id + ";";
     const qCountTechcards =
       " SELECT COUNT(*) FROM `techcards` WHERE user_uid = " + userInfo.id + ";";
+    const qCountRanking =
+      "SELECT COUNT(*) as 'rank' FROM users_monthly_statistics WHERE month_score > (SELECT month_score FROM users_monthly_statistics WHERE user_uid = " +
+      userInfo.id +
+      ");";
+    const qAllActivity =
+      "SELECT date, wrong_answers, right_answers, time_spent FROM `folders_statistics` WHERE user_uid = " +
+      userInfo.id +
+      ";";
+
+    console.log(qAllActivity);
     const finalQ =
-      qLearned + qJoinedDate + qCountFolders + qCountLists + qCountTechcards;
+      qLearned +
+      qJoinedDate +
+      qCountFolders +
+      qCountLists +
+      qCountTechcards +
+      qCountRanking +
+      qAllActivity;
     db.query(finalQ, (err, data) => {
+      console.log(data);
       if (err) return res.status(500).send(err);
-      return res.status(200).json({
-        learnedNumber: data[0].length,
-        joinedDate: data[1][0].joined_date,
-        timeSpend: 1000,
-        rankingPlace: 5,
-        createdFolders: data[2][0]["COUNT(*)"],
-        createdLists: data[3][0]["COUNT(*)"],
-        createdTechcards: data[4][0]["COUNT(*)"],
-      });
+      return res.status(200).json([
+        {
+          learnedNumber: data[0].length,
+          joinedDate: data[1][0].joined_date,
+          timeSpent: 1000,
+          rankingPlace: data[5][0]["rank"] + 1,
+          createdFolders: data[2][0]["COUNT(*)"],
+          createdLists: data[3][0]["COUNT(*)"],
+          createdTechcards: data[4][0]["COUNT(*)"],
+        },
+        {
+          allActivity: data[6],
+        },
+      ]);
     });
   });
 };
@@ -64,7 +86,7 @@ export const getFolderOrListStats = (req, res) => {
     }
     console.log(list);
     const q =
-      "SELECT `date`, `wrong_answers`, `right_answers` FROM " +
+      "SELECT `date`, `wrong_answers`, `right_answers`, `time_spent` FROM " +
       type +
       " WHERE `user_uid` = '" +
       userInfo.id +
@@ -92,7 +114,7 @@ export const getUserStrike = (req, res) => {
       "SELECT `date` FROM folders_statistics WHERE `user_uid` = '" +
       userInfo.id +
       "'";
-    console.log("safffffffffffffffffffffffffffffffffffff");
+
     db.query(q, (err, data) => {
       if (err) return res.status(500).send(err);
 
@@ -130,11 +152,10 @@ export const addFolderOrListStats = (req, res) => {
 
   jwt.verify(token, "jwtkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
-    const { id, folder, list, right, wrong } = req.body;
+    const { id, folder, list, right, wrong, time } = req.body;
 
     const today = new Date();
     const todayShort = today.toISOString().replace(/T/, " ").slice(0, -14);
-    const todayLong = today.toISOString().replace(/T/, " ").slice(0, -5);
 
     const type = folder
       ? "folders_statistics"
@@ -164,10 +185,11 @@ export const addFolderOrListStats = (req, res) => {
       const newRightAnswers = dbTime ? dateData[0].right_answers + 1 : 1;
       const newWrongAnswers = dbTime ? dateData[0].wrong_answers + 1 : 1;
       const updateOrSet = dbTime === todayShort ? "UPDATE" : "INSERT INTO";
+      const updateTime = "`time_spent` = '" + time + "'";
       const updateType = right
-        ? "`right_answers` = '" + newRightAnswers + "'"
+        ? "`right_answers` = '" + newRightAnswers + "', " + updateTime + ""
         : wrong
-        ? "`wrong_answers` = '" + newWrongAnswers + "'"
+        ? "`wrong_answers` = '" + newWrongAnswers + "', " + updateTime + ""
         : null;
       const setDateIsNew =
         dbTime !== todayShort ? " `date` = UTC_TIMESTAMP()," : "";

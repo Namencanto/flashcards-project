@@ -2,7 +2,7 @@ import { Line } from "react-chartjs-2";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
-function LastTenDaysLineChart({ data, options }) {
+function LastTenDaysTimeSpentLineChart({ data, options }) {
   const today = new Date();
   const todayString = new Date().toISOString().split("T")[0];
 
@@ -15,8 +15,6 @@ function LastTenDaysLineChart({ data, options }) {
   const [fromHowManyDays, setFromHowManyDays] = useState(10);
   const [convertedData, setConvertedData] = useState({
     allDates: [],
-    allWrong: [],
-    allRight: [],
     allTimes: [],
   });
 
@@ -46,13 +44,11 @@ function LastTenDaysLineChart({ data, options }) {
     console.log(dateArr);
     setConvertedData({
       allDates: dateArr,
-      allWrong: data.allWrong.slice(0, dateArr.length),
-      allRight: data.allRight.slice(0, dateArr.length),
       allTimes: data.allTimes.slice(0, dateArr.length),
     });
   }, [data.allDates, fromHowManyDays]);
 
-  const answersData = {
+  const timeSpentData = {
     labels:
       convertedData.allDates.length === 1
         ? convertedData.allDates
@@ -61,49 +57,18 @@ function LastTenDaysLineChart({ data, options }) {
         : convertedData.allDates.map((date) => date.slice(0, 10)),
     datasets: [
       {
-        label: "Total",
+        label: "Time spent (minutes)",
         data:
           convertedData.allDates.length === 1
-            ? convertedData.allRight
-                .concat(convertedData.allRight[0])
-                .map((num, i) => num + convertedData.allWrong[0])
-            : convertedData.allRight.map(
-                (num, i) => num + convertedData.allWrong[i]
-              ),
-        backgroundColor: "rgba(95,77,238,.5)",
-        borderColor: "rgba(95,77,238,1)",
-        pointBackgroundColor: "#2810e8",
-        pointBorderColor: "#2810e8",
-        pointRadius: 1.33,
-      },
-      {
-        label: "Wrong",
-        data:
-          convertedData.allDates.length === 1
-            ? convertedData.allWrong
-                .concat(convertedData.allWrong[0])
-                .map((wrong) => wrong)
-            : convertedData.allWrong.map((wrong) => wrong),
+            ? convertedData.allTimes
+                .concat(convertedData.allTimes[0])
+                .map((time) => Math.round(time / 60))
+            : convertedData.allTimes.map((time) => Math.round(time / 60)),
         backgroundColor: "red",
-        backgroundColor: "rgba(255,0,0, 0.5)",
-        borderColor: "rgba(255,0,0,1)",
-        pointBackgroundColor: "#c51236",
-        pointBorderColor: "#c51236",
-        pointRadius: 1.33,
-      },
-      {
-        label: "Right",
-        data:
-          convertedData.allDates.length === 1
-            ? convertedData.allRight
-                .concat(convertedData.allRight[0])
-                .map((right) => right)
-            : convertedData.allRight.map((right) => right),
-        backgroundColor: "green",
-        backgroundColor: "rgba(100, 255, 100, .5)",
-        borderColor: "rgba(0, 255, 0, 1)",
-        pointBackgroundColor: "#3dc269",
-        pointBorderColor: "#3dc269",
+        backgroundColor: "rgba(49, 140, 231,.5)",
+        borderColor: "rgb(49, 140, 231,1)",
+        pointBackgroundColor: "#1873cd ",
+        pointBorderColor: "#1873cd ",
         pointRadius: 1.33,
       },
     ],
@@ -113,8 +78,8 @@ function LastTenDaysLineChart({ data, options }) {
     <>
       <h2>
         {fromHowManyDays !== 0
-          ? `Your answers from ${fromHowManyDays} days ago:`
-          : "Your today answers:"}
+          ? `Your time spent from ${fromHowManyDays} days ago:`
+          : "Your today time spent:"}
       </h2>
       <form>
         <input
@@ -126,11 +91,11 @@ function LastTenDaysLineChart({ data, options }) {
           defaultValue={tenDaysAgoDate}
         />
       </form>
-      <Line drawOnChartArea={true} data={answersData} options={options} />
+      <Line drawOnChartArea={true} data={timeSpentData} options={options} />
     </>
   ) : (
     ""
   );
 }
 
-export default LastTenDaysLineChart;
+export default LastTenDaysTimeSpentLineChart;

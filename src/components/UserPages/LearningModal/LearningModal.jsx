@@ -243,9 +243,11 @@ function LearningModal(props) {
 
   // * DISPLAY NEW TECHCARD FUNCTION
   const newToDisplay = (setTechcards) => {
-    props.listStatsAdd(
+    console.log(time);
+    props.statsAdd(
       setTechcards === setUnknownTechcards,
-      setTechcards === setKnownTechcards
+      setTechcards === setKnownTechcards,
+      time
     );
     // IF ROUND LENGTH IS NOT ONLY ONE AND IF WHICHTECHCARD IS NOT LAST OF ROUND LENGTH
     if (roundLength !== 1 && roundLength !== whichTechcard) {
@@ -348,6 +350,7 @@ function LearningModal(props) {
               ""
             )}
             <LearningModalTimer
+              setTime={setTime}
               stopTimer={stopTimerForRoundBreak}
               giveRoundTime={collectRoundTime}
             />

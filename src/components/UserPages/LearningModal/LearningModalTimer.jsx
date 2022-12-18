@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 
-function LearningModalTimer({ giveRoundTime, stopTimer }) {
+function LearningModalTimer({ setTime, giveRoundTime, stopTimer }) {
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [timerIsActive, setTimerIsActive] = useState(true);
   const [timerIsActiveByIcon, setTimerIsActiveByIcon] = useState(true);
   const [timerIcon, setTimerIcon] = useState(faPause);
 
   useEffect(() => {
+    setTime(Number(timerSeconds.toFixed(2)));
     setTimerIsActive(stopTimer());
 
     if (stopTimer() !== timerIsActive) {

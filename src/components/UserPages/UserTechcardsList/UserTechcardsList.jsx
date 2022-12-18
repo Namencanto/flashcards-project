@@ -56,27 +56,21 @@ function UserTechcards() {
       console.log(err);
     }
   };
-  const listStatsAddHandler = async (isWrongAnswer, isRightAnswer) => {
-    const addStatsHandler = async (whatId, folder, list) => {
+  const statsAddHandler = async (isWrongAnswer, isRightAnswer, time) => {
+    const statsAddPost = async (whatId, folder, list) => {
       const res = await axios.post("/statistics/folderOrList/add", {
         id: whatId,
         folder,
         list,
         right: isRightAnswer,
         wrong: isWrongAnswer,
+        time,
       });
       return res;
     };
     try {
-      // const resList = await axios.post("/statistics/folderOrList/add", {
-      //   id,
-      //   folder: false,
-      //   list: true,
-      //   right: isRightAnswer,
-      //   wrong: isWrongAnswer,
-      // });
-      const resList = addStatsHandler(id, false, true);
-      const resFolder = addStatsHandler(folderID, true, false);
+      const resList = statsAddPost(id, false, true);
+      const resFolder = statsAddPost(folderID, true, false);
 
       console.log(resList);
       console.log(resFolder);
@@ -141,7 +135,7 @@ function UserTechcards() {
                 learningModalIsVisible={learningModalIsVisible}
                 hideLearningModal={hideLearningModal}
                 techcardsInfo={techcardsInfo}
-                listStatsAdd={listStatsAddHandler}
+                statsAdd={statsAddHandler}
               />,
               document.getElementById("overlay-root")
             )

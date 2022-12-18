@@ -9,6 +9,7 @@ import LastTenDaysLineChart from "./StatisticsChartsComponents/LastTenDaysLineCh
 import FutureRepetitionsLineCharts from "./StatisticsChartsComponents/FutureRepetitionsLineChart";
 import AllAnswersPieChart from "./StatisticsChartsComponents/AllAnswersPieChart";
 import AllStatusesPieChart from "./StatisticsChartsComponents/AllStatusesPieChart";
+import LastTenDaysTimeSpentLineChart from "./StatisticsChartsComponents/LastTenDaysTimeSpentLineChart";
 import MediaQueries from "../../../../../HelperComponents/MediaQueries";
 function StatisticsCharts({ data, statuses }) {
   const { minWidth1000 } = MediaQueries();
@@ -48,6 +49,7 @@ function StatisticsCharts({ data, statuses }) {
   return (
     <div className={classNames(cx("statistics-main-charts"))}>
       <LastTenDaysLineChart data={data} options={optionsLine} />
+      <LastTenDaysTimeSpentLineChart data={data} options={optionsLine} />
       <FutureRepetitionsLineCharts data={data} options={optionsLine} />
       <AllAnswersPieChart data={data} options={optionsAnswersPie} />
       <AllStatusesPieChart statuses={statuses} options={optionsStatusesPie} />

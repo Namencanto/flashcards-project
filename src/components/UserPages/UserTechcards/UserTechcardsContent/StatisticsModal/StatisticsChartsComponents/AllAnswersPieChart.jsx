@@ -1,6 +1,7 @@
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js";
 function AllAnswersPieChart({ data, options }) {
+  console.log(data);
   const folderAnswersRight = data.allRight.reduce((a, b) => a + b, 0);
   const folderAnswersWrong = data.allWrong.reduce((a, b) => a + b, 0);
 
