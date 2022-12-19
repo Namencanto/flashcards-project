@@ -28,6 +28,8 @@ function UserTechcardsListContent({
   secondSides,
   techcardsImages,
   displayLearningModal,
+  firstSidesFlag,
+  secondSidesFlag,
 }) {
   const defaultImage =
     "https://miro.medium.com/max/250/1*DSNfSDcOe33E2Aup1Sww2w.jpeg";
@@ -335,11 +337,11 @@ function UserTechcardsListContent({
                 <>
                   <div>
                     <b>First side </b>
-                    <ReactCountryFlag svg countryCode={"US"} />
+                    <ReactCountryFlag svg countryCode={firstSidesFlag} />
                   </div>
                   <div>
                     <b>Second side </b>
-                    <ReactCountryFlag svg countryCode={"PL"} />
+                    <ReactCountryFlag svg countryCode={secondSidesFlag} />
                   </div>
                 </>
               )}

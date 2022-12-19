@@ -11,7 +11,6 @@ import UserTechcardsContent from "./UserTechcardsContent/UserTechcardsContent";
 import ReactDOM from "react-dom";
 import { faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { useCountStatus } from "../../../hooks/useCountStatus";
 import { countStatus } from "../../../HelperComponents/countStatus";
 
 function UserTechcards() {
@@ -49,6 +48,8 @@ function UserTechcards() {
       setTechcardsFolders(res.data[0]);
       setTechcardsLists(res.data[1]);
       setTechcardsAllSides(res.data[2]);
+
+      console.log(res.data[0]);
     } catch (err) {
       console.log(err);
     }
@@ -122,7 +123,6 @@ function UserTechcards() {
   const hideStatisticsModal = () => {
     setStatisticsModalIsVisible(false);
   };
-  console.log("cjuj", statisticsStatuses);
 
   const props = {
     deleteFormIsSelected,

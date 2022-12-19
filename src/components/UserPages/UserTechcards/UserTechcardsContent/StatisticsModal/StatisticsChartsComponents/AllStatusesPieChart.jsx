@@ -1,5 +1,6 @@
 import { Pie } from "react-chartjs-2";
 function AllStatusesPieChart({ statuses, options }) {
+  console.log("halo", statuses);
   const colors = ["green", "lightgreen", "lightblue", "orange", "crimson"];
   const chartColors = [];
   const statusesValues = Object.values(statuses);

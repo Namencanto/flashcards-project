@@ -35,8 +35,11 @@ export const getUserStats = (req, res) => {
       "SELECT date, wrong_answers, right_answers, time_spent FROM `folders_statistics` WHERE user_uid = " +
       userInfo.id +
       ";";
+    const qAllStatuses =
+      "SELECT GROUP_CONCAT(status SEPARATOR ',') as statuses FROM techcards WHERE user_uid = " +
+      userInfo.id +
+      ";";
 
-    console.log(qAllActivity);
     const finalQ =
       qLearned +
       qJoinedDate +
@@ -44,9 +47,11 @@ export const getUserStats = (req, res) => {
       qCountLists +
       qCountTechcards +
       qCountRanking +
-      qAllActivity;
+      qAllActivity +
+      qAllStatuses;
+
     db.query(finalQ, (err, data) => {
-      console.log(data);
+      console.log(data[7][0].statuses);
       if (err) return res.status(500).send(err);
       return res.status(200).json([
         {
@@ -60,6 +65,7 @@ export const getUserStats = (req, res) => {
         },
         {
           allActivity: data[6],
+          allStatuses: JSON.parse(`[${data[7][0].statuses}]`),
         },
       ]);
     });

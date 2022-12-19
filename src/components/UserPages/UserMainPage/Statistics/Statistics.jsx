@@ -17,27 +17,21 @@ import StatisticsData from "./StatisticsData";
 import AllAnswersPieChart from "../../UserTechcards/UserTechcardsContent/StatisticsModal/StatisticsChartsComponents/AllAnswersPieChart";
 import LastTenDaysTimeSpentLineChart from "../../UserTechcards/UserTechcardsContent/StatisticsModal/StatisticsChartsComponents/LastTenDaysTimeSpentLineChart";
 import LastTenDaysLineChart from "../../UserTechcards/UserTechcardsContent/StatisticsModal/StatisticsChartsComponents/LastTenDaysLineChart";
-const dummyData = [
-  {
-    date: new Date("2022-03-25").toLocaleDateString("pl"),
-    learned: 42,
-    timeSpent: 34,
-  },
-  {
-    date: new Date("2022-06-25").toLocaleDateString("pl"),
-    learned: 12,
-    timeSpent: 15,
-  },
-  {
-    date: new Date("2022-09-25").toLocaleDateString("pl"),
-    learned: 44,
-    timeSpent: 61,
-  },
-];
+import AllStatusesPieChart from "../../UserTechcards/UserTechcardsContent/StatisticsModal/StatisticsChartsComponents/AllStatusesPieChart";
+import { countStatus } from "../../../../HelperComponents/countStatus";
+
+import {
+  getOptionsLine,
+  getOptionsAnswersPie,
+  getOptionsStatusesPie,
+} from "./StatisticsOptions";
 
 function Statistics() {
   const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
+  const optionsLine = getOptionsLine(minWidth1000);
+  const optionsAnswersPie = getOptionsAnswersPie(minWidth1000);
+  const optionsStatusesPie = getOptionsStatusesPie(minWidth1000);
 
   const [mainStats, setMainStats] = useState({
     joinedDate: "",
@@ -56,6 +50,13 @@ function Statistics() {
   const [allAnswers, setAllAnswers] = useState({
     allWrong: [0],
     allRight: [0],
+  });
+  const [allStatuses, setAllStatuses] = useState({
+    learned: 0,
+    known: 0,
+    new: 0,
+    toLearn: 0,
+    hard: 0,
   });
 
   useEffect(() => {
@@ -87,6 +88,7 @@ function Statistics() {
           allRight: allRightArr,
         });
 
+        setAllStatuses(countStatus(res.data[1].allStatuses));
         setMainStats({
           joinedDate: joined.toLocaleString(navigator.language),
           learnedNumber: res.data[0].learnedNumber,
@@ -95,6 +97,7 @@ function Statistics() {
           createdLists: res.data[0].createdLists,
           createdTechcards: res.data[0].createdTechcards,
         });
+        console.log(res.data);
       } catch (error) {
         console.log(error);
       }
@@ -104,74 +107,6 @@ function Statistics() {
   }, []);
 
   const [chartData, setChartData] = useState("techcards");
-  const [chartType, setChartType] = useState("Line");
-
-  const userData = {
-    labels: dummyData.map((data) => data.date),
-
-    datasets:
-      chartData === "all"
-        ? [
-            {
-              label: "TechCards User Learned",
-              data: dummyData.map((data) => data.learned),
-              backgroundColor: ["#5f4dee"],
-              pointRadius: 4,
-            },
-            {
-              label: "User Time Spent",
-              data: dummyData.map((data) => data.timeSpent),
-              backgroundColor: ["#968ce4"],
-              pointRadius: 4,
-            },
-          ]
-        : [
-            {
-              label:
-                chartData === "techcards"
-                  ? "TechCards User Learned"
-                  : "User Time Spent",
-              data: dummyData.map((data) =>
-                chartData === "techcards" ? data.learned : data.timeSpent
-              ),
-              backgroundColor:
-                chartData === "techcards"
-                  ? ["#5f4dee"]
-                  : chartData === "timeSpent"
-                  ? ["#968ce4"]
-                  : "",
-            },
-          ],
-  };
-  const optionsLine = {
-    aspectRatio: minWidth1000 ? 0.8 : 1.5,
-    elements: {
-      line: {
-        borderWidth: 2,
-        lineTension: 0.1,
-        borderCapStyle: "butt",
-        fill: true,
-        borderJoinStyle: "round",
-      },
-    },
-  };
-  const optionsAnswersPie = {
-    aspectRatio: minWidth1000 ? 0.8 : 1.5,
-    elements: {
-      arc: {
-        hoverBorderColor: ["#007700", "#770000"],
-        hoverBorderWidth: 2,
-      },
-    },
-  };
-  const optionsStatusesPie = {
-    aspectRatio: minWidth1000 ? 0.8 : 1.5,
-    elements: {
-      arc: {
-        hoverBorderWidth: 2,
-      },
-    },
-  };
 
   return (
     <div className={classNames(cx("statistics"))}>
@@ -180,16 +115,10 @@ function Statistics() {
           <UserMobileCard icon={faChartLine}>
             {
               <div className={classNames(cx("statistics-container"))}>
+                <h2>Statistics</h2>
                 <StatisticsData
                   mainStats={mainStats}
                   totalTime={allActivity.allTimes.reduce((a, b) => a + b, 0)}
-                />
-                <StatisticsChart
-                  chartType={chartType}
-                  chartData={chartData}
-                  userData={userData}
-                  setChartData={setChartData}
-                  setChartType={setChartType}
                 />
                 <LastTenDaysLineChart
                   data={allActivity}
@@ -199,27 +128,25 @@ function Statistics() {
                   data={allActivity}
                   options={optionsLine}
                 />
-
                 <AllAnswersPieChart
                   data={allAnswers}
                   options={optionsAnswersPie}
+                />
+                <AllStatusesPieChart
+                  statuses={allStatuses}
+                  options={optionsStatusesPie}
                 />
               </div>
             }
           </UserMobileCard>
         ) : (
           <div className={classNames(cx("statistics-container"))}>
+            <h2>Statistics</h2>
             <StatisticsData
               mainStats={mainStats}
               totalTime={allActivity.allTimes.reduce((a, b) => a + b, 0)}
             />
-            <StatisticsChart
-              chartType={chartType}
-              chartData={chartData}
-              userData={userData}
-              setChartData={setChartData}
-              setChartType={setChartType}
-            />
+
             <LastTenDaysLineChart data={allActivity} options={optionsLine} />
             <LastTenDaysTimeSpentLineChart
               data={allActivity}
@@ -227,6 +154,10 @@ function Statistics() {
             />
 
             <AllAnswersPieChart data={allAnswers} options={optionsAnswersPie} />
+            <AllStatusesPieChart
+              statuses={allStatuses}
+              options={optionsStatusesPie}
+            />
           </div>
         )}
       </div>

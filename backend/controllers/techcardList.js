@@ -12,19 +12,27 @@ export const getTechcardList = (req, res) => {
   jwt.verify(token, "jwtkey", (err, userInfo) => {
     if (err) return res.status(403).json("Token is not valid!");
 
-    const qLists = "SELECT * FROM lists WHERE id = '" + req.query.id + "'";
-    db.query(qLists, (err, listsData) => {
+    const qList =
+      "SELECT * FROM lists WHERE id = '" +
+      req.query.id +
+      "'; SELECT first_sides_flag, second_sides_flag FROM folders WHERE folder = '" +
+      req.query.folder +
+      "'; ";
+    db.query(qList, (err, listsData) => {
+      console.log(listsData[1][0]);
       if (err) return res.status(500).send(err);
 
       const qTechcards =
-        "SELECT * FROM techcards WHERE list_uid = '" + listsData[0].id + "'";
+        "SELECT * FROM techcards WHERE list_uid = '" + listsData[0][0].id + "'";
       db.query(qTechcards, (err, techcardsData) => {
         if (err) return res.status(500).send(err);
 
         return res.status(200).json({
           techcardsData,
-          folderID: listsData[0].folder_uid,
-          listImage: listsData[0].image,
+          folderID: listsData[0][0].folder_uid,
+          listImage: listsData[0][0].image,
+          firstSidesFlag: listsData[1][0].first_sides_flag,
+          secondSidesFlag: listsData[1][0].second_sides_flag,
         });
       });
     });

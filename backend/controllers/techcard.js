@@ -58,6 +58,7 @@ export const addTechcards = (req, res) => {
 
     const listToAdd = req.body.list;
     const folderToAdd = req.body.folder;
+    const { firstSidesFlag, secondSidesFlag } = req.body;
     // * ADD LIST
     if (listToAdd) {
       let allAddQueries = "";
@@ -78,13 +79,15 @@ export const addTechcards = (req, res) => {
         return res.json("All lists have been successfully added");
       });
     }
-
     // * ADD FOLDER
     if (folderToAdd && !listToAdd) {
-      console.log(folderToAdd);
       const addFolderQuery =
-        "INSERT INTO `folders` (`folder`, `user_uid`) VALUES ('" +
+        "INSERT INTO `folders` (`folder`, `first_sides_flag`, `second_sides_flag`, `user_uid`) VALUES ('" +
         folderToAdd +
+        "', '" +
+        firstSidesFlag +
+        "', '" +
+        secondSidesFlag +
         "', '" +
         userInfo.id +
         "');";
@@ -169,6 +172,7 @@ export const updateTechcards = (req, res) => {
 
     const listToChange = req.body.list;
     const folderToChange = req.body.folder;
+    const { firstSidesFlag, secondSidesFlag } = req.body;
 
     if (listToChange || folderToChange) {
       let allElementsToChange = "";
@@ -191,6 +195,10 @@ export const updateTechcards = (req, res) => {
         allElementsToChange +=
           "UPDATE `folders` SET `folder` = '" +
           folderNameToChange +
+          "', first_sides_flag = '" +
+          firstSidesFlag[i] +
+          "', second_sides_flag = '" +
+          secondSidesFlag[i] +
           "' WHERE (`id` = '" +
           folderID +
           "' AND user_uid = '" +

@@ -25,12 +25,14 @@ function UserTechcards() {
   const [firstSides, setFirstSides] = useState();
   const [secondSides, setSecondSides] = useState();
   const [techcardsImages, setTechcardsImages] = useState();
-
+  const [firstSidesFlag, setFirstSidesFlag] = useState("");
+  const [secondSidesFlag, setSecondSidesFlag] = useState("");
   const fetchTechcards = async () => {
     try {
       const res = await axios.get("/techcards/lists/get", {
         params: {
           id,
+          folder,
         },
       });
       setlistImage(res.data.listImage);
@@ -47,11 +49,14 @@ function UserTechcards() {
         imagesArr.push(image);
         idsArr.push(id);
       }
+
       setTechcardsIDS(idsArr);
       setFirstSides(firstSidesArr);
       setSecondSides(secondSidesArr);
       setTechcardsImages(imagesArr);
       setFolderID(res.data.folderID);
+      setFirstSidesFlag(res.data.firstSidesFlag);
+      setSecondSidesFlag(res.data.secondSidesFlag);
     } catch (err) {
       console.log(err);
     }
@@ -111,6 +116,8 @@ function UserTechcards() {
               secondSides={secondSides}
               techcardsImages={techcardsImages}
               displayLearningModal={displayLearningModalHandler}
+              firstSidesFlag={firstSidesFlag}
+              secondSidesFlag={secondSidesFlag}
             />
           </UserMobileCard>
         ) : (
@@ -126,6 +133,8 @@ function UserTechcards() {
             secondSides={secondSides}
             techcardsImages={techcardsImages}
             displayLearningModal={displayLearningModalHandler}
+            firstSidesFlag={firstSidesFlag}
+            secondSidesFlag={secondSidesFlag}
           />
         )}
         {learningModalIsVisible

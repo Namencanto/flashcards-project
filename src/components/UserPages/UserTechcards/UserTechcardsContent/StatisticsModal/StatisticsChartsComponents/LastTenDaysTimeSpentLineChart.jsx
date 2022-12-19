@@ -63,7 +63,7 @@ function LastTenDaysTimeSpentLineChart({ data, options }) {
             ? convertedData.allTimes
                 .concat(convertedData.allTimes[0])
                 .map((time) => Math.round(time / 60))
-            : convertedData.allTimes.map((time) => Math.round(time / 60)),
+            : convertedData.allTimes.map((time) => Math.floor(time / 60)),
         backgroundColor: "red",
         backgroundColor: "rgba(49, 140, 231,.5)",
         borderColor: "rgb(49, 140, 231,1)",

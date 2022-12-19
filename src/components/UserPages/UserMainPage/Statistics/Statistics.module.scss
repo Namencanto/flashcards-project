@@ -1,27 +1,41 @@
 @import "../../../../assets/base.scss";
 .statistics {
   background-color: $color-purple;
-  height: 100%;
+  min-height: 100vh;
+  max-height: 100%;
   width: 100vw;
   padding-bottom: 1.5rem;
 
   @media only screen and (min-width: $bp-1000) {
+    min-height: 0;
     height: 100%;
     width: 100%;
+    padding-bottom: 0rem;
     background-color: $color-white;
   }
+  &-data {
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid #777;
+    & p {
+      color: $color-black;
+    }
+  }
   &-container {
-    min-height: 70vh;
     overflow: auto;
+    min-height: 70vh;
     background-color: $color-white;
     border-radius: 1rem;
-    padding: 1rem 1rem 5rem 1rem;
+    padding: 1rem 1rem 0 1rem;
 
     @media only screen and (min-width: $bp-1000) {
       min-height: 0;
       padding: 1rem;
       border-radius: 0;
-      height: 40vh;
+      height: 45vh;
+    }
+    & h2 {
+      padding-bottom: 1rem;
     }
     & button {
       @media only screen and (min-width: $bp-1000) {
@@ -30,19 +44,10 @@
       }
     }
     & canvas {
-      @media only screen and (min-width: $bp-1400) {
-        height: 20rem !important;
-      }
-    }
-
-    & fieldset {
-      border: 1px solid #d9d9d9;
-      padding-left: 0.5rem;
-
+      margin-bottom: 5rem;
       @media only screen and (min-width: $bp-1000) {
-      }
-      & input {
-        margin-right: 0.8rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
       }
     }
   }

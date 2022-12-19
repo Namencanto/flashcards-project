@@ -11,6 +11,7 @@ import axios from "axios";
 import { useRef } from "react";
 import { countStatus } from "../../../../HelperComponents/countStatus";
 
+import LanguagesDataList from "./LanguagesDataList/LanguagesDataList";
 function UserTechcardsContent({
   deleteFormIsSelected,
   changeFormIsSelected,
@@ -39,11 +40,15 @@ function UserTechcardsContent({
 
   const techcardAddFolderRef = useRef();
 
+  const firstSidesFlag = techcardsFolders.map((d) => d.first_sides_flag);
+  const secondSidesFlag = techcardsFolders.map((d) => d.second_sides_flag);
   /////////////////////////////////////////////////
 
   // * SUBMIT HANDLER
   const techcardsSubmitHandler = async (e) => {
     e.preventDefault();
+    // const firstSidesLanguage = takeLanguages("first");
+    // const secondSidesLanguage = takeLanguages("second");
 
     // * ADD
     if (addFormIsSelected) {
@@ -94,6 +99,8 @@ function UserTechcardsContent({
         }
       }
       // * FOLDER ADD
+      const firstSidesFlag = e.target.firstSidesLanguage.value;
+      const secondSidesFlag = e.target.secondSidesLanguage.value;
       const newFolder = techcardAddFolderRef.current.value;
       if (techcardsFolders.find(({ folder }) => folder === newFolder))
         return setUserMessage(["red", "Folder name already exists"]);
@@ -102,6 +109,8 @@ function UserTechcardsContent({
         try {
           const res = await axios.post("/techcards/add", {
             folder: newFolder,
+            firstSidesFlag,
+            secondSidesFlag,
           });
           fetchTechcards();
           setUserMessage(["green", res.data]);
@@ -118,8 +127,13 @@ function UserTechcardsContent({
     else if (changeFormIsSelected) {
       const allLists = Array.from(e.target.changeList);
       const allFolders = Array.from(e.target.changeFolder);
+      const allFirstSidesFlag = Array.from(e.target.firstSidesLanguage);
+      const allSecondSidesFlag = Array.from(e.target.secondSidesLanguage);
+
       let listsToChange = [];
       let foldersToChange = [];
+      let firstSidesFlagToChange = [];
+      let secondSidesFlagToChange = [];
 
       allLists.forEach((inputList) => {
         if (inputList.value.length === 0)
@@ -146,21 +160,30 @@ function UserTechcardsContent({
         ]);
       });
       let folderExists = false;
-      allFolders.forEach((inputFolder) => {
+      allFolders.forEach((inputFolder, i) => {
         if (inputFolder.value.length === 0)
           return setUserMessage(["red", "Folder name cannot be empty"]);
 
-        if (inputFolder.value === inputFolder.attributes.oldFolder.value)
+        if (
+          inputFolder.value === inputFolder.attributes.oldFolder.value &&
+          allFirstSidesFlag[i].value === firstSidesFlag[i] &&
+          allSecondSidesFlag[i].value === secondSidesFlag[i]
+        )
           return;
+
         foldersToChange.push([
           inputFolder.attributes.folderID.value,
           inputFolder.value,
         ]);
-
+        firstSidesFlagToChange.push(allFirstSidesFlag[i].value);
+        secondSidesFlagToChange.push(allSecondSidesFlag[i].value);
         for (const { folder } of techcardsFolders) {
-          for (const folderToChange of foldersToChange) {
-            if (folder === folderToChange[1]) return (folderExists = true);
-          }
+          if (
+            folder === foldersToChange[foldersToChange.length - 1][1] &&
+            foldersToChange[foldersToChange.length - 1][1] !==
+              inputFolder.attributes.oldFolder.value
+          )
+            return (folderExists = true);
         }
       });
 
@@ -182,6 +205,8 @@ function UserTechcardsContent({
         try {
           const res = await axios.post("/techcards/update", {
             folder: foldersToChange,
+            firstSidesFlag: firstSidesFlagToChange,
+            secondSidesFlag: secondSidesFlagToChange,
           });
           fetchTechcards();
           return setUserMessage(["green", res.data]);
@@ -278,7 +303,6 @@ function UserTechcardsContent({
       hardCard,
     ]);
   }
-  console.log("ALLO", allSidesStatus);
   return (
     <div className={classNames(cx("techcards-container"))}>
       <div className={classNames(cx("techcards-title"))}>
@@ -315,13 +339,19 @@ function UserTechcardsContent({
             <div key={folder} className={classNames(cx("techcards-main"))}>
               <div className={classNames(cx("techcards-main-folder-title"))}>
                 {changeFormIsSelected ? (
-                  <input
-                    id="changeFolder"
-                    type="text"
-                    defaultValue={folder}
-                    folderID={id}
-                    oldFolder={folder}
-                  ></input>
+                  <>
+                    <input
+                      id="changeFolder"
+                      type="text"
+                      defaultValue={folder}
+                      folderID={id}
+                      oldFolder={folder}
+                    ></input>
+                    <LanguagesDataList
+                      defaultFirstSidesFlag={firstSidesFlag[iFolder]}
+                      defaultSecondSidesFlag={secondSidesFlag[iFolder]}
+                    />
+                  </>
                 ) : (
                   <div>
                     <h2
@@ -616,11 +646,14 @@ function UserTechcardsContent({
         {changeTechcardsIsVisible ? (
           <>
             {addFormIsSelected ? (
-              <input
-                ref={techcardAddFolderRef}
-                type="text"
-                placeholder="New folder"
-              />
+              <>
+                <input
+                  ref={techcardAddFolderRef}
+                  type="text"
+                  placeholder="New folder"
+                />
+                <LanguagesDataList />
+              </>
             ) : (
               ""
             )}

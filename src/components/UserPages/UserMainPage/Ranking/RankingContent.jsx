@@ -2,7 +2,8 @@ import classes from "./Ranking.module.scss";
 import classNames from "classnames/bind";
 
 import { Link } from "react-router-dom";
-
+import ReactCountryFlag from "react-country-flag";
+import { languagesArray } from "../../../../languagesFlags/languagesArray";
 function RankingContent({
   rankingTitleFunction,
   rankingData,
@@ -10,6 +11,7 @@ function RankingContent({
   error,
 }) {
   const cx = classNames.bind(classes);
+
   return (
     <div className={classNames(cx("ranking-container"))}>
       <div className={classNames(cx("ranking-title"))}>
@@ -30,7 +32,12 @@ function RankingContent({
               <li key={i}>
                 <Link to={`/user/all-users/${user.uid}`}>
                   <div className={classNames(cx("ranking-description"))}>
-                    {/* <ReactCountryFlag svg countryCode={user.nationality} /> coming soon*/}
+                    <ReactCountryFlag svg countryCode={"dj"} />
+                    <datalist id="browsers">
+                      {languagesArray.map((lang) => (
+                        <option value={lang.name} />
+                      ))}
+                    </datalist>
 
                     <p
                       style={{
