@@ -23,12 +23,23 @@
     align-items: center;
     flex-wrap: wrap;
     width: 100%;
-    & p {
-      width: 90%;
-      margin-left: 0.8rem;
+    &-user {
+      display: flex;
+      width: 100%;
+      & img {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+      }
+      & p {
+        word-break: break-all;
+        width: 90%;
+        margin-left: 0.8rem;
+      }
     }
+
     & span {
-      margin-left: 3rem;
+      margin-left: 3.3rem;
       margin-top: -0.8rem;
 
       font-size: 1rem;

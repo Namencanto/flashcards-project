@@ -115,10 +115,10 @@ function UserTechcardsListContent({
               data
             );
             imagePath = resImage.data;
+          } else {
+            const resImage = await axios.post("/techcards/lists/upload", data);
+            imagePath = resImage.data;
           }
-        } else {
-          const resImage = await axios.post("/techcards/lists/upload", data);
-          imagePath = resImage.data;
         }
       } catch (err) {
         // * IMAGE UPLOAD ERROR MESSAGES

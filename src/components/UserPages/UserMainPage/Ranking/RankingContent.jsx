@@ -28,39 +28,41 @@ function RankingContent({
           <p>Something went wrong with ranking fetch...</p>
         ) : (
           rankingData.map((user, i) => {
+            console.log(user);
             return (
               <li key={i}>
                 <Link to={`/user/all-users/${user.uid}`}>
                   <div className={classNames(cx("ranking-description"))}>
-                    <ReactCountryFlag svg countryCode={"dj"} />
-                    <datalist id="browsers">
-                      {languagesArray.map((lang) => (
-                        <option value={lang.name} />
-                      ))}
-                    </datalist>
+                    <div className={classNames(cx("ranking-description-user"))}>
+                      {user.avatar ? (
+                        <img src={user.avatar} alt="user avatar" />
+                      ) : (
+                        ""
+                      )}
 
-                    <p
-                      style={{
-                        color:
-                          i === 0
-                            ? "gold"
-                            : i === 1
-                            ? "silver"
-                            : i === 2
-                            ? "brown"
-                            : "",
-                        fontWeight:
-                          i === 0
-                            ? "900"
-                            : i === 1
-                            ? "700"
-                            : i === 2 || currentUserNick === user.user_name
-                            ? "600"
-                            : "",
-                      }}
-                    >
-                      {user.user_name}
-                    </p>
+                      <p
+                        style={{
+                          color:
+                            i === 0
+                              ? "gold"
+                              : i === 1
+                              ? "silver"
+                              : i === 2
+                              ? "brown"
+                              : "",
+                          fontWeight:
+                            i === 0
+                              ? "900"
+                              : i === 1
+                              ? "700"
+                              : i === 2 || currentUserNick === user.user_name
+                              ? "600"
+                              : "",
+                        }}
+                      >
+                        {user.user_name}
+                      </p>
+                    </div>
                     <span>Score: {user.ranking_score}</span>
                   </div>
                 </Link>

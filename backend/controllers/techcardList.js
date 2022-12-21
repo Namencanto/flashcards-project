@@ -50,6 +50,7 @@ import fs from "fs";
 import { unlink } from "fs/promises";
 
 export const uploadImage = (req, res) => {
+  console.log(req.file);
   const token = req.cookies["jwt"];
   if (!token) return res.status(401).json("Not authenticated!");
 
@@ -82,7 +83,6 @@ export const uploadImage = (req, res) => {
         techcardsToUpdate,
         techcardsToDelete,
       } = req.body;
-
       const deleteImageFunction = async (path) => {
         try {
           await unlink(path);
@@ -99,9 +99,7 @@ export const uploadImage = (req, res) => {
         const { firstSide, secondSide, image } = techcardsToAdd;
 
         if (image) {
-          let imageToDB = image;
-          if (image.startsWith("techcard-image-"))
-            imageToDB = `${process.env.REACT_APP_URL}/${image}`;
+          const imageToDB = image;
           q =
             "INSERT INTO `techcards` (`first_side`, `second_side`, `image`, `list_uid`, `folder_uid`, `user_uid`) VALUES ('" +
             firstSide +
@@ -276,9 +274,7 @@ export const uploadListImage = (req, res) => {
         }
 
         if (image) {
-          let imageToDB = image;
-          if (image.startsWith("list-image-"))
-            imageToDB = `${process.env.REACT_APP_URL}/${image}`;
+          const imageToDB = image;
 
           q =
             "UPDATE `lists` SET `image` = '" +

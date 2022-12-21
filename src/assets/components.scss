@@ -82,6 +82,7 @@
     &-medium {
       @include btn-outline;
       padding: 1.9rem 3.4rem;
+
       border: 0.2rem solid $color-purple;
       font: 700 1.4rem/0 "Open Sans", sans-serif;
     }

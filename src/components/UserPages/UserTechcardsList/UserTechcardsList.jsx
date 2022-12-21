@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 function UserTechcards() {
   const { minWidth1000 } = MediaQueries();
   const { currentUser } = useContext(AuthContext);
+  const URL = process.env.REACT_APP_URL;
 
   const { folder, list, id } = useParams();
   const [folderID, setFolderID] = useState();
@@ -27,6 +28,7 @@ function UserTechcards() {
   const [techcardsImages, setTechcardsImages] = useState();
   const [firstSidesFlag, setFirstSidesFlag] = useState("");
   const [secondSidesFlag, setSecondSidesFlag] = useState("");
+  console.log(listImage);
   const fetchTechcards = async () => {
     try {
       const res = await axios.get("/techcards/lists/get", {
@@ -35,7 +37,11 @@ function UserTechcards() {
           folder,
         },
       });
-      setlistImage(res.data.listImage);
+      setlistImage(
+        res.data.listImage.startsWith("list-image-")
+          ? `${URL}/${res.data.listImage}`
+          : res.data.listImage
+      );
 
       let firstSidesArr = [];
       let secondSidesArr = [];
@@ -46,8 +52,12 @@ function UserTechcards() {
         .techcardsData) {
         firstSidesArr.push(first_side);
         secondSidesArr.push(second_side);
-        imagesArr.push(image);
         idsArr.push(id);
+        if (image) {
+          imagesArr.push(
+            image.startsWith("techcard-image-") ? `${URL}/${image}` : image
+          );
+        } else imagesArr.push(null);
       }
 
       setTechcardsIDS(idsArr);
@@ -61,6 +71,7 @@ function UserTechcards() {
       console.log(err);
     }
   };
+
   const statsAddHandler = async (isWrongAnswer, isRightAnswer, time) => {
     const statsAddPost = async (whatId, folder, list) => {
       const res = await axios.post("/statistics/folderOrList/add", {

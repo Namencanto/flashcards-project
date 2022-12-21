@@ -12,7 +12,7 @@ import {
   faChartLine,
   faRankingStar,
   faRocket,
-  faGear,
+  faUserGear,
 } from "@fortawesome/free-solid-svg-icons";
 
 import MediaQueries from "../../../HelperComponents/MediaQueries";
@@ -137,7 +137,7 @@ function UserMainPage() {
                   >
                     <FontAwesomeIcon
                       className={classNames(cx("price-card-body-icons-check"))}
-                      icon={faGear}
+                      icon={faUserGear}
                     />
                     <p>Settings</p>
                   </Link>

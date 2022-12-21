@@ -18,7 +18,10 @@ function HeaderContent(props) {
   useEffect(() => {
     props.giveHeaderContentRef(headerContentRef);
   }, [headerContentRef]);
-
+  const userNick =
+    props.currentUser.nick.length > 15
+      ? props.currentUser.nick.substring(0, 15) + "..."
+      : props.currentUser.nick;
   return (
     <>
       <main
@@ -31,9 +34,7 @@ function HeaderContent(props) {
             className="btn-solid-large-reverse btn-solid-large-header-content"
             to={props.currentUser ? "/user" : "/register"}
           >
-            {props.currentUser
-              ? props.currentUser.nick.toUpperCase()
-              : "SIGN UP"}
+            {props.currentUser ? userNick.toUpperCase() : "SIGN UP"}
           </Link>
         </div>
         <div ref={headerContentRef} className={cx("content-image-container")}>

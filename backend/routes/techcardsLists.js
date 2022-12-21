@@ -5,7 +5,6 @@ import {
 } from "../controllers/techcardList.js";
 import multer from "multer";
 
-import sharp from "sharp";
 import express from "express";
 
 const router = express.Router();

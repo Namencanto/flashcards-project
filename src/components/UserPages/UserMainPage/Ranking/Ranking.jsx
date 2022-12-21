@@ -22,6 +22,8 @@ function Ranking() {
   const { currentUser } = useContext(AuthContext);
   const [rankingData, setRankingData] = useState([]);
   const [fetchError, setFetchError] = useState(false);
+  const URL = process.env.REACT_APP_URL;
+
   useEffect(() => {
     const fetchRanking = async () => {
       try {
@@ -31,13 +33,25 @@ function Ranking() {
 
         res.data.dataFirst.forEach(({ user_uid, month_score }, i) => {
           let nicks = [];
+          let avatars = [];
+          console.log(res.data.dataSecond);
           for (const arr of res.data.dataSecond) {
             nicks.push(arr[0].nick);
+            console.log(arr[0].avatar);
+            if (arr[0].avatar) {
+              avatars.push(
+                arr[0].avatar.startsWith("user-avatar-")
+                  ? `${URL}/${arr[0].avatar}`
+                  : arr[0].avatar
+              );
+            } else avatars.push(null);
           }
+          console.log(nicks[i]);
           const userObject = {
             user_name: nicks[i],
             ranking_score: month_score,
             nationality: "PL",
+            avatar: avatars[i],
             uid: user_uid,
           };
           rankingDataObject = [...rankingDataObject, userObject];

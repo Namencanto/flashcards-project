@@ -31,7 +31,7 @@ function UserPages() {
         {/* desktop way */}
         <Route path="" element={<UserMainPage />}></Route>
         {/* <Route path="learning" element={<LearningPage />}></Route> */}
-        <Route path="settings" element={<UserSettingsPage />}></Route>
+        <Route path="settings/*" element={<UserSettingsPage />}></Route>
       </Routes>
     </>
   );
