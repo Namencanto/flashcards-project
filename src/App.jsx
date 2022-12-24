@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { getCookie } from "./HelperComponents/getCookie";
 import axios from "axios";
 function App() {
-  axios.defaults.baseURL = "http://localhost:3000/api";
+  axios.defaults.baseURL = `${process.env.REACT_APP_URL}/api`;
   const { currentUser } = useContext(AuthContext);
   // page loading spinner
   const handleLoading = () => {
