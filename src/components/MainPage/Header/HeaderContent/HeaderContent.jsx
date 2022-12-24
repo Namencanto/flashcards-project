@@ -19,9 +19,9 @@ function HeaderContent(props) {
     props.giveHeaderContentRef(headerContentRef);
   }, [headerContentRef]);
   const userNick =
-    props.currentUser.nick.length > 15
-      ? props.currentUser.nick.substring(0, 15) + "..."
-      : props.currentUser.nick;
+    props?.currentUser?.nick?.length > 15
+      ? props?.currentUser?.nick?.substring(0, 15) + "..."
+      : props?.currentUser?.nick;
   return (
     <>
       <main
