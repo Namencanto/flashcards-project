@@ -19,19 +19,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
-
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "./uploads")));
 // app.use(express.static("backend/uploads"));
-
+app.use("/static", express.static(path.resolve(__dirname, "../build/static")));
 /**
  * * PRODUCTION
  */
-
-// app.get("*", (req, res) =>
-//   res.sendFile(path.join(__dirname, "../build/index.html"))
-// );
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -39,5 +35,9 @@ app.use("/api/techcards", techcardRoutes);
 app.use("/api/techcards/lists", techcardListRoutes);
 app.use("/api/learnings", learningRoutes);
 app.use("/api/statistics", statisticsRoutes);
+
+app.get("*", (req, res) =>
+  res.sendFile(path.join(__dirname, "../build/index.html"))
+);
 
 app.listen(port, console.log(`Server running on port ${port}`));

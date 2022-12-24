@@ -7,7 +7,9 @@ import UserPages from "./components/UserPages/UserPages";
 import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
 import { getCookie } from "./HelperComponents/getCookie";
+import axios from "axios";
 function App() {
+  axios.defaults.baseURL = "http://localhost:3000/api";
   const { currentUser } = useContext(AuthContext);
   // page loading spinner
   const handleLoading = () => {
