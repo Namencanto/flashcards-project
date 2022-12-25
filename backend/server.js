@@ -23,11 +23,6 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "./uploads")));
-// app.use(express.static("backend/uploads"));
-app.use("/static", express.static(path.resolve(__dirname, "../build/static")));
-/**
- * * PRODUCTION
- */
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -36,8 +31,14 @@ app.use("/api/techcards/lists", techcardListRoutes);
 app.use("/api/learnings", learningRoutes);
 app.use("/api/statistics", statisticsRoutes);
 
-app.get("*", (req, res) =>
-  res.sendFile(path.join(__dirname, "../build/index.html"))
-);
+if (process.env.IS_PRODUCTION) {
+  app.use(
+    "/static",
+    express.static(path.resolve(__dirname, "../build/static"))
+  );
+  app.get("*", (req, res) =>
+    res.sendFile(path.join(__dirname, "../build/index.html"))
+  );
+}
 
 app.listen(port, console.log(`Server running on port ${port}`));
