@@ -31,7 +31,7 @@ app.use("/api/techcards/lists", techcardListRoutes);
 app.use("/api/learnings", learningRoutes);
 app.use("/api/statistics", statisticsRoutes);
 
-if (process.env.IS_PRODUCTION) {
+if (process.env.SERVER_IS_PRODUCTION) {
   app.use(
     "/static",
     express.static(path.resolve(__dirname, "../build/static"))

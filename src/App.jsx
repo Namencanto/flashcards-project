@@ -9,7 +9,7 @@ import { useContext } from "react";
 import { getCookie } from "./HelperComponents/getCookie";
 import axios from "axios";
 function App() {
-  if (process.env.IS_PRODUCTION)
+  if (process.env.REACT_APP_IS_PRODUCTION)
     axios.defaults.baseURL = `${process.env.REACT_APP_URL}/api`;
 
   const { currentUser } = useContext(AuthContext);
