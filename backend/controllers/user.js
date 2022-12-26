@@ -1,30 +1,20 @@
 import { db } from "../config/db.js";
-import jwt from "jsonwebtoken";
-import jwt_decode from "jwt-decode";
 import { checkToken } from "./checkToken.js";
+
 export const getInformation = (req, res) => {
-  const token = req.cookies["jwt"];
-  if (!token) return res.status(401).json("Not authenticated!");
+  checkToken(req, res, (userInfo) => {
+    const q = "SELECT * FROM user_description WHERE uid = " + userInfo.id + ";";
 
-  const decoded = jwt_decode(token);
-  console.log(token, decoded.id);
-  const q = "SELECT * FROM user_description WHERE uid = ?";
+    db.query(q, (err, data) => {
+      if (err) return res.status(500).send(err);
 
-  db.query(q, [decoded.id], (err, data) => {
-    if (err) return res.status(500).send(err);
-
-    return res.status(200).json(data);
+      return res.status(200).json(data);
+    });
   });
 };
 
 export const addInformation = (req, res) => {
-  const token = req.cookies.jwt;
-  console.log(token);
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, (userInfo) => {
     const q =
       "UPDATE `user_description` SET `about_me_info` = '" +
       req.body.aboutMeText +
@@ -43,13 +33,7 @@ export const addInformation = (req, res) => {
  */
 
 export const addLanguage = (req, res) => {
-  const token = req.cookies.jwt;
-  console.log(token);
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, (userInfo) => {
     if (!req.body.change) {
       if (req.body.language.includes("/") || req.body.level.includes("/"))
         return res.status(403).json("'/' Character is not allowed");
@@ -94,12 +78,7 @@ export const addLanguage = (req, res) => {
 };
 
 export const getRanking = (req, res) => {
-  const token = req.cookies.jwt;
-
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
+  checkToken(req, res, (userInfo) => {
     const today = new Date();
     const month = today.toISOString().split("T")[0].slice(0, -3);
     const qFirst =
@@ -108,7 +87,6 @@ export const getRanking = (req, res) => {
       "' ORDER BY month_score DESC LIMIT 10;";
 
     db.query(qFirst, (err, dataFirst) => {
-      console.log(dataFirst);
       if (err) return res.status(500).json(err);
       let qSecond = "";
       for (const data of dataFirst) {
@@ -137,55 +115,60 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const UPLOAD_PATH = path.join(__dirname, ".././uploads");
 import fs from "fs";
-import { unlink } from "fs/promises";
 
 export const postUserAvatar = (req, res) => {
-  checkToken(req, res, async (userInfo) => {
-    //TODO: DELETE AVATARS
-    const { previousAvatar } = req.headers;
-    if (previousAvatar && previousAvatar.startsWith(`user-avatar-`)) {
-      fs.unlink(previousAvatar, (error) => {
+  checkToken(req, res, (userInfo) => {
+    // * DELETE AVATAR
+
+    const qCheckPreviousAvatarExist =
+      "SELECT avatar FROM techcards.users WHERE id = " + userInfo.id + ";";
+    db.query(qCheckPreviousAvatarExist, async (err, avatar) => {
+      const previousAvatar = avatar[0].avatar;
+      if (err) return res.status(500).json(err);
+
+      if (previousAvatar && previousAvatar.startsWith(`user-avatar-`)) {
+        fs.unlink(`${UPLOAD_PATH}/${previousAvatar}`, (error) => {
+          if (error) {
+            console.error(error);
+          } else {
+            console.log("File deleted successfully");
+          }
+        });
+      }
+      //
+
+      const { file } = req;
+      const fileName = `user-avatar-${Date.now()}.${file.originalname}`;
+      const imagePath = UPLOAD_PATH + `/${fileName}`;
+      const imageBuffer = await sharp(file.buffer)
+        .resize({
+          fit: sharp.fit.contain,
+          width: 250,
+        })
+        .jpeg({ quality: 50 })
+        .toBuffer();
+      if (imageBuffer.length > 500000) {
+        throw new Error("Image too large");
+      }
+      fs.writeFile(imagePath, imageBuffer, (error) => {
         if (error) {
           console.error(error);
         } else {
-          console.log("File deleted successfully");
+          console.log("File saved successfully");
         }
       });
-    }
+      const qAvatar =
+        "UPDATE `users` SET avatar = '" +
+        fileName +
+        "' WHERE id = " +
+        userInfo.id +
+        ";";
 
-    //
-
-    const { file } = req;
-    const fileName = `user-avatar-${Date.now()}.${file.originalname}`;
-    const imagePath = UPLOAD_PATH + `/${fileName}`;
-    const imageBuffer = await sharp(file.buffer)
-      .resize({
-        fit: sharp.fit.contain,
-        width: 250,
-      })
-      .jpeg({ quality: 50 })
-      .toBuffer();
-    if (imageBuffer.length > 500000) {
-      throw new Error("Image too large");
-    }
-    fs.writeFile(imagePath, imageBuffer, (error) => {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log("File saved successfully");
-      }
-    });
-    const qAvatar =
-      "UPDATE `users` SET avatar = '" +
-      fileName +
-      "' WHERE id = " +
-      userInfo.id +
-      ";";
-
-    db.query(qAvatar, (err, data) => {
-      if (err) return res.status(500).json(err);
-      console.log(fileName);
-      return res.status(200).json(fileName);
+      db.query(qAvatar, (err, data) => {
+        if (err) return res.status(500).json(err);
+        console.log(fileName);
+        return res.status(200).json(fileName);
+      });
     });
   });
 };

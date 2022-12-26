@@ -2,25 +2,53 @@ import { db } from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+function passwordValidation(password) {
+  // that's why it's so stupidly done, because this regex doesn't know why it doesn't catch that you still need to include the special character ...
+  const regex1 =
+    /^(?=.*[!~@#$%^/&?*()_+-={}|[\]\\:\";'<>,.])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!~@#$%^/&?*()_+-={}|[\]\\:\";'<>,.]{10,5128}$/;
+  const regex2 = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  return regex1.test(password) && regex2.test(password);
+}
+
+function emailValidation(email) {
+  return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+    email
+  );
+}
+function nickValidation(nick) {
+  return /^[a-zA-Z0-9_.]{3,25}$/.test(nick);
+}
+
+//
+
 export const register = (req, res) => {
   // * CHECK EXISTING USER
-  const qEmail = "SELECT * FROM users WHERE email = ?";
-  const qNick = "SELECT * FROM users WHERE nick = ?";
+  const { email, password, nick } = req.body;
 
-  db.query(qEmail, [req.body.email], (err, data) => {
+  if (
+    !passwordValidation(password) ||
+    !emailValidation(email) ||
+    !nickValidation(nick)
+  ) {
+    return res.status(422).json("Invalid credentials");
+  }
+  const qEmail = "SELECT * FROM users WHERE email = '" + email + "';";
+  const qNick = "SELECT * FROM users WHERE nick = '" + nick + "'";
+
+  db.query(qEmail, (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length) return res.status(409).json("Email already exists!");
 
-    db.query(qNick, [req.body.nick], (err, data) => {
+    db.query(qNick, (err, data) => {
       if (err) return res.status(500).json(err);
       if (data.length) return res.status(409).json("Nick already exists!");
 
       // * HASH THE PASSWORD AND CREATE A USER
       const salt = bcrypt.genSaltSync(10);
-      const hash = bcrypt.hashSync(req.body.password, salt);
+      const hash = bcrypt.hashSync(password, salt);
 
       const q = "INSERT INTO users(`email`,`password`,`nick`) VALUES (?)";
-      const values = [req.body.email, hash, req.body.nick];
+      const values = [email, hash, nick];
 
       db.query(q, [values], (err, data) => {
         if (err) return res.status(500).json(err);

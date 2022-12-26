@@ -1,17 +1,10 @@
 import { db } from "../config/db.js";
 import jwt from "jsonwebtoken";
-import jwt_decode from "jwt-decode";
-import multer from "multer";
 import sharp from "sharp";
-import router from "../routes/techcards.js";
+import { checkToken } from "./checkToken.js";
 
 export const getTechcardList = (req, res) => {
-  const token = req.cookies["jwt"];
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, (userInfo) => {
     const qList =
       "SELECT * FROM lists WHERE id = '" +
       req.query.id +
@@ -19,7 +12,6 @@ export const getTechcardList = (req, res) => {
       req.query.folder +
       "'; ";
     db.query(qList, (err, listsData) => {
-      console.log(listsData[1][0]);
       if (err) return res.status(500).send(err);
 
       const qTechcards =
@@ -50,13 +42,7 @@ import fs from "fs";
 import { unlink } from "fs/promises";
 
 export const uploadImage = (req, res) => {
-  console.log(req.file);
-  const token = req.cookies["jwt"];
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", async (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, async (userInfo) => {
     if (req.file) {
       const { file } = req;
       const fileName = `techcard-image-${Date.now()}.${file.originalname}`;
@@ -86,7 +72,6 @@ export const uploadImage = (req, res) => {
       const deleteImageFunction = async (path) => {
         try {
           await unlink(path);
-          console.log(`successfully deleted `);
         } catch (error) {
           console.error("there was an error:", error.message);
         }
@@ -194,7 +179,6 @@ export const uploadImage = (req, res) => {
         const { techcardsIDS, images } = techcardsToDelete;
 
         for (const techcardID of techcardsIDS) {
-          console.log(techcardID);
           q += "DELETE FROM `techcards` WHERE (`id` = '" + techcardID + "');";
         }
 
@@ -209,7 +193,6 @@ export const uploadImage = (req, res) => {
           }
         }
       }
-      console.log(q);
       db.query(q, (err, data) => {
         if (err) return res.status(500).send(err);
 
@@ -224,12 +207,7 @@ export const uploadImage = (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 
 export const uploadListImage = (req, res) => {
-  const token = req.cookies["jwt"];
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", async (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, async (userInfo) => {
     if (req.file) {
       const { file } = req;
       const fileName = `list-image-${Date.now()}.${file.originalname}`;
@@ -254,14 +232,13 @@ export const uploadListImage = (req, res) => {
       const deleteImageFunction = async (path) => {
         try {
           await unlink(path);
-          console.log(`successfully deleted `);
         } catch (error) {
           console.error("there was an error:", error.message);
         }
       };
 
       let q = "";
-      console.log(setType);
+
       // * UPDATE CASE
       if (setType) {
         if (oldImage) {
@@ -307,7 +284,6 @@ export const uploadListImage = (req, res) => {
         );
       }
 
-      console.log(q);
       db.query(q, (err, data) => {
         if (err) return res.status(500).send(err);
 

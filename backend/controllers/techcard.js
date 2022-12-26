@@ -1,14 +1,9 @@
 import { db } from "../config/db.js";
 import jwt from "jsonwebtoken";
-import jwt_decode from "jwt-decode";
+import { checkToken } from "./checkToken.js";
 
 export const getTechcards = (req, res) => {
-  const token = req.cookies.jwt;
-
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
+  checkToken(req, res, (userInfo) => {
     const qFolders =
       "SELECT * FROM folders WHERE user_uid = '" + userInfo.id + "'";
     db.query(qFolders, (err, foldersData) => {
@@ -27,7 +22,6 @@ export const getTechcards = (req, res) => {
           if (foldersData.length === 1) listsData = [listsData];
           for (let i = 0; i < listsData.length; i++) {
             for (const listData of listsData[i]) {
-              console.log(listData.id);
               qTechcards +=
                 "SELECT * FROM techcards WHERE list_uid = '" +
                 listData.id +
@@ -49,13 +43,7 @@ export const getTechcards = (req, res) => {
 };
 
 export const addTechcards = (req, res) => {
-  const token = req.cookies.jwt;
-
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, (userInfo) => {
     const listToAdd = req.body.list;
     const folderToAdd = req.body.folder;
     const { firstSidesFlag, secondSidesFlag } = req.body;
@@ -104,13 +92,7 @@ export const addTechcards = (req, res) => {
 //////////////////////////////////////////////////////////
 
 export const deleteTechcards = (req, res) => {
-  const token = req.cookies.jwt;
-
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, (userInfo) => {
     const listToDelete = req.body.list;
     const folderToDelete = req.body.folder;
 
@@ -163,13 +145,7 @@ export const deleteTechcards = (req, res) => {
 //////////////////////////////////////////////////////////
 
 export const updateTechcards = (req, res) => {
-  const token = req.cookies.jwt;
-
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, (userInfo) => {
     const listToChange = req.body.list;
     const folderToChange = req.body.folder;
     const { firstSidesFlag, secondSidesFlag } = req.body;

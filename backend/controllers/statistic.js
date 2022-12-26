@@ -1,17 +1,7 @@
 import { db } from "../config/db.js";
 import jwt from "jsonwebtoken";
 import jwt_decode from "jwt-decode";
-
-function checkToken(req, res, next) {
-  const token = req.cookies.jwt;
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
-    next(userInfo);
-  });
-}
+import { checkToken } from "./checkToken.js";
 
 export const getUserStats = (req, res) => {
   checkToken(req, res, (userInfo) => {
@@ -51,7 +41,6 @@ export const getUserStats = (req, res) => {
       qAllStatuses;
 
     db.query(finalQ, (err, data) => {
-      console.log(data[7][0].statuses);
       if (err) return res.status(500).send(err);
       return res.status(200).json([
         {
@@ -72,12 +61,7 @@ export const getUserStats = (req, res) => {
   });
 };
 export const getFolderOrListStats = (req, res) => {
-  const token = req.cookies.jwt;
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, (userInfo) => {
     const { id, folder, list } = req.query;
 
     let whereSelect = "";
@@ -90,7 +74,6 @@ export const getFolderOrListStats = (req, res) => {
       type = "lists_statistics";
       whereSelect = "`list_uid`";
     }
-    console.log(list);
     const q =
       "SELECT `date`, `wrong_answers`, `right_answers`, `time_spent` FROM " +
       type +
@@ -110,12 +93,7 @@ export const getFolderOrListStats = (req, res) => {
   });
 };
 export const getUserStrike = (req, res) => {
-  const token = req.cookies.jwt;
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
-
+  checkToken(req, res, (userInfo) => {
     const q =
       "SELECT `date` FROM folders_statistics WHERE `user_uid` = '" +
       userInfo.id +
@@ -130,11 +108,7 @@ export const getUserStrike = (req, res) => {
 };
 
 export const addUserStats = (req, res) => {
-  const token = req.cookies.jwt;
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
+  checkToken(req, res, (userInfo) => {
     const { id, folder, list, right, wrong } = req.body;
 
     const changeStatusQuery =
@@ -143,7 +117,7 @@ export const addUserStats = (req, res) => {
       "', `when_the_status_can_be_changed` = '" +
       tomorrow +
       "' WHERE (`id` = " +
-      id +
+      userInfo.id +
       ");";
     db.query(changeStatusQuery, (err, data) => {
       if (err) return res.status(500).json(err);
@@ -153,11 +127,7 @@ export const addUserStats = (req, res) => {
 };
 
 export const addFolderOrListStats = (req, res) => {
-  const token = req.cookies.jwt;
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
+  checkToken(req, res, (userInfo) => {
     const { id, folder, list, right, wrong, time } = req.body;
 
     const today = new Date();

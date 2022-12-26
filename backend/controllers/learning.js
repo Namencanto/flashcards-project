@@ -1,12 +1,9 @@
 import { db } from "../config/db.js";
 import jwt from "jsonwebtoken";
+import { checkToken } from "./checkToken.js";
 
 export const changeTechcardStatus = (req, res) => {
-  const token = req.cookies.jwt;
-  if (!token) return res.status(401).json("Not authenticated!");
-
-  jwt.verify(token, "jwtkey", (err, userInfo) => {
-    if (err) return res.status(403).json("Token is not valid!");
+  checkToken(req, res, async (userInfo) => {
     const { id, round, type } = req.body;
 
     const searchQuery =
@@ -82,8 +79,6 @@ export const changeTechcardStatus = (req, res) => {
         id +
         "); ";
 
-      console.log("changeStatusQuery");
-      console.log(changeStatusQuery);
       if (statusToChange === 0) {
         changeStatusQuery = changeStatusQuery + addMonthScore;
       }
