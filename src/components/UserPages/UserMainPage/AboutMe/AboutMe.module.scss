@@ -18,10 +18,7 @@
     border-radius: 1rem;
     padding: 1rem 1rem 2rem 1rem;
     position: relative;
-    & h1 {
-      color: $color-black;
-      font-size: 3rem;
-    }
+
     & p {
       color: $color-black;
       line-height: 2.4rem;
@@ -45,6 +42,17 @@
       margin-bottom: auto;
       width: calc(100% - 1rem);
       bottom: auto;
+    }
+    &-header {
+      align-items: center;
+      display: flex;
+
+      & h2 {
+        vertical-align: bottom !important;
+        margin: 0 auto;
+        color: $color-black;
+        font-size: 2.4rem;
+      }
     }
   }
   &-textarea {

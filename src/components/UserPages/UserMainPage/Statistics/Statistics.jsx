@@ -25,6 +25,7 @@ import {
   getOptionsAnswersPie,
   getOptionsStatusesPie,
 } from "./StatisticsOptions";
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 
 function Statistics() {
   const { minWidth1000 } = MediaQueries();
@@ -32,6 +33,7 @@ function Statistics() {
   const optionsLine = getOptionsLine(minWidth1000);
   const optionsAnswersPie = getOptionsAnswersPie(minWidth1000);
   const optionsStatusesPie = getOptionsStatusesPie(minWidth1000);
+  const [isFetched, setIsFetched] = useState(false);
 
   const [mainStats, setMainStats] = useState({
     joinedDate: "",
@@ -61,6 +63,7 @@ function Statistics() {
 
   useEffect(() => {
     const fetchStats = async () => {
+      setIsFetched(false);
       try {
         const res = await axios.get("/statistics/user/get");
 
@@ -101,6 +104,7 @@ function Statistics() {
       } catch (error) {
         console.log(error);
       }
+      setIsFetched(true);
     };
 
     fetchStats();
@@ -116,6 +120,43 @@ function Statistics() {
             {
               <div className={classNames(cx("statistics-container"))}>
                 <h2>Statistics</h2>
+                {isFetched ? (
+                  <>
+                    <StatisticsData
+                      mainStats={mainStats}
+                      totalTime={allActivity.allTimes.reduce(
+                        (a, b) => a + b,
+                        0
+                      )}
+                    />
+                    <LastTenDaysLineChart
+                      data={allActivity}
+                      options={optionsLine}
+                    />
+                    <LastTenDaysTimeSpentLineChart
+                      data={allActivity}
+                      options={optionsLine}
+                    />
+                    <AllAnswersPieChart
+                      data={allAnswers}
+                      options={optionsAnswersPie}
+                    />
+                    <AllStatusesPieChart
+                      statuses={allStatuses}
+                      options={optionsStatusesPie}
+                    />
+                  </>
+                ) : (
+                  <LoadingSpinner />
+                )}
+              </div>
+            }
+          </UserMobileCard>
+        ) : (
+          <div className={classNames(cx("statistics-container"))}>
+            <h2>Statistics</h2>
+            {isFetched ? (
+              <>
                 <StatisticsData
                   mainStats={mainStats}
                   totalTime={allActivity.allTimes.reduce((a, b) => a + b, 0)}
@@ -136,28 +177,10 @@ function Statistics() {
                   statuses={allStatuses}
                   options={optionsStatusesPie}
                 />
-              </div>
-            }
-          </UserMobileCard>
-        ) : (
-          <div className={classNames(cx("statistics-container"))}>
-            <h2>Statistics</h2>
-            <StatisticsData
-              mainStats={mainStats}
-              totalTime={allActivity.allTimes.reduce((a, b) => a + b, 0)}
-            />
-
-            <LastTenDaysLineChart data={allActivity} options={optionsLine} />
-            <LastTenDaysTimeSpentLineChart
-              data={allActivity}
-              options={optionsLine}
-            />
-
-            <AllAnswersPieChart data={allAnswers} options={optionsAnswersPie} />
-            <AllStatusesPieChart
-              statuses={allStatuses}
-              options={optionsStatusesPie}
-            />
+              </>
+            ) : (
+              <LoadingSpinner />
+            )}
           </div>
         )}
       </div>

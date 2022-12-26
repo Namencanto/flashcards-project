@@ -1,0 +1,52 @@
+@import "../../assets/base.scss";
+@keyframes sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+    -ms-transform: scale(0);
+    transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+}
+.spinner {
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  transition: all 400ms ease-out;
+  flex-direction: column;
+  & p {
+    color: black;
+    @media only screen and (min-width: $bp-1000) {
+      font-size: 2.4rem;
+    }
+  }
+  &-container {
+    margin-top: 0.5rem;
+    width: 12rem;
+    height: 4rem;
+    text-align: center;
+    @media only screen and (min-width: $bp-1000) {
+      margin-top: 1.5rem;
+    }
+  }
+  &-bounce {
+    margin: 0 0.1rem;
+    display: inline-block;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 100%;
+    background-color: #5f4dee;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    @media only screen and (min-width: $bp-1000) {
+      width: 2.6rem;
+      height: 2.6rem;
+    }
+  }
+}

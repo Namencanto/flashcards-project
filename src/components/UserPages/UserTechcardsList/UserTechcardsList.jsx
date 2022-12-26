@@ -4,8 +4,7 @@ import classes from "./UserTechcardsList.module.scss";
 import classNames from "classnames/bind";
 import { faRocket } from "@fortawesome/free-solid-svg-icons";
 
-import { useContext, useState } from "react";
-import { AuthContext } from "../../../context/AuthContext";
+import { useState } from "react";
 import MediaQueries from "../../../HelperComponents/MediaQueries";
 import UserMobileCard from "../UserMainPage/UserMobileCard/UserMobileCard";
 import UserTechcardsListContent from "./UserTechcardsListContent/UserTechcardsListContent";
@@ -16,7 +15,6 @@ import ReactDOM from "react-dom";
 import { useParams } from "react-router-dom";
 function UserTechcards() {
   const { minWidth1000 } = MediaQueries();
-  const { currentUser } = useContext(AuthContext);
   const URL = process.env.REACT_APP_URL;
 
   const { folder, list, id } = useParams();
@@ -28,8 +26,11 @@ function UserTechcards() {
   const [techcardsImages, setTechcardsImages] = useState();
   const [firstSidesFlag, setFirstSidesFlag] = useState("");
   const [secondSidesFlag, setSecondSidesFlag] = useState("");
-  console.log(listImage);
+
+  const [isFetched, setIsFetched] = useState(false);
+
   const fetchTechcards = async () => {
+    setIsFetched(false);
     try {
       const res = await axios.get("/techcards/lists/get", {
         params: {
@@ -70,6 +71,7 @@ function UserTechcards() {
     } catch (err) {
       console.log(err);
     }
+    setIsFetched(true);
   };
 
   const statsAddHandler = async (isWrongAnswer, isRightAnswer, time) => {
@@ -110,43 +112,32 @@ function UserTechcards() {
   };
   const cx = classNames.bind(classes);
 
+  const props = {
+    fetchTechcards,
+    folder,
+    list,
+    id,
+    folderID,
+    listImage,
+    techcardsIDS,
+    firstSides,
+    secondSides,
+    techcardsImages,
+    displayLearningModal: displayLearningModalHandler,
+    firstSidesFlag,
+    secondSidesFlag,
+    isFetched,
+  };
+
   return (
     <div className={classNames(cx("techcards-list"))}>
       <div className="grid-mainpage-ranking">
         {minWidth1000 ? (
           <UserMobileCard icon={faRocket} backPath="/user/techcards">
-            <UserTechcardsListContent
-              fetchTechcards={fetchTechcards}
-              folder={folder}
-              list={list}
-              id={id}
-              folderID={folderID}
-              listImage={listImage}
-              techcardsIDS={techcardsIDS}
-              firstSides={firstSides}
-              secondSides={secondSides}
-              techcardsImages={techcardsImages}
-              displayLearningModal={displayLearningModalHandler}
-              firstSidesFlag={firstSidesFlag}
-              secondSidesFlag={secondSidesFlag}
-            />
+            <UserTechcardsListContent {...props} />
           </UserMobileCard>
         ) : (
-          <UserTechcardsListContent
-            fetchTechcards={fetchTechcards}
-            folder={folder}
-            list={list}
-            id={id}
-            folderID={folderID}
-            listImage={listImage}
-            techcardsIDS={techcardsIDS}
-            firstSides={firstSides}
-            secondSides={secondSides}
-            techcardsImages={techcardsImages}
-            displayLearningModal={displayLearningModalHandler}
-            firstSidesFlag={firstSidesFlag}
-            secondSidesFlag={secondSidesFlag}
-          />
+          <UserTechcardsListContent {...props} />
         )}
         {learningModalIsVisible
           ? ReactDOM.createPortal(

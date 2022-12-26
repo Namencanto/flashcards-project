@@ -14,35 +14,35 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import NavbarIsVisible from "./NavbarIsVisible";
 
 import MediaQueries from "../../../HelperComponents/MediaQueries";
+import { useEffect } from "react";
 
 function Header(props) {
   const cx = classNames.bind(classes);
 
-  const [headerContentRef, setHeaderContentRef] = useState();
   const [headerClassName, setHeaderClassName] = useState("");
 
   const { minWidth1000 } = MediaQueries();
 
   const scrollPosition = useScrollPosition();
-
-  const setHeaderContentRefHandler = (ref) => {
-    setHeaderContentRef(ref);
-  };
-
-  // if scrollposition loaded
-  if (scrollPosition) {
-    // header hide logic depending on width.
-    if (!minWidth1000) {
-      // if the class is not already set, if scroll position is in specific height
-      if (headerClassName !== "navbar-narrower" && scrollPosition > 150) {
-        setHeaderClassName("navbar-narrower");
-      }
-      // reverse logic
-      if (headerClassName !== "" && scrollPosition < 1) {
-        setHeaderClassName("");
+  if (headerClassName !== "" && scrollPosition < 50) {
+    setHeaderClassName("");
+  }
+  useEffect(() => {
+    // if scrollposition loaded
+    if (scrollPosition) {
+      // header hide logic depending on width.
+      if (!minWidth1000) {
+        // if the class is not already set, if scroll position is in specific height
+        if (scrollPosition > 50) {
+          setHeaderClassName("navbar-narrower");
+        }
+        // reverse logic
+        if (scrollPosition < 50) {
+          setHeaderClassName("");
+        }
       }
     }
-  }
+  }, [scrollPosition, minWidth1000, headerClassName]);
 
   const [navbarIsOpen, setNavbarIsOpen] = useState(false);
   const setNavbarIsOpenHandler = () => {

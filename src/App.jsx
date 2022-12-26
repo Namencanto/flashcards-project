@@ -13,6 +13,7 @@ function App() {
     axios.defaults.baseURL = `${process.env.REACT_APP_URL}/api`;
 
   const { currentUser } = useContext(AuthContext);
+
   // page loading spinner
   const handleLoading = () => {
     setTimeout(() => {

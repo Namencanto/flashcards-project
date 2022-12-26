@@ -4,12 +4,14 @@ import React, { useState, useRef } from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
 
+import MediaQueries from "../../../../../../HelperComponents/MediaQueries";
 const GeneralAvatar = ({
   postGeneralAvatar,
   currentAvatar,
   setCurrentAvatar,
 }) => {
   const cx = classNames.bind(classes);
+  const { minWidth1000 } = MediaQueries();
   let editor = "";
   const fileInput = useRef();
   const [picture, setPicture] = useState({
@@ -41,7 +43,6 @@ const GeneralAvatar = ({
   };
 
   const setEditorRef = (ed) => {
-    console.log(ed);
     editor = ed;
   };
 
@@ -77,6 +78,8 @@ const GeneralAvatar = ({
   function handleImageClick() {
     fileInput.current.click();
   }
+  console.log(minWidth1000);
+
   return (
     <>
       <div>
@@ -92,17 +95,16 @@ const GeneralAvatar = ({
             />
           </div>
         )}
-
         {picture.cropperOpen && (
           <div className={classNames(cx("settings-general-avatar-edit"))}>
             <form action="">
               <AvatarEditor
                 border={0}
-                borderRadius={100}
+                borderRadius={125}
                 ref={setEditorRef}
                 image={picture.img}
-                width={200}
-                height={200}
+                width={minWidth1000 ? 150 : 250}
+                height={minWidth1000 ? 150 : 250}
                 color={[0, 0, 0, 0.5]} // RGBA
                 rotate={picture.rotate}
                 scale={picture.zoom}

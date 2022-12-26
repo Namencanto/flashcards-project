@@ -1,11 +1,9 @@
 import classes from "./Ranking.module.scss";
 import classNames from "classnames/bind";
 
-import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../../../context/AuthContext";
 import { faRankingStar } from "@fortawesome/free-solid-svg-icons";
-import ReactCountryFlag from "react-country-flag";
 
 import UserMobileCard from "../UserMobileCard/UserMobileCard";
 
@@ -13,8 +11,6 @@ import MediaQueries from "../../../../HelperComponents/MediaQueries";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-import SimpleBar from "simplebar-react";
-import "simplebar-react/dist/simplebar.min.css";
 import RankingContent from "./RankingContent";
 
 function Ranking() {
@@ -22,10 +18,12 @@ function Ranking() {
   const { currentUser } = useContext(AuthContext);
   const [rankingData, setRankingData] = useState([]);
   const [fetchError, setFetchError] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
   const URL = process.env.REACT_APP_URL;
 
   useEffect(() => {
     const fetchRanking = async () => {
+      setIsFetched(false);
       try {
         const res = await axios.get("/users/getRanking");
 
@@ -34,10 +32,8 @@ function Ranking() {
         res.data.dataFirst.forEach(({ user_uid, month_score }, i) => {
           let nicks = [];
           let avatars = [];
-          console.log(res.data.dataSecond);
           for (const arr of res.data.dataSecond) {
             nicks.push(arr[0].nick);
-            console.log(arr[0].avatar);
             if (arr[0].avatar) {
               avatars.push(
                 arr[0].avatar.startsWith("user-avatar-")
@@ -46,11 +42,9 @@ function Ranking() {
               );
             } else avatars.push(null);
           }
-          console.log(nicks[i]);
           const userObject = {
             user_name: nicks[i],
             ranking_score: month_score,
-            nationality: "PL",
             avatar: avatars[i],
             uid: user_uid,
           };
@@ -62,6 +56,7 @@ function Ranking() {
       } catch (err) {
         setFetchError(true);
       }
+      setIsFetched(true);
     };
     fetchRanking();
   }, []);
@@ -78,27 +73,22 @@ function Ranking() {
     return rankingTitle;
   }
 
+  const props = {
+    rankingTitleFunction,
+    rankingData,
+    currentUserNick: currentUser.nick,
+    error: fetchError,
+    isFetched,
+  };
   return (
     <div className={classNames(cx("ranking"))}>
       <div className="grid-mainpage-ranking">
         {minWidth1000 ? (
           <UserMobileCard icon={faRankingStar}>
-            {
-              <RankingContent
-                rankingTitleFunction={rankingTitleFunction}
-                rankingData={rankingData}
-                currentUserNick={currentUser.nick}
-                error={fetchError}
-              />
-            }
+            {<RankingContent {...props} />}
           </UserMobileCard>
         ) : (
-          <RankingContent
-            rankingTitleFunction={rankingTitleFunction}
-            rankingData={rankingData}
-            currentUserNick={currentUser.nick}
-            error={fetchError}
-          />
+          <RankingContent {...props} />
         )}
       </div>
     </div>

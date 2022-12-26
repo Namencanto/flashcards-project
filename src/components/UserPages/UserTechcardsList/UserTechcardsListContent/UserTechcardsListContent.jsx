@@ -16,6 +16,7 @@ import axios from "axios";
 import ReactCountryFlag from "react-country-flag";
 import { useRef } from "react";
 import { handleFileSelect } from "./UserTechcardsListContentHelpers";
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 
 function UserTechcardsListContent({
   fetchTechcards,
@@ -30,6 +31,7 @@ function UserTechcardsListContent({
   displayLearningModal,
   firstSidesFlag,
   secondSidesFlag,
+  isFetched,
 }) {
   const defaultImage =
     "https://miro.medium.com/max/250/1*DSNfSDcOe33E2Aup1Sww2w.jpeg";
@@ -247,421 +249,443 @@ function UserTechcardsListContent({
 
   return (
     <div className={classNames(cx("techcards-list-container"))}>
-      <div className={classNames(cx("techcards-list-title"))}>
-        <FontAwesomeIcon
-          className={classNames(cx("techcards-list-title-icon"))}
-          onClick={() => {
-            changeListHandler();
-            setFormListTypeIsDelete(false);
-          }}
-          icon={listChangeIcon}
-        />
-        {/* <p>{folder}</p> */}
-        <div style={{ display: "flex" }}>
-          <h1>{list}</h1>
-          {!changeListIsVisible && listImage ? (
-            <img
-              style={{ marginLeft: "auto", cursor: "default" }}
-              className={classNames(cx("techcards-list-title-icon-img"))}
-              src={listImage}
-              alt="list illustration"
+      {isFetched ? (
+        <>
+          <div className={classNames(cx("techcards-list-title"))}>
+            <FontAwesomeIcon
+              className={classNames(cx("techcards-list-title-icon"))}
+              onClick={() => {
+                changeListHandler();
+                setFormListTypeIsDelete(false);
+              }}
+              icon={listChangeIcon}
             />
-          ) : (
-            ""
-          )}
-
-          {changeListIsVisible && !formIsVisible ? (
-            <div className={classNames(cx("techcards-list-title-icons"))}>
-              <FontAwesomeIcon
-                className={classNames(cx("techcards-list-title-icon-form"))}
-                icon={formListIcon}
-                onClick={() => {
-                  return formListIcon === faTrashCan
-                    ? (setFormListIcon(faPencil), setFormListTypeIsDelete(true))
-                    : (setFormListIcon(faTrashCan),
-                      setFormListTypeIsDelete(false));
-                }}
-              />
-              <div
-                style={{ width: "auto", height: "auto" }}
-                className={classNames(cx("techcards-list-main-form-image"))}
-              >
-                <label>
-                  <figure style={{ width: "auto", height: "auto" }}>
-                    <img
-                      className={classNames(
-                        cx("techcards-list-title-icon-img")
-                      )}
-                      src={listImage ? listImage : defaultImage}
-                      alt="list illustration"
-                    />
-
-                    <figcaption
-                      onClick={() => {
-                        setFormType("LIST_IMAGE");
-                        setImageFormTypeIsFile(true);
-                        setImage(listImage ? listImage : defaultImage);
-                        changeListElementHandler();
-                      }}
-                      style={{
-                        margin: "-2rem 0rem 0 1.2rem",
-                        height: "7.3rem",
-                        width: "7.5rem",
-                      }}
-                    >
-                      <p style={{ color: "white" }}>Click to change image</p>
-                    </figcaption>
-                  </figure>
-                </label>
-              </div>
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
-      </div>
-      <main className={classNames(cx("techcards-list-main"))}>
-        {!formIsVisible ? (
-          <>
-            <div
-              style={{ border: firstSides?.length === 0 ? "none" : "" }}
-              className={classNames(cx("techcards-list-main-header"))}
-            >
-              {firstSides?.length === 0 ? (
-                <p style={{ marginTop: "1rem" }} className="message-to-user">
-                  It's looks like you don't have any techcards, click
-                  {!changeListIsVisible ? " gear on top, " : ' "Add new...", '}
-                  to add some
-                </p>
+            {/* <p>{folder}</p> */}
+            <div style={{ display: "flex" }}>
+              <h1>{list}</h1>
+              {!changeListIsVisible && listImage ? (
+                <img
+                  style={{ marginLeft: "auto", cursor: "default" }}
+                  className={classNames(cx("techcards-list-title-icon-img"))}
+                  src={listImage}
+                  alt="list illustration"
+                />
               ) : (
-                <>
-                  <div>
-                    <b>First side </b>
-                    <ReactCountryFlag svg countryCode={firstSidesFlag} />
+                ""
+              )}
+
+              {changeListIsVisible && !formIsVisible ? (
+                <div className={classNames(cx("techcards-list-title-icons"))}>
+                  <FontAwesomeIcon
+                    className={classNames(cx("techcards-list-title-icon-form"))}
+                    icon={formListIcon}
+                    onClick={() => {
+                      return formListIcon === faTrashCan
+                        ? (setFormListIcon(faPencil),
+                          setFormListTypeIsDelete(true))
+                        : (setFormListIcon(faTrashCan),
+                          setFormListTypeIsDelete(false));
+                    }}
+                  />
+                  <div
+                    style={{ width: "auto", height: "auto" }}
+                    className={classNames(cx("techcards-list-main-form-image"))}
+                  >
+                    <label>
+                      <figure style={{ width: "auto", height: "auto" }}>
+                        <img
+                          className={classNames(
+                            cx("techcards-list-title-icon-img")
+                          )}
+                          src={listImage ? listImage : defaultImage}
+                          alt="list illustration"
+                        />
+
+                        <figcaption
+                          onClick={() => {
+                            setFormType("LIST_IMAGE");
+                            setImageFormTypeIsFile(true);
+                            setImage(listImage ? listImage : defaultImage);
+                            changeListElementHandler();
+                          }}
+                          style={{
+                            margin: "-2rem 0rem 0 1.2rem",
+                            height: "7.3rem",
+                            width: "7.5rem",
+                          }}
+                        >
+                          <p style={{ color: "white" }}>
+                            Click to change image
+                          </p>
+                        </figcaption>
+                      </figure>
+                    </label>
                   </div>
-                  <div>
-                    <b>Second side </b>
-                    <ReactCountryFlag svg countryCode={secondSidesFlag} />
-                  </div>
-                </>
+                </div>
+              ) : (
+                ""
               )}
             </div>
-            <form onSubmit={formListHandler}>
-              <ul>
-                {firstSides?.map((side, i) => {
-                  if (i > howManyTechcardsRender) return;
-                  return (
-                    <li key={i}>
+          </div>
+          <main className={classNames(cx("techcards-list-main"))}>
+            {!formIsVisible ? (
+              <>
+                <div
+                  style={{ border: firstSides?.length === 0 ? "none" : "" }}
+                  className={classNames(cx("techcards-list-main-header"))}
+                >
+                  {firstSides?.length === 0 ? (
+                    <p
+                      style={{ marginTop: "1rem" }}
+                      className="message-to-user"
+                    >
+                      It's looks like you don't have any techcards, click
+                      {!changeListIsVisible
+                        ? " gear on top, "
+                        : ' "Add new...", '}
+                      to add some
+                    </p>
+                  ) : (
+                    <>
                       <div>
-                        <p>{side}</p>
-                        <p>{secondSides[i]}</p>
-                        {techcardsImages?.[i] ? (
-                          <figure>
-                            <img
-                              src={techcardsImages?.[i]}
-                              alt="techcard illustration"
-                            />
-                          </figure>
-                        ) : (
-                          ""
-                        )}
+                        <b>First side </b>
+                        <ReactCountryFlag svg countryCode={firstSidesFlag} />
                       </div>
+                      <div>
+                        <b>Second side </b>
+                        <ReactCountryFlag svg countryCode={secondSidesFlag} />
+                      </div>
+                    </>
+                  )}
+                </div>
+                <form onSubmit={formListHandler}>
+                  <ul>
+                    {firstSides?.map((side, i) => {
+                      if (i > howManyTechcardsRender) return;
+                      return (
+                        <li key={i}>
+                          <div>
+                            <p>{side}</p>
+                            <p>{secondSides[i]}</p>
+                            {techcardsImages?.[i] ? (
+                              <figure>
+                                <img
+                                  src={techcardsImages?.[i]}
+                                  alt="techcard illustration"
+                                />
+                              </figure>
+                            ) : (
+                              ""
+                            )}
+                          </div>
 
-                      {changeListIsVisible ? (
-                        !formListTypeIsDelete ? (
-                          <FontAwesomeIcon
-                            onClick={() => {
-                              changeListElementHandler();
-                              setFormType("CHANGE");
+                          {changeListIsVisible ? (
+                            !formListTypeIsDelete ? (
+                              <FontAwesomeIcon
+                                onClick={() => {
+                                  changeListElementHandler();
+                                  setFormType("CHANGE");
 
-                              setFormDefaultFirstSide(side);
-                              setFormDefaultSecondSide(secondSides[i]);
-                              setFormTechcardIndex(i);
-                              setFormTechcardID(techcardsIDS[i]);
-                              setImageFormTypeIsFile(true);
-                              if (techcardsImages[i]) {
-                                setImage(techcardsImages[i]);
-                              } else {
-                                setImage(defaultImage);
-                              }
-                            }}
-                            icon={faPencil}
-                          />
-                        ) : (
-                          ""
-                        )
+                                  setFormDefaultFirstSide(side);
+                                  setFormDefaultSecondSide(secondSides[i]);
+                                  setFormTechcardIndex(i);
+                                  setFormTechcardID(techcardsIDS[i]);
+                                  setImageFormTypeIsFile(true);
+                                  if (techcardsImages[i]) {
+                                    setImage(techcardsImages[i]);
+                                  } else {
+                                    setImage(defaultImage);
+                                  }
+                                }}
+                                icon={faPencil}
+                              />
+                            ) : (
+                              ""
+                            )
+                          ) : (
+                            ""
+                          )}
+                          {formListTypeIsDelete ? (
+                            <input
+                              type="checkbox"
+                              id="techcardToDelete"
+                              value={techcardsIDS[i]}
+                              index={i}
+                            />
+                          ) : (
+                            ""
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  {firstSides?.length > 10 &&
+                  howManyTechcardsRender !== firstSides?.length ? (
+                    <div
+                      className={classNames(cx("techcards-list-main-render"))}
+                    >
+                      <p>{howManyTechcardsLeft} cards left in this list</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setHowManyTechcardsRender(firstSides?.length);
+                        }}
+                      >
+                        Render all
+                      </button>
+                      {howManyTechcardsLeft > 10 ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setHowManyTechcardsRender(
+                              howManyTechcardsRender + 10
+                            );
+                          }}
+                        >
+                          Render next 10
+                        </button>
                       ) : (
                         ""
                       )}
-                      {formListTypeIsDelete ? (
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <>
+                    {changeListIsVisible && formListIcon !== faTrashCan ? (
+                      <div
+                        className={classNames(
+                          cx("techcards-list-btn-form-container")
+                        )}
+                      >
+                        <button
+                          style={{ color: "darkred" }}
+                          onClick={() => {
+                            setFormType("DELETE");
+                          }}
+                          disabled={!firstSides ? true : false}
+                          className={classNames(cx("techcards-list-btn-form"))}
+                        >
+                          {firstSides === null
+                            ? "You don't have any techcards which you can delete"
+                            : "Delete selected"}
+                        </button>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </>
+                </form>
+              </>
+            ) : (
+              <form
+                className={classNames(cx("techcards-list-main-form"))}
+                onSubmit={formListHandler}
+                encType="multipart/form-data"
+              >
+                <div
+                  className={classNames(
+                    cx("techcards-list-main-form-container")
+                  )}
+                >
+                  <div
+                    className={classNames(cx("techcards-list-main-form-image"))}
+                  >
+                    <label>
+                      {imageFormTypeIsFile ? (
                         <input
-                          type="checkbox"
-                          id="techcardToDelete"
-                          value={techcardsIDS[i]}
-                          index={i}
+                          onChange={(e) => {
+                            handleFileSelect(e, setImage);
+                            setIsImageInForm(true);
+                          }}
+                          type="file"
+                          id="file"
                         />
                       ) : (
                         ""
                       )}
-                    </li>
-                  );
-                })}
-              </ul>
-              {firstSides?.length > 10 &&
-              howManyTechcardsRender !== firstSides?.length ? (
-                <div className={classNames(cx("techcards-list-main-render"))}>
-                  <p>{howManyTechcardsLeft} cards left in this list</p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setHowManyTechcardsRender(firstSides?.length);
-                    }}
-                  >
-                    Render all
-                  </button>
-                  {howManyTechcardsLeft > 10 ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setHowManyTechcardsRender(howManyTechcardsRender + 10);
-                      }}
-                    >
-                      Render next 10
-                    </button>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              ) : (
-                ""
-              )}
-              <>
-                {changeListIsVisible && formListIcon !== faTrashCan ? (
-                  <div
-                    className={classNames(
-                      cx("techcards-list-btn-form-container")
-                    )}
-                  >
-                    <button
-                      style={{ color: "darkred" }}
-                      onClick={() => {
-                        setFormType("DELETE");
-                      }}
-                      disabled={!firstSides ? true : false}
-                      className={classNames(cx("techcards-list-btn-form"))}
-                    >
-                      {firstSides === null
-                        ? "You don't have any techcards which you can delete"
-                        : "Delete selected"}
-                    </button>
-                  </div>
-                ) : (
-                  ""
-                )}
-              </>
-            </form>
-          </>
-        ) : (
-          <form
-            className={classNames(cx("techcards-list-main-form"))}
-            onSubmit={formListHandler}
-            encType="multipart/form-data"
-          >
-            <div
-              className={classNames(cx("techcards-list-main-form-container"))}
-            >
-              <div className={classNames(cx("techcards-list-main-form-image"))}>
-                <label>
-                  {imageFormTypeIsFile ? (
-                    <input
-                      onChange={(e) => {
-                        handleFileSelect(e, setImage);
-                        setIsImageInForm(true);
-                      }}
-                      type="file"
-                      id="file"
-                    />
-                  ) : (
-                    ""
-                  )}
 
-                  <figure>
-                    <img
-                      style={{
-                        cursor: imageFormTypeIsFile ? "pointer" : "default",
-                      }}
-                      src={image}
-                      alt="techcard illustration"
-                    />
-                    {imageFormTypeIsFile ? (
-                      <figcaption>
-                        <img src="https://raw.githubusercontent.com/ThiagoLuizNunes/angular-boilerplate/master/src/assets/imgs/camera-white.png" />
-                      </figcaption>
+                      <figure>
+                        <img
+                          style={{
+                            cursor: imageFormTypeIsFile ? "pointer" : "default",
+                          }}
+                          src={image}
+                          alt="techcard illustration"
+                        />
+                        {imageFormTypeIsFile ? (
+                          <figcaption>
+                            <img src="https://raw.githubusercontent.com/ThiagoLuizNunes/angular-boilerplate/master/src/assets/imgs/camera-white.png" />
+                          </figcaption>
+                        ) : (
+                          ""
+                        )}
+                      </figure>
+                    </label>
+                    {image !== defaultImage ? (
+                      <button
+                        style={{ color: "darkred" }}
+                        onClick={() => {
+                          setImage(defaultImage);
+                          setIsImageInForm(false);
+                          setDeleteImage(true);
+                        }}
+                        type="button"
+                      >
+                        Delete illustration
+                      </button>
+                    ) : (
+                      <button
+                        style={{ color: "#333" }}
+                        onClick={() => {
+                          imageFormTypeIsFile
+                            ? setImageFormTypeIsFile(false)
+                            : setImageFormTypeIsFile(true);
+                        }}
+                        type="button"
+                      >
+                        {imageFormTypeIsFile
+                          ? "I want to add image by link"
+                          : "I want to add image by file"}
+                      </button>
+                    )}
+                    {!imageFormTypeIsFile ? (
+                      <div
+                        className={classNames(
+                          cx("techcards-list-main-form-image-link-input")
+                        )}
+                      >
+                        <input
+                          ref={imageInLinkRef}
+                          placeholder="Enter image url"
+                          type="text"
+                          id="imageInLink"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setImage(imageInLinkRef.current.value);
+                          }}
+                        >
+                          Check
+                        </button>
+                      </div>
                     ) : (
                       ""
                     )}
-                  </figure>
-                </label>
-                {image !== defaultImage ? (
-                  <button
-                    style={{ color: "darkred" }}
-                    onClick={() => {
-                      setImage(defaultImage);
-                      setIsImageInForm(false);
-                      setDeleteImage(true);
-                    }}
-                    type="button"
-                  >
-                    Delete illustration
-                  </button>
-                ) : (
-                  <button
-                    style={{ color: "#333" }}
-                    onClick={() => {
-                      imageFormTypeIsFile
-                        ? setImageFormTypeIsFile(false)
-                        : setImageFormTypeIsFile(true);
-                    }}
-                    type="button"
-                  >
-                    {imageFormTypeIsFile
-                      ? "I want to add image by link"
-                      : "I want to add image by file"}
-                  </button>
-                )}
-                {!imageFormTypeIsFile ? (
-                  <div
-                    className={classNames(
-                      cx("techcards-list-main-form-image-link-input")
-                    )}
-                  >
-                    <input
-                      ref={imageInLinkRef}
-                      placeholder="Enter image url"
-                      type="text"
-                      id="imageInLink"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImage(imageInLinkRef.current.value);
-                      }}
-                    >
-                      Check
-                    </button>
                   </div>
-                ) : (
-                  ""
-                )}
-              </div>
 
-              {formType !== "LIST_IMAGE" ? (
-                <>
-                  <div
-                    className={classNames(
-                      cx("techcards-list-main-form-element")
-                    )}
-                  >
-                    <label htmlFor="firstSide">First side</label>
-                    <input
-                      defaultValue={formDefaultFirstSide}
-                      oldValue={formDefaultFirstSide}
-                      techcardID={formTechcardID}
-                      index={formTechcardIndex}
-                      type="text"
-                      id="firstSide"
-                    />
-                  </div>
-                  <div
-                    className={classNames(
-                      cx("techcards-list-main-form-element")
-                    )}
-                  >
-                    <label htmlFor="secondSide">Second side</label>
-                    <input
-                      defaultValue={formDefaultSecondSide}
-                      oldValue={formDefaultSecondSide}
-                      type="text"
-                      id="secondSide"
-                    />
-                  </div>
-                </>
-              ) : (
-                ""
-              )}
-            </div>
-            <button className="btn-solid-medium">Submit</button>
-          </form>
-        )}
-        {!formIsVisible ? (
-          changeListIsVisible ? (
-            <>
-              {formListIcon == faTrashCan ? (
-                <div
-                  style={{ flexDirection: "column" }}
-                  className={classNames(
-                    cx("techcards-list-btn-form-container")
+                  {formType !== "LIST_IMAGE" ? (
+                    <>
+                      <div
+                        className={classNames(
+                          cx("techcards-list-main-form-element")
+                        )}
+                      >
+                        <label htmlFor="firstSide">First side</label>
+                        <input
+                          defaultValue={formDefaultFirstSide}
+                          oldValue={formDefaultFirstSide}
+                          techcardID={formTechcardID}
+                          index={formTechcardIndex}
+                          type="text"
+                          id="firstSide"
+                        />
+                      </div>
+                      <div
+                        className={classNames(
+                          cx("techcards-list-main-form-element")
+                        )}
+                      >
+                        <label htmlFor="secondSide">Second side</label>
+                        <input
+                          defaultValue={formDefaultSecondSide}
+                          oldValue={formDefaultSecondSide}
+                          type="text"
+                          id="secondSide"
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    ""
                   )}
-                >
-                  <button
-                    onClick={() => {
-                      setFormType("ADD");
-                      setFormDefaultSecondSide("");
-                      setFormDefaultFirstSide("");
-                      setImageFormTypeIsFile(true);
-                      setImage(defaultImage);
-                      changeListElementHandler();
-                    }}
-                    className={classNames(cx("techcards-list-btn-form"))}
-                  >
-                    Add new...
-                  </button>
                 </div>
+                <button className="btn-solid-medium">Submit</button>
+              </form>
+            )}
+            {!formIsVisible ? (
+              changeListIsVisible ? (
+                <>
+                  {formListIcon == faTrashCan ? (
+                    <div
+                      style={{ flexDirection: "column" }}
+                      className={classNames(
+                        cx("techcards-list-btn-form-container")
+                      )}
+                    >
+                      <button
+                        onClick={() => {
+                          setFormType("ADD");
+                          setFormDefaultSecondSide("");
+                          setFormDefaultFirstSide("");
+                          setImageFormTypeIsFile(true);
+                          setImage(defaultImage);
+                          changeListElementHandler();
+                        }}
+                        className={classNames(cx("techcards-list-btn-form"))}
+                      >
+                        Add new...
+                      </button>
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </>
+              ) : firstSides !== null && firstSides?.length !== 0 ? (
+                <button
+                  onClick={() => {
+                    displayLearningModal({
+                      techcardsIDS,
+                      firstSides,
+                      secondSides,
+                      techcardsImages,
+                      listTitle: list,
+                    });
+                  }}
+                  className="btn-solid-small"
+                >
+                  Start
+                </button>
               ) : (
                 ""
-              )}
-            </>
-          ) : firstSides !== null && firstSides?.length !== 0 ? (
-            <button
-              onClick={() => {
-                displayLearningModal({
-                  techcardsIDS,
-                  firstSides,
-                  secondSides,
-                  techcardsImages,
-                  listTitle: list,
-                });
-              }}
-              className="btn-solid-small"
-            >
-              Start
-            </button>
-          ) : (
-            ""
-          )
-        ) : (
-          ""
-        )}
+              )
+            ) : (
+              ""
+            )}
 
-        {/* MESSAGE TO USER */}
-        {formIsVisible ? (
-          <p
-            className="message-to-user"
-            style={{
-              color:
-                messageToUser.type === "MESSAGE_SUCCESS"
-                  ? "green"
-                  : messageToUser.type === "MESSAGE_ERROR"
-                  ? "red"
-                  : "",
-            }}
-          >
-            {messageToUser.message}
-          </p>
-        ) : (
-          ""
-        )}
-      </main>
+            {/* MESSAGE TO USER */}
+            {formIsVisible ? (
+              <p
+                className="message-to-user"
+                style={{
+                  color:
+                    messageToUser.type === "MESSAGE_SUCCESS"
+                      ? "green"
+                      : messageToUser.type === "MESSAGE_ERROR"
+                      ? "red"
+                      : "",
+                }}
+              >
+                {messageToUser.message}
+              </p>
+            ) : (
+              ""
+            )}
+          </main>
+        </>
+      ) : (
+        <LoadingSpinner />
+      )}
     </div>
   );
 }

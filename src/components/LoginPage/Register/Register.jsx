@@ -20,7 +20,6 @@ function Register() {
   /**
    * * INPUTS STATES
    */
-  console.log("asfas", currentUser);
   const [inputEmailIsValid, setInputEmailIsValid] = useState(true);
   const [inputPasswordIsValid, setInputPasswordIsValid] = useState(true);
   const [inputPasswordConfirmIsValid, setInputPasswordConfirmIsValid] =
@@ -83,15 +82,17 @@ function Register() {
     );
     passwordConfirmValidation();
   };
-
+  console.log(inputNickIsValid);
   const formValidation = async (e) => {
     e.preventDefault();
 
     if (
       inputEmailRef.current.value !== "" &&
-      inputEmailIsValid === true &&
-      inputPasswordConfirmIsValid === true &&
-      inputCheckboxIsValid === true
+      inputEmailIsValid &&
+      inputPasswordConfirmIsValid &&
+      inputPasswordIsValid &&
+      inputCheckboxIsValid &&
+      inputNickIsValid
     ) {
       /**
        * * REGISTER POST
@@ -104,14 +105,13 @@ function Register() {
           inputPasswordRef.current.value,
           inputNickRef.current.value
         );
-        console.log(res);
         if (res.status === 200) {
           setServerMessage("Account successfully created!");
           setServerMessageClass("register-server-accepted");
           navigate("/user");
         }
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
         setServerMessage(error.response.data);
         setServerMessageClass("register-server-denied");
         setServerLoading(false);

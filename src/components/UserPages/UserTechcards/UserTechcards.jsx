@@ -41,7 +41,10 @@ function UserTechcards() {
   const [statisticsTitle, setStatisticsTitle] = useState("");
   const [folderOrListStats, setFolderOrListStats] = useState("");
 
+  const [isFetched, setIsFetched] = useState(false);
+
   const fetchTechcards = async () => {
+    setIsFetched(false);
     try {
       const res = await axios.get("/techcards/get");
 
@@ -53,6 +56,7 @@ function UserTechcards() {
     } catch (err) {
       console.log(err);
     }
+    setIsFetched(true);
   };
 
   useEffect(() => {
@@ -143,6 +147,7 @@ function UserTechcards() {
     fetchTechcards,
     displayFolderStatisticsModal: displayFolderStatisticsModalHandler,
     displayListStatisticsModal: displayListStatisticsModalHandler,
+    isFetched,
   };
   return (
     <div className={classNames(cx("techcards"))}>

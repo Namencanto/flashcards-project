@@ -3,6 +3,8 @@ import "../../../../assets/Global.scss";
 import classes from "../UserTechcards.module.scss";
 import classNames from "classnames/bind";
 
+import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
+
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -31,6 +33,7 @@ function UserTechcardsContent({
   changeTechcardsconHandler,
   displayFolderStatisticsModal,
   displayListStatisticsModal,
+  isFetched,
 }) {
   const cx = classNames.bind(classes);
 
@@ -305,255 +308,107 @@ function UserTechcardsContent({
   }
   return (
     <div className={classNames(cx("techcards-container"))}>
-      <div className={classNames(cx("techcards-title"))}>
-        <FontAwesomeIcon
-          className={classNames(cx("techcards-title-icon"))}
-          onClick={changeTechcardsconHandler}
-          icon={techcardsChangeIcon}
-        />
-        <h1>TECHCARDS</h1>
-        {!changeTechcardsIsVisible && techcardsFolders.length === 0 ? (
-          <h3>
-            It look like you don't have any techcards, click gear to add some
-          </h3>
-        ) : (
-          ""
-        )}
-      </div>
-
-      <form onSubmit={techcardsSubmitHandler}>
-        {techcardsFolders.map(({ folder, id }, iFolder) => {
-          const folderID = id;
-          let counter = [];
-          if (techcardsAllSides) {
-            for (const techcardAllSides of techcardsAllSides) {
-              for (const { folder_uid, status } of techcardAllSides) {
-                if (folder_uid === id) counter.push(status);
-              }
-            }
-          }
-
-          const status = countStatus(counter);
-          const count = counter.length;
-          return (
-            <div key={folder} className={classNames(cx("techcards-main"))}>
-              <div className={classNames(cx("techcards-main-folder-title"))}>
-                {changeFormIsSelected ? (
-                  <>
-                    <input
-                      id="changeFolder"
-                      type="text"
-                      defaultValue={folder}
-                      folderID={id}
-                      oldFolder={folder}
-                    ></input>
-                    <LanguagesDataList
-                      defaultFirstSidesFlag={firstSidesFlag[iFolder]}
-                      defaultSecondSidesFlag={secondSidesFlag[iFolder]}
-                    />
-                  </>
-                ) : (
-                  <div>
-                    <h2
-                      onClick={() => {
-                        displayFolderStatisticsModal(id);
-                      }}
-                    >
-                      {folder}
-                    </h2>
-                    <div
-                      className={classNames(
-                        cx("techcards-main-folder-title-stats")
-                      )}
-                    >
-                      <p
-                        onClick={() => {
-                          displayFolderStatisticsModal(id);
-                        }}
-                      >
-                        {count}
-                      </p>
-                      <div
-                        style={{ width: "15rem" }}
-                        onClick={() => {
-                          displayFolderStatisticsModal(id);
-                        }}
-                        className={classNames(
-                          cx("techcards-main-progress-bar-list")
-                        )}
-                      >
-                        <>
-                          <div
-                            style={{
-                              width: `${!status.new ? 0 : status.new * 100}%`,
-                            }}
-                            className={classNames(
-                              cx("techcards-main-progress-bar-list-new")
-                            )}
-                          >
-                            <span>
-                              New techcards:{!status.new ? 0 : status.new}
-                            </span>
-                          </div>
-                          <div
-                            style={{
-                              width: `${
-                                !status.learned ? 0 : status.learned * 100
-                              }%`,
-                            }}
-                            className={classNames(
-                              cx("techcards-main-progress-bar-list-learned")
-                            )}
-                          >
-                            <span>
-                              Learned techcards:
-                              {!status.learned ? 0 : status.learned}
-                            </span>
-                          </div>
-                          <div
-                            style={{
-                              width: `${
-                                !status.known ? 0 : status.known * 100
-                              }%`,
-                            }}
-                            className={classNames(
-                              cx("techcards-main-progress-bar-list-known")
-                            )}
-                          >
-                            <span>
-                              Known techcards:
-                              {!status.known ? 0 : status.known}
-                            </span>
-                          </div>
-                          <div
-                            style={{
-                              width: `${
-                                !status.toLearn ? 0 : status.toLearn * 100
-                              }%`,
-                            }}
-                            className={classNames(
-                              cx("techcards-main-progress-bar-list-to-learn")
-                            )}
-                          >
-                            <span>
-                              To learn techcards:
-                              {!status.toLearn ? 0 : status.toLearn}
-                            </span>
-                          </div>
-                          <div
-                            style={{
-                              width: `${!status.hard ? 0 : status.hard * 100}%`,
-                            }}
-                            className={classNames(
-                              cx("techcards-main-progress-bar-list-hard")
-                            )}
-                          >
-                            <span>
-                              Hard techcards:{!status.hard ? 0 : status.hard}
-                            </span>
-                          </div>
-                        </>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {deleteFormIsSelected ? (
-                  <input
-                    style={{ marginLeft: "0.8rem" }}
-                    id="folderToDeleteInput"
-                    type="checkbox"
-                    value={id}
-                  />
-                ) : (
-                  ""
-                )}
-              </div>
-
-              {/* <div className={classNames(cx("techcards-main-progress-bar"))}>
-                <div
-                  className={classNames(cx("techcards-main-progress-bar-new"))}
-                >
-                  {!status.new ? 0 : status.new}
-                </div>
-                <div
-                  className={classNames(
-                    cx("techcards-main-progress-bar-learned")
-                  )}
-                >
-                  {!status.learned ? 0 : status.learned}
-                </div>
-                <div
-                  className={classNames(
-                    cx("techcards-main-progress-bar-to-learn")
-                  )}
-                >
-                  {!status.known ? 0 : status.known}
-                </div>
-                <div
-                  className={classNames(cx("techcards-main-progress-bar-hard"))}
-                >
-                  {!status.toLearn ? 0 : status.toLearn}
-                </div>
-              </div> */}
-              <ul>
-                {techcardsLists[iFolder]?.map(({ list, id }, iList) => {
-                  let actualStatus = [];
-                  for (const allsideStatus of allSidesStatus) {
-                    if (allsideStatus[0] === id)
-                      actualStatus = allsideStatus.slice(1);
+      {isFetched ? (
+        <>
+          <div className={classNames(cx("techcards-title"))}>
+            <FontAwesomeIcon
+              className={classNames(cx("techcards-title-icon"))}
+              onClick={changeTechcardsconHandler}
+              icon={techcardsChangeIcon}
+            />
+            <h1>TECHCARDS</h1>
+            {!changeTechcardsIsVisible && techcardsFolders.length === 0 ? (
+              <h3>
+                It look like you don't have any techcards, click gear to add
+                some
+              </h3>
+            ) : (
+              ""
+            )}
+          </div>
+          <form onSubmit={techcardsSubmitHandler}>
+            {techcardsFolders.map(({ folder, id }, iFolder) => {
+              const folderID = id;
+              let counter = [];
+              if (techcardsAllSides) {
+                for (const techcardAllSides of techcardsAllSides) {
+                  for (const { folder_uid, status } of techcardAllSides) {
+                    if (folder_uid === id) counter.push(status);
                   }
-                  const listCount = actualStatus.reduce((a, b) => a + b, 0);
-                  return (
-                    <li key={iList}>
-                      {changeFormIsSelected ? (
+                }
+              }
+
+              const status = countStatus(counter);
+              const count = counter.length;
+              return (
+                <div key={folder} className={classNames(cx("techcards-main"))}>
+                  <div
+                    className={classNames(cx("techcards-main-folder-title"))}
+                  >
+                    {changeFormIsSelected ? (
+                      <>
                         <input
-                          id="changeList"
-                          folderID={folderID}
-                          listID={id}
-                          folderName={folder}
+                          id="changeFolder"
                           type="text"
-                          oldList={list}
-                          defaultValue={list}
+                          defaultValue={folder}
+                          folderID={id}
+                          oldFolder={folder}
+                        ></input>
+                        <LanguagesDataList
+                          defaultFirstSidesFlag={firstSidesFlag[iFolder]}
+                          defaultSecondSidesFlag={secondSidesFlag[iFolder]}
                         />
-                      ) : (
-                        <Link to={`${folder}/${list}/${id}`}>{list}</Link>
-                      )}
-                      <div
-                        className={classNames(
-                          cx("techcards-main-list-container")
-                        )}
-                      >
-                        <p
+                      </>
+                    ) : (
+                      <div>
+                        <h2
                           onClick={() => {
-                            displayListStatisticsModal(id);
+                            displayFolderStatisticsModal(id);
                           }}
                         >
-                          {listCount}
-                        </p>
-
+                          {folder}
+                        </h2>
                         <div
-                          onClick={() => {
-                            displayListStatisticsModal(id);
-                          }}
                           className={classNames(
-                            cx("techcards-main-progress-bar-list")
+                            cx("techcards-main-folder-title-stats")
                           )}
                         >
-                          {listCount > 0 ? (
+                          <p
+                            onClick={() => {
+                              displayFolderStatisticsModal(id);
+                            }}
+                          >
+                            {count}
+                          </p>
+                          <div
+                            style={{ width: "15rem" }}
+                            onClick={() => {
+                              displayFolderStatisticsModal(id);
+                            }}
+                            className={classNames(
+                              cx("techcards-main-progress-bar-list")
+                            )}
+                          >
                             <>
                               <div
                                 style={{
-                                  width: `${actualStatus[0] * 100}%`,
+                                  width: `${
+                                    !status.new ? 0 : status.new * 100
+                                  }%`,
                                 }}
                                 className={classNames(
                                   cx("techcards-main-progress-bar-list-new")
                                 )}
                               >
-                                <span>New techcards:{actualStatus[0]}</span>
+                                <span>
+                                  New techcards:{!status.new ? 0 : status.new}
+                                </span>
                               </div>
                               <div
                                 style={{
-                                  width: `${actualStatus[1] * 100}%`,
+                                  width: `${
+                                    !status.learned ? 0 : status.learned * 100
+                                  }%`,
                                 }}
                                 className={classNames(
                                   cx("techcards-main-progress-bar-list-learned")
@@ -561,25 +416,29 @@ function UserTechcardsContent({
                               >
                                 <span>
                                   Learned techcards:
-                                  {actualStatus[1]}
+                                  {!status.learned ? 0 : status.learned}
                                 </span>
                               </div>
                               <div
                                 style={{
-                                  width: `${actualStatus[2] * 100}%`,
+                                  width: `${
+                                    !status.known ? 0 : status.known * 100
+                                  }%`,
                                 }}
                                 className={classNames(
                                   cx("techcards-main-progress-bar-list-known")
                                 )}
                               >
                                 <span>
-                                  known techcards:
-                                  {actualStatus[2]}
+                                  Known techcards:
+                                  {!status.known ? 0 : status.known}
                                 </span>
                               </div>
                               <div
                                 style={{
-                                  width: `${actualStatus[3] * 100}%`,
+                                  width: `${
+                                    !status.toLearn ? 0 : status.toLearn * 100
+                                  }%`,
                                 }}
                                 className={classNames(
                                   cx(
@@ -589,130 +448,270 @@ function UserTechcardsContent({
                               >
                                 <span>
                                   To learn techcards:
-                                  {actualStatus[3]}
+                                  {!status.toLearn ? 0 : status.toLearn}
                                 </span>
                               </div>
                               <div
                                 style={{
-                                  width: `${actualStatus[4] * 100}%`,
+                                  width: `${
+                                    !status.hard ? 0 : status.hard * 100
+                                  }%`,
                                 }}
                                 className={classNames(
                                   cx("techcards-main-progress-bar-list-hard")
                                 )}
                               >
-                                <span>Hard techcards:{actualStatus[4]}</span>
+                                <span>
+                                  Hard techcards:
+                                  {!status.hard ? 0 : status.hard}
+                                </span>
                               </div>
                             </>
-                          ) : (
-                            <div
-                              style={{ width: "100%" }}
-                              className={classNames(
-                                cx("techcards-main-progress-bar-list-empty")
-                              )}
-                            ></div>
-                          )}
+                          </div>
                         </div>
-                        {deleteFormIsSelected ? (
-                          <input
-                            id="listToDeleteInput"
-                            type="checkbox"
-                            value={id}
-                          />
-                        ) : (
-                          ""
-                        )}
                       </div>
-                    </li>
-                  );
-                })}
+                    )}
+                    {deleteFormIsSelected ? (
+                      <input
+                        style={{ marginLeft: "0.8rem" }}
+                        id="folderToDeleteInput"
+                        type="checkbox"
+                        value={id}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  <ul>
+                    {techcardsLists[iFolder]?.map(({ list, id }, iList) => {
+                      let actualStatus = [];
+                      for (const allsideStatus of allSidesStatus) {
+                        if (allsideStatus[0] === id)
+                          actualStatus = allsideStatus.slice(1);
+                      }
+                      const listCount = actualStatus.reduce((a, b) => a + b, 0);
+                      return (
+                        <li key={iList}>
+                          {changeFormIsSelected ? (
+                            <input
+                              id="changeList"
+                              folderID={folderID}
+                              listID={id}
+                              folderName={folder}
+                              type="text"
+                              oldList={list}
+                              defaultValue={list}
+                            />
+                          ) : (
+                            <Link to={`${folder}/${list}/${id}`}>{list}</Link>
+                          )}
+                          <div
+                            className={classNames(
+                              cx("techcards-main-list-container")
+                            )}
+                          >
+                            <p
+                              onClick={() => {
+                                displayListStatisticsModal(id);
+                              }}
+                            >
+                              {listCount}
+                            </p>
+
+                            <div
+                              onClick={() => {
+                                displayListStatisticsModal(id);
+                              }}
+                              className={classNames(
+                                cx("techcards-main-progress-bar-list")
+                              )}
+                            >
+                              {listCount > 0 ? (
+                                <>
+                                  <div
+                                    style={{
+                                      width: `${actualStatus[0] * 100}%`,
+                                    }}
+                                    className={classNames(
+                                      cx("techcards-main-progress-bar-list-new")
+                                    )}
+                                  >
+                                    <span>New techcards:{actualStatus[0]}</span>
+                                  </div>
+                                  <div
+                                    style={{
+                                      width: `${actualStatus[1] * 100}%`,
+                                    }}
+                                    className={classNames(
+                                      cx(
+                                        "techcards-main-progress-bar-list-learned"
+                                      )
+                                    )}
+                                  >
+                                    <span>
+                                      Learned techcards:
+                                      {actualStatus[1]}
+                                    </span>
+                                  </div>
+                                  <div
+                                    style={{
+                                      width: `${actualStatus[2] * 100}%`,
+                                    }}
+                                    className={classNames(
+                                      cx(
+                                        "techcards-main-progress-bar-list-known"
+                                      )
+                                    )}
+                                  >
+                                    <span>
+                                      known techcards:
+                                      {actualStatus[2]}
+                                    </span>
+                                  </div>
+                                  <div
+                                    style={{
+                                      width: `${actualStatus[3] * 100}%`,
+                                    }}
+                                    className={classNames(
+                                      cx(
+                                        "techcards-main-progress-bar-list-to-learn"
+                                      )
+                                    )}
+                                  >
+                                    <span>
+                                      To learn techcards:
+                                      {actualStatus[3]}
+                                    </span>
+                                  </div>
+                                  <div
+                                    style={{
+                                      width: `${actualStatus[4] * 100}%`,
+                                    }}
+                                    className={classNames(
+                                      cx(
+                                        "techcards-main-progress-bar-list-hard"
+                                      )
+                                    )}
+                                  >
+                                    <span>
+                                      Hard techcards:{actualStatus[4]}
+                                    </span>
+                                  </div>
+                                </>
+                              ) : (
+                                <div
+                                  style={{ width: "100%" }}
+                                  className={classNames(
+                                    cx("techcards-main-progress-bar-list-empty")
+                                  )}
+                                ></div>
+                              )}
+                            </div>
+                            {deleteFormIsSelected ? (
+                              <input
+                                id="listToDeleteInput"
+                                type="checkbox"
+                                value={id}
+                              />
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                    {addFormIsSelected ? (
+                      <li style={{ border: "none", marginTop: "0.8rem" }}>
+                        <input
+                          id="newList"
+                          type="text"
+                          folderID={id}
+                          folderName={folder}
+                          placeholder="New list"
+                        />
+                      </li>
+                    ) : (
+                      ""
+                    )}
+                  </ul>
+                </div>
+              );
+            })}
+
+            {changeTechcardsIsVisible ? (
+              <>
                 {addFormIsSelected ? (
-                  <li style={{ border: "none", marginTop: "0.8rem" }}>
+                  <>
                     <input
-                      id="newList"
+                      ref={techcardAddFolderRef}
                       type="text"
-                      folderID={id}
-                      folderName={folder}
-                      placeholder="New list"
+                      placeholder="New folder"
                     />
-                  </li>
+                    <LanguagesDataList />
+                  </>
                 ) : (
                   ""
                 )}
-              </ul>
-            </div>
-          );
-        })}
-
-        {changeTechcardsIsVisible ? (
-          <>
-            {addFormIsSelected ? (
-              <>
-                <input
-                  ref={techcardAddFolderRef}
-                  type="text"
-                  placeholder="New folder"
-                />
-                <LanguagesDataList />
+                <div className="radio-techcards-container">
+                  <div className="radio-techcards">
+                    <input
+                      ref={addFormRadio}
+                      type="radio"
+                      name="formType"
+                      id="add"
+                      checked={addFormIsSelected}
+                      onClick={() => {
+                        setUserMessage([]);
+                        clearFormStates();
+                        setAddFormIsSelected(true);
+                      }}
+                    />
+                    <label htmlFor="add">Add</label>
+                    <input
+                      ref={changeFormRadio}
+                      type="radio"
+                      name="formType"
+                      id="change"
+                      checked={changeFormIsSelected}
+                      onClick={() => {
+                        setUserMessage([]);
+                        clearFormStates();
+                        setChangeFormIsSelected(true);
+                      }}
+                    />
+                    <label htmlFor="change">Change</label>
+                    <input
+                      ref={deleteFormRadio}
+                      type="radio"
+                      name="formType"
+                      id="delete"
+                      checked={deleteFormIsSelected}
+                      onClick={() => {
+                        setUserMessage([]);
+                        clearFormStates();
+                        setDeleteFormIsSelected(true);
+                      }}
+                    />
+                    <label htmlFor="delete">Delete</label>
+                  </div>
+                </div>
+                <p style={{ color: userMessage[0] }}>{userMessage[1]}</p>
+                <button
+                  style={{ width: "15rem", height: "4rem", fontSize: "1.6rem" }}
+                  className="btn-solid-small"
+                >
+                  Confirm
+                </button>
               </>
             ) : (
               ""
             )}
-            <div className="radio-techcards-container">
-              <div className="radio-techcards">
-                <input
-                  ref={addFormRadio}
-                  type="radio"
-                  name="formType"
-                  id="add"
-                  checked={addFormIsSelected}
-                  onClick={() => {
-                    setUserMessage([]);
-                    clearFormStates();
-                    setAddFormIsSelected(true);
-                  }}
-                />
-                <label htmlFor="add">Add</label>
-                <input
-                  ref={changeFormRadio}
-                  type="radio"
-                  name="formType"
-                  id="change"
-                  checked={changeFormIsSelected}
-                  onClick={() => {
-                    setUserMessage([]);
-                    clearFormStates();
-                    setChangeFormIsSelected(true);
-                  }}
-                />
-                <label htmlFor="change">Change</label>
-                <input
-                  ref={deleteFormRadio}
-                  type="radio"
-                  name="formType"
-                  id="delete"
-                  checked={deleteFormIsSelected}
-                  onClick={() => {
-                    setUserMessage([]);
-                    clearFormStates();
-                    setDeleteFormIsSelected(true);
-                  }}
-                />
-                <label htmlFor="delete">Delete</label>
-              </div>
-            </div>
-            <p style={{ color: userMessage[0] }}>{userMessage[1]}</p>
-            <button
-              style={{ width: "15rem", height: "4rem", fontSize: "1.6rem" }}
-              className="btn-solid-small"
-            >
-              Confirm
-            </button>
-          </>
-        ) : (
-          ""
-        )}
-      </form>
-      <div className={classNames(cx("techcards-main"))}></div>
+          </form>
+          <div className={classNames(cx("techcards-main"))}></div>
+        </>
+      ) : (
+        <LoadingSpinner />
+      )}
     </div>
   );
 }
