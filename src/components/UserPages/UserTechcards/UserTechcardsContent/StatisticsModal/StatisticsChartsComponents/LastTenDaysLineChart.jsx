@@ -121,8 +121,11 @@ function LastTenDaysLineChart({ data, options }) {
           ref={fromWhenRef}
           onChange={changeFromWhenDisplayStats}
           type="date"
-          min="2022-12-01"
-          max={todayString}
+          min={convertedData.allDates[0].slice(0, 10)}
+          max={convertedData.allDates[convertedData.allDates.length - 1].slice(
+            0,
+            10
+          )}
           defaultValue={tenDaysAgoDate}
         />
       </form>

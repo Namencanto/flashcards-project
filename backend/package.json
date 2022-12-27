@@ -7,6 +7,7 @@
   "scripts": {
     "test": "jest",
     "test:auth": "jest -- auth.test.js",
+    "test:user": "jest -- user.test.js",
     "test:all": "jest -- index.test.js",
     "start": "nodemon server.js",
     "client": "cd ../ && npm start",

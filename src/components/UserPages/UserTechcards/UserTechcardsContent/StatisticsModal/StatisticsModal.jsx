@@ -1,14 +1,15 @@
 import classes from "./StatisticsModal.module.scss";
 import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRocket, faX } from "@fortawesome/free-solid-svg-icons";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
-import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../../../../../context/AuthContext";
+import { useState, useEffect } from "react";
+
 import { useRef } from "react";
 import axios from "axios";
 
 import StatisticsCharts from "./StatisticsCharts";
+import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
 
 function StatisticsModal({
   statuses,
@@ -19,15 +20,15 @@ function StatisticsModal({
   created_date,
   title,
 }) {
-  const { currentUser } = useContext(AuthContext);
-
   const statisticsRef = useRef();
   const contentStatisticsRef = useRef();
   const cx = classNames.bind(classes);
   const [statisticsFolderData, setStatisticFoldersData] = useState(false);
   const [statisticsListData, setStatisticListsData] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
 
   const fetchStatistics = async (renderFolder, renderList) => {
+    setIsFetched(false);
     try {
       const res = await axios.get("/statistics/folderOrList/get", {
         params: {
@@ -63,6 +64,7 @@ function StatisticsModal({
     } catch (err) {
       console.log(err);
     }
+    setIsFetched(true);
   };
   useEffect(() => {
     fetchStatistics(type === "FOLDER", type === "LIST");
@@ -87,7 +89,7 @@ function StatisticsModal({
       hideStatisticsModal();
     }, 200);
   };
-  // const activityDate = statisticsListData.allDates?.[0]
+
   const activityDate =
     type === "FOLDER"
       ? new Date(statisticsFolderData.allDates?.[0])
@@ -107,30 +109,40 @@ function StatisticsModal({
             <div style={{ textAlign: "center" }}></div>
             <FontAwesomeIcon icon={faX} onClick={exitPopupAnimation} />
           </header>
+
           <main className={classNames(cx("statistics-main"))}>
-            <div className={classNames(cx("statistics-main-info"))}>
-              <p>
-                {type[0] + type.slice(1).toLowerCase()}: {title}
-              </p>
-              <p>
-                Created at: {created_date.toLocaleString(navigator.language)}
-              </p>
-              <p>
-                First activity:{" "}
-                {activityDate
-                  ? activityDate?.toLocaleString(navigator.language)
-                  : "Not started yet"}
-              </p>
-            </div>
-            {statisticsFolderData || statisticsListData ? (
-              <StatisticsCharts
-                data={
-                  type === "FOLDER" ? statisticsFolderData : statisticsListData
-                }
-                statuses={statuses}
-              />
+            {isFetched ? (
+              <>
+                <div className={classNames(cx("statistics-main-info"))}>
+                  <p>
+                    {type[0] + type.slice(1).toLowerCase()}: {title}
+                  </p>
+                  <p>
+                    Created at:{" "}
+                    {created_date.toLocaleString(navigator.language)}
+                  </p>
+                  <p>
+                    First activity:{" "}
+                    {activityDate
+                      ? activityDate?.toLocaleString(navigator.language)
+                      : "Not started yet"}
+                  </p>
+                </div>
+                {statisticsFolderData || statisticsListData ? (
+                  <StatisticsCharts
+                    data={
+                      type === "FOLDER"
+                        ? statisticsFolderData
+                        : statisticsListData
+                    }
+                    statuses={statuses}
+                  />
+                ) : (
+                  ""
+                )}
+              </>
             ) : (
-              ""
+              <LoadingSpinner />
             )}
           </main>
         </div>

@@ -172,6 +172,29 @@ export const postUserAvatar = (req, res) => {
     });
   });
 };
+import { nickValidation } from "./server-validations/inputsValidation.js";
+
+export const postChangeUserNick = (req, res) => {
+  checkToken(req, res, async (userInfo) => {
+    const nick = req.body.nick;
+    if (!nickValidation(nick)) {
+      return res.status(422).json("Invalid nick pattern");
+    }
+    const q =
+      "UPDATE `users` SET `nick` = '" +
+      nick +
+      "' WHERE `id` = '" +
+      userInfo.id +
+      "'";
+
+    db.query(q, (err, data) => {
+      console.log(data);
+      if (err) return res.status(500).send(err);
+
+      return res.status(200).json("Successfully changed nick");
+    });
+  });
+};
 
 export const getGeneralInformation = (req, res) => {
   checkToken(req, res, async (userInfo) => {

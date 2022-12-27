@@ -2,7 +2,6 @@ import classes from "./Statistics.module.scss";
 import classNames from "classnames/bind";
 
 function StatisticsData({ mainStats, totalTime }) {
-  console.log(totalTime);
   const cx = classNames.bind(classes);
   function secondsToTime(seconds) {
     if (seconds < 60) {

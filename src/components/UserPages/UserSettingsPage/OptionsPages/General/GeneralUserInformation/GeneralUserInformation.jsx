@@ -13,7 +13,7 @@ const GeneralUserInformation = ({ postGeneralNick, currentNick }) => {
 
   const nickChangePostHandler = () => {
     const newNick = nickRef.current.value;
-    if (newNick.length > 0 && inputNickIsValid) {
+    if (setInputNickIsValid && newNick.length > 0 && inputNickIsValid) {
       postGeneralNick(newNick);
     } else {
       inputValidation(
@@ -22,9 +22,17 @@ const GeneralUserInformation = ({ postGeneralNick, currentNick }) => {
         setInputNickIsValid,
         setInputNickErrorMessage
       );
+      checkPreviousIdentity();
     }
   };
-
+  const checkPreviousIdentity = () => {
+    if (nickRef.current.value === currentNick) {
+      setInputNickIsValid(false);
+      setInputNickErrorMessage(
+        "The nick must not be the same as the previous one"
+      );
+    }
+  };
   return (
     <div className={classNames(cx("settings-general-user-info"))}>
       <div style={{ marginTop: "1.5rem" }} className="input-default">
@@ -36,6 +44,7 @@ const GeneralUserInformation = ({ postGeneralNick, currentNick }) => {
               setInputNickIsValid,
               setInputNickErrorMessage
             );
+            checkPreviousIdentity();
           }}
           ref={nickRef}
           id="nick"

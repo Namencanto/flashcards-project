@@ -1,6 +1,3 @@
-import classes from "./Statistics.module.scss";
-import classNames from "classnames/bind";
-
 import { useState, useRef, useEffect } from "react";
 
 import { Bar, Line } from "react-chartjs-2";
@@ -13,8 +10,6 @@ function StatisticsChart({
   setChartData,
   setChartType,
 }) {
-  const cx = classNames.bind(classes);
-
   const radioAllDataRef = useRef();
   const radioLearnedRed = useRef();
   const radioTimeSpendRef = useRef();

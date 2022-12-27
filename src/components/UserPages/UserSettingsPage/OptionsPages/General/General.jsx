@@ -53,6 +53,7 @@ const General = () => {
         nick,
       });
       setCurrentNick(resNick);
+      console.log(resNick);
     } catch (e) {
       return e.message;
     }

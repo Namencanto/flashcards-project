@@ -319,7 +319,7 @@ function UserTechcardsContent({
             <h1>TECHCARDS</h1>
             {!changeTechcardsIsVisible && techcardsFolders.length === 0 ? (
               <h3>
-                It look like you don't have any techcards, click gear to add
+                It looks like you don't have any techcards, click gear to add
                 some
               </h3>
             ) : (
@@ -360,7 +360,7 @@ function UserTechcardsContent({
                         />
                       </>
                     ) : (
-                      <div>
+                      <>
                         <h2
                           onClick={() => {
                             displayFolderStatisticsModal(id);
@@ -368,118 +368,121 @@ function UserTechcardsContent({
                         >
                           {folder}
                         </h2>
-                        <div
-                          className={classNames(
-                            cx("techcards-main-folder-title-stats")
-                          )}
-                        >
-                          <p
-                            onClick={() => {
-                              displayFolderStatisticsModal(id);
-                            }}
-                          >
-                            {count}
-                          </p>
+                        <div>
                           <div
-                            style={{ width: "15rem" }}
-                            onClick={() => {
-                              displayFolderStatisticsModal(id);
-                            }}
                             className={classNames(
-                              cx("techcards-main-progress-bar-list")
+                              cx("techcards-main-folder-title-stats")
                             )}
                           >
-                            <>
-                              <div
-                                style={{
-                                  width: `${
-                                    !status.new ? 0 : status.new * 100
-                                  }%`,
-                                }}
-                                className={classNames(
-                                  cx("techcards-main-progress-bar-list-new")
-                                )}
-                              >
-                                <span>
-                                  New techcards:{!status.new ? 0 : status.new}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  width: `${
-                                    !status.learned ? 0 : status.learned * 100
-                                  }%`,
-                                }}
-                                className={classNames(
-                                  cx("techcards-main-progress-bar-list-learned")
-                                )}
-                              >
-                                <span>
-                                  Learned techcards:
-                                  {!status.learned ? 0 : status.learned}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  width: `${
-                                    !status.known ? 0 : status.known * 100
-                                  }%`,
-                                }}
-                                className={classNames(
-                                  cx("techcards-main-progress-bar-list-known")
-                                )}
-                              >
-                                <span>
-                                  Known techcards:
-                                  {!status.known ? 0 : status.known}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  width: `${
-                                    !status.toLearn ? 0 : status.toLearn * 100
-                                  }%`,
-                                }}
-                                className={classNames(
-                                  cx(
-                                    "techcards-main-progress-bar-list-to-learn"
-                                  )
-                                )}
-                              >
-                                <span>
-                                  To learn techcards:
-                                  {!status.toLearn ? 0 : status.toLearn}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  width: `${
-                                    !status.hard ? 0 : status.hard * 100
-                                  }%`,
-                                }}
-                                className={classNames(
-                                  cx("techcards-main-progress-bar-list-hard")
-                                )}
-                              >
-                                <span>
-                                  Hard techcards:
-                                  {!status.hard ? 0 : status.hard}
-                                </span>
-                              </div>
-                            </>
+                            <p
+                              onClick={() => {
+                                displayFolderStatisticsModal(id);
+                              }}
+                            >
+                              {count}
+                            </p>
+                            <div
+                              style={{ width: "15rem" }}
+                              onClick={() => {
+                                displayFolderStatisticsModal(id);
+                              }}
+                              className={classNames(
+                                cx("techcards-main-progress-bar-list")
+                              )}
+                            >
+                              <>
+                                <div
+                                  style={{
+                                    width: `${
+                                      !status.new ? 0 : status.new * 100
+                                    }%`,
+                                  }}
+                                  className={classNames(
+                                    cx("techcards-main-progress-bar-list-new")
+                                  )}
+                                >
+                                  <span>
+                                    New techcards:{!status.new ? 0 : status.new}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    width: `${
+                                      !status.learned ? 0 : status.learned * 100
+                                    }%`,
+                                  }}
+                                  className={classNames(
+                                    cx(
+                                      "techcards-main-progress-bar-list-learned"
+                                    )
+                                  )}
+                                >
+                                  <span>
+                                    Learned techcards:
+                                    {!status.learned ? 0 : status.learned}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    width: `${
+                                      !status.known ? 0 : status.known * 100
+                                    }%`,
+                                  }}
+                                  className={classNames(
+                                    cx("techcards-main-progress-bar-list-known")
+                                  )}
+                                >
+                                  <span>
+                                    Known techcards:
+                                    {!status.known ? 0 : status.known}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    width: `${
+                                      !status.toLearn ? 0 : status.toLearn * 100
+                                    }%`,
+                                  }}
+                                  className={classNames(
+                                    cx(
+                                      "techcards-main-progress-bar-list-to-learn"
+                                    )
+                                  )}
+                                >
+                                  <span>
+                                    To learn techcards:
+                                    {!status.toLearn ? 0 : status.toLearn}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    width: `${
+                                      !status.hard ? 0 : status.hard * 100
+                                    }%`,
+                                  }}
+                                  className={classNames(
+                                    cx("techcards-main-progress-bar-list-hard")
+                                  )}
+                                >
+                                  <span>
+                                    Hard techcards:
+                                    {!status.hard ? 0 : status.hard}
+                                  </span>
+                                </div>
+                              </>
+                            </div>
+                            {deleteFormIsSelected ? (
+                              <input
+                                id="folderToDeleteInput"
+                                type="checkbox"
+                                value={id}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </div>
                         </div>
-                      </div>
-                    )}
-                    {deleteFormIsSelected ? (
-                      <input
-                        style={{ marginLeft: "0.8rem" }}
-                        id="folderToDeleteInput"
-                        type="checkbox"
-                        value={id}
-                      />
-                    ) : (
-                      ""
+                      </>
                     )}
                   </div>
                   <ul>

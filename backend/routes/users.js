@@ -5,6 +5,7 @@ import {
   getRanking,
   postUserAvatar,
   getGeneralInformation,
+  postChangeUserNick,
 } from "../controllers/user.js";
 import multer from "multer";
 
@@ -52,5 +53,6 @@ router.post("/addInformation", addInformation);
 router.post("/addLanguage", addLanguage);
 
 router.post("/avatar", upload.single("file"), postUserAvatar);
+router.post("/nick", postChangeUserNick);
 
 export default router;
