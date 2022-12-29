@@ -2,8 +2,7 @@ import classNames from "classnames/bind";
 import classes from "./UserSettingsPage.module.scss";
 import { BsGear } from "react-icons/bs";
 import { IoShieldHalfOutline } from "react-icons/io5";
-import { TfiUnlock } from "react-icons/tfi";
-import { AiOutlineInfoCircle } from "react-icons/ai";
+import { BsSliders } from "react-icons/bs";
 import { FiUserX } from "react-icons/fi";
 import { Link } from "react-router-dom";
 function UserSettingsPageMainContent() {
@@ -16,17 +15,13 @@ function UserSettingsPageMainContent() {
         <BsGear />
         <p>General</p>
       </Link>
-      <Link to="security-login" className={classNames(cx("settings-option"))}>
+      <Link to="privaty-login" className={classNames(cx("settings-option"))}>
         <IoShieldHalfOutline />
-        <p>Security & login</p>
+        <p>Privaty & Login</p>
       </Link>
-      <Link to="privaty" className={classNames(cx("settings-option"))}>
-        <TfiUnlock />
-        <p>Privaty</p>
-      </Link>
-      <Link to="information" className={classNames(cx("settings-option"))}>
-        <AiOutlineInfoCircle />
-        <p>Information</p>
+      <Link to="learning" className={classNames(cx("settings-option"))}>
+        <BsSliders />
+        <p>Learning</p>
       </Link>
       <Link to="delete-account" className={classNames(cx("settings-option"))}>
         <FiUserX />

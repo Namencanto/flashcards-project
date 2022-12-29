@@ -3,8 +3,9 @@ import classes from "../General.module.scss";
 import React, { useState, useRef } from "react";
 import AvatarEditor from "react-avatar-editor";
 import Dropzone from "react-dropzone";
-
 import MediaQueries from "../../../../../../HelperComponents/MediaQueries";
+import defaultAvatar from "../../../../../../images/default-avatar.png";
+
 const GeneralAvatar = ({
   postGeneralAvatar,
   currentAvatar,
@@ -21,14 +22,16 @@ const GeneralAvatar = ({
     croppedImg: currentAvatar,
     name: "default.jpg",
   });
+  const [isDragEnter, setIsDragEnter] = useState(false);
+  const [isDragLeave, setIsDragLeave] = useState(false);
 
-  const handleSliderZoom = (event, value) => {
+  const handleSliderZoom = (event) => {
     setPicture({
       ...picture,
       zoom: event.target.value,
     });
   };
-  const handleSliderRotate = (event, value) => {
+  const handleSliderRotate = (event) => {
     setPicture({
       ...picture,
       rotate: event.target.value,
@@ -44,6 +47,19 @@ const GeneralAvatar = ({
 
   const setEditorRef = (ed) => {
     editor = ed;
+  };
+
+  const handleDrop = (acceptedFiles) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+      let url = URL.createObjectURL(file);
+      setPicture({
+        ...picture,
+        img: url,
+        cropperOpen: true,
+        name: file.name,
+      });
+    }
   };
 
   const handleSave = async (e) => {
@@ -78,14 +94,64 @@ const GeneralAvatar = ({
   function handleImageClick() {
     fileInput.current.click();
   }
-  console.log(minWidth1000);
-
+  const deleteAvatarHandler = () => {
+    setCurrentAvatar(defaultAvatar);
+    postGeneralAvatar();
+  };
   return (
     <>
-      <div>
+      <div className={classNames(cx("settings-general-avatar-container"))}>
         {picture.cropperOpen || (
           <div className={classNames(cx("settings-general-avatar"))}>
-            <img onClick={handleImageClick} src={currentAvatar} />
+            <Dropzone
+              width={250}
+              onDragEnter={() => {
+                setIsDragEnter(true);
+              }}
+              onDragLeave={() => {
+                setIsDragEnter(false);
+                setIsDragLeave(true);
+                setTimeout(() => {
+                  setIsDragLeave(false);
+                }, 200);
+              }}
+              onDrop={handleDrop}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <div {...getRootProps()}>
+                  <input {...getInputProps()} />
+                  <img onClick={handleImageClick} src={currentAvatar} />
+                  <div
+                    style={
+                      isDragEnter
+                        ? { opacity: 1 }
+                        : isDragLeave
+                        ? { opacity: 0 }
+                        : null
+                    }
+                    className={classNames(cx("settings-general-avatar-hover"))}
+                  >
+                    {isDragEnter || isDragLeave ? (
+                      <p
+                        className={classNames(
+                          cx("settings-general-avatar-hover-p-drop")
+                        )}
+                      >
+                        Drop to upload
+                      </p>
+                    ) : (
+                      <p
+                        className={classNames(
+                          cx("settings-general-avatar-hover-p-click")
+                        )}
+                      >
+                        Click or drag image to upload avatar
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+            </Dropzone>
             <input
               style={{ display: "none" }}
               type="file"
@@ -94,6 +160,12 @@ const GeneralAvatar = ({
               ref={fileInput}
             />
           </div>
+        )}
+
+        {currentAvatar !== defaultAvatar ? (
+          <button onClick={deleteAvatarHandler}>I want to delete avatar</button>
+        ) : (
+          ""
         )}
         {picture.cropperOpen && (
           <div className={classNames(cx("settings-general-avatar-edit"))}>

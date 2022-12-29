@@ -39,6 +39,13 @@ export const AuthContextProvider = ({ children }) => {
     return res;
   };
 
+  const changeNick = async (nick) => {
+    setCurrentUser({
+      ...currentUser,
+      nick,
+    });
+  };
+
   const logout = async () => {
     await axios.post("/auth/logout");
     setCurrentUser(null);
@@ -51,6 +58,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [currentUser, cookies.get("jwtTime")]);
 
   const value = {
+    changeNick,
     currentUser,
     login,
     register,

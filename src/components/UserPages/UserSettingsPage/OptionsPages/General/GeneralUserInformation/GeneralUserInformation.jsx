@@ -3,7 +3,12 @@ import classes from "../General.module.scss";
 import React, { useState, useRef } from "react";
 import { inputValidation } from "../../../../../../hooks/useInputValidation";
 
-const GeneralUserInformation = ({ postGeneralNick, currentNick }) => {
+const GeneralUserInformation = ({
+  postGeneralNick,
+  currentNick,
+  serverMessage,
+  serverMessageTypeIsError,
+}) => {
   const cx = classNames.bind(classes);
 
   const [inputNickIsValid, setInputNickIsValid] = useState(true);
@@ -65,6 +70,9 @@ const GeneralUserInformation = ({ postGeneralNick, currentNick }) => {
           Change
         </button>
       </div>
+      <p style={{ color: serverMessageTypeIsError ? "red" : "green" }}>
+        {serverMessage}
+      </p>
     </div>
   );
 };

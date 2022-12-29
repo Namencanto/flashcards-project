@@ -46,6 +46,7 @@ const NavbarIsVisible = (props) => {
   const cx = classNames.bind(classes);
   const { minWidth1000 } = MediaQueries();
 
+  const [userIsVisible, setUserIsVisible] = useState(false);
   const [videoIsVisible, setVideoIsVisible] = useState(false);
 
   return (
@@ -161,8 +162,58 @@ const NavbarIsVisible = (props) => {
         </li>
         {props.currentUser && props.currentUser.nick !== null ? (
           <li className={classNames(cx("navbar-nav-item"))}>
-            <NavLink className={classNames(cx("navbar-nav-link"))} to="/user">
+            <NavLink
+              onMouseEnter={() => {
+                setUserIsVisible(true);
+              }}
+              onMouseLeave={() => {
+                setUserIsVisible(false);
+              }}
+              className={classNames(
+                cx("navbar-nav-link"),
+                cx("navbar-dropdown-toggle")
+              )}
+              to="/user"
+            >
               {props.currentUser.nick.toUpperCase()}
+              <FontAwesomeIcon
+                className={classNames(cx("navbar-nav-video-icon"))}
+                icon={faCaretDown}
+              />
+              {userIsVisible && (
+                <div className={classNames(cx("navbar-dropdown-menu"))}>
+                  <NavLink
+                    className={classNames(cx("navbar-dropdown-items-item"))}
+                    to="user/settings"
+                  >
+                    <span className={classNames(cx("navbar-nav-item-text"))}>
+                      SETTINGS
+                    </span>
+                  </NavLink>
+                  <div
+                    className={classNames(cx("navbar-dropdown-items"))}
+                  ></div>
+                  <NavLink
+                    className={classNames(cx("navbar-dropdown-items-item"))}
+                    to="/how-it-works"
+                  >
+                    <span className={classNames(cx("navbar-nav-item-text"))}>
+                      HOW IT WORKS
+                    </span>
+                  </NavLink>
+                  <div
+                    className={classNames(cx("navbar-dropdown-items"))}
+                  ></div>
+                  <NavLink
+                    className={classNames(cx("navbar-dropdown-items-item"))}
+                    to="/pricing"
+                  >
+                    <span className={classNames(cx("navbar-nav-item-text"))}>
+                      PREMIUM ACCESS
+                    </span>
+                  </NavLink>
+                </div>
+              )}
             </NavLink>
           </li>
         ) : (

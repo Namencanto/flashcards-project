@@ -9,6 +9,13 @@
   @media only screen and (min-width: $bp-1000) {
     padding-top: 13.8rem;
   }
+  & h1 {
+    margin-bottom: 2rem;
+    @media only screen and (min-width: $bp-1000) {
+      font-size: 5rem;
+      margin-bottom: 5rem;
+    }
+  }
 
   &-title {
     text-align: center;

@@ -1,18 +1,13 @@
 @import "../../../../../assets/base.scss";
 .settings {
   &-general {
-    & h1 {
-      margin-bottom: 2rem;
-      @media only screen and (min-width: $bp-1000) {
-        font-size: 5rem;
-      }
-    }
     &-avatar {
       display: flex;
       justify-content: center;
       & img {
+        position: relative;
         box-shadow: 0px 0px 30px -20px rgba(66, 68, 90, 1);
-        border: 1px solid #555;
+        outline: 1px solid #555;
         width: 15rem;
         height: 15rem;
         border-radius: 50%;
@@ -22,6 +17,64 @@
         }
         &:hover {
           cursor: pointer;
+        }
+      }
+      &-container {
+        & button {
+          width: 100%;
+          cursor: pointer;
+          border: none;
+          background-color: transparent;
+          color: darkred;
+          margin-top: auto;
+          height: 2rem;
+
+          font-size: 1.28rem;
+          @media only screen and (min-width: $bp-1000) {
+            font-size: 1.6rem;
+          }
+        }
+      }
+      &-hover {
+        background-color: rgba(black, 0.5);
+        border-radius: 50%;
+        opacity: 0;
+        cursor: pointer;
+        width: 15rem;
+        height: 15rem;
+        transform: translateY(-105.2%);
+        position: absolute;
+        transition: opacity 200ms;
+        &:hover {
+          opacity: 1;
+        }
+        @media only screen and (min-width: $bp-1000) {
+          transform: translateY(-103%);
+          width: 25rem;
+          height: 25rem;
+        }
+        & p {
+          color: white;
+          font-size: 1.8rem;
+          line-height: 3rem;
+          text-align: center;
+          word-break: keep-all;
+          border-radius: 50%;
+          @media only screen and (min-width: $bp-1000) {
+            font-size: 3rem;
+          }
+        }
+        &-p-drop {
+          margin-top: 5rem;
+          @media only screen and (min-width: $bp-1000) {
+            margin-top: 10rem;
+          }
+        }
+        &-p-click {
+          margin-top: 3rem;
+          @media only screen and (min-width: $bp-1000) {
+            margin-top: 8rem;
+          }
         }
       }
       &-edit {

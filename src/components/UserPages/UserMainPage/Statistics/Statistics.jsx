@@ -100,7 +100,6 @@ function Statistics() {
           createdLists: res.data[0].createdLists,
           createdTechcards: res.data[0].createdTechcards,
         });
-        console.log(res.data);
       } catch (error) {
         console.log(error);
       }
