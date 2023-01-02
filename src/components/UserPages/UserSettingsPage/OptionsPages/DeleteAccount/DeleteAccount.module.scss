@@ -9,14 +9,23 @@
     }
   }
   &-content {
+    & p {
+      font-size: 1.2rem;
+      text-align: center;
+    }
     &-checkbox {
       margin: 1rem 0;
       display: flex;
       align-items: center;
+      flex-direction: column;
       accent-color: crimson;
       & input {
         margin-left: 0.5rem;
         cursor: pointer;
+      }
+      &-input-wrapper {
+        display: flex;
+        align-items: center;
       }
     }
     display: flex;

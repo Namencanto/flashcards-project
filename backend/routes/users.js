@@ -6,6 +6,11 @@ import {
   postUserAvatar,
   getGeneralInformation,
   postChangeUserNick,
+  postUserAvatarDelete,
+  getPrivatyAndLogin,
+  postPrivatyAndLoginPublicNotifications,
+  getLearningDifficult,
+  postLearningDifficult,
 } from "../controllers/user.js";
 import multer from "multer";
 
@@ -44,6 +49,10 @@ import express from "express";
 const router = express.Router();
 
 router.get("/general", getGeneralInformation);
+router.get("/privaty-login", getPrivatyAndLogin);
+router.get("/learning-settings", getLearningDifficult);
+
+router.post("/learning-settings", postLearningDifficult);
 
 router.get("/getRanking", getRanking);
 
@@ -53,6 +62,12 @@ router.post("/addInformation", addInformation);
 router.post("/addLanguage", addLanguage);
 
 router.post("/avatar", upload.single("file"), postUserAvatar);
+router.post("/avatar-delete", postUserAvatarDelete);
+
 router.post("/nick", postChangeUserNick);
+router.post(
+  "/privaty-login-public-notifications",
+  postPrivatyAndLoginPublicNotifications
+);
 
 export default router;

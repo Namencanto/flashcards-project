@@ -34,7 +34,7 @@ function AboutMe() {
     setIsFetched(false);
     try {
       const res = await axios.get("/users/getInformation");
-
+      console.log(res.data);
       setChangeTextIsVisible(false);
       setTextareaIcon(faGear);
       setAboutMeText(res.data[0].about_me_info);
@@ -76,7 +76,6 @@ function AboutMe() {
     let newLanguages = "";
     let newLanguagesLevels = "";
     for (let i = 0; i < e.target.length; i++) {
-      console.log(e.target[i].value.length);
       if (e.target[i].value !== "") {
         if (e.target[i].value.length < 30) {
           i % 2 === 0

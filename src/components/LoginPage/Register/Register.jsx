@@ -72,7 +72,7 @@ function Register() {
       }
     }
   };
-
+  console.log(inputEmailErrorMessage);
   const passwordValidation = () => {
     inputValidation(
       "password",

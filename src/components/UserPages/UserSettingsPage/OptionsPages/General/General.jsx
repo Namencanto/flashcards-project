@@ -18,18 +18,19 @@ const General = () => {
   const [serverMessageTypeIsError, setServerMessageTypeIsError] =
     useState(false);
 
+  const resetServerMessage = () => {
+    setServerMessage("");
+  };
   // * this is just for test
   const generalInformationFetch = async () => {
     try {
       const resGeneral = await axios.get("/users/general");
       setCurrentNick(resGeneral.data.nick);
-      console.log(resGeneral.data);
       setCurrentAvatar(
         resGeneral.data.avatar.startsWith("user-avatar-")
           ? `${URL}/${resGeneral.data.avatar}`
           : resGeneral.data.avatar
       );
-      console.log(resGeneral.data.avatar);
     } catch (e) {
       return e.serverMessage;
     }
@@ -63,7 +64,7 @@ const General = () => {
       });
       if (resNick.status === 200) {
         changeNick(nick);
-        setCurrentNick(resNick);
+        setCurrentNick(nick);
         setServerMessage("Successfully changed nick");
         setServerMessageTypeIsError(false);
       }
@@ -82,6 +83,7 @@ const General = () => {
         postGeneralAvatar={postGeneralAvatarHandler}
       />
       <GeneralUserInformation
+        resetServerMessage={resetServerMessage}
         currentNick={currentNick}
         postGeneralNick={postGeneralNickHandler}
         serverMessage={serverMessage}

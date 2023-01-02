@@ -15,51 +15,64 @@ export function nickValidation(nick) {
   return /^[a-zA-Z0-9_.]{3,25}$/.test(nick);
 }
 
-export function inputValidation(type, input, setIsValid, setErrorMsg) {
-  if (type === "password") {
-    setIsValid(passwordValidation(input.current.value));
+export function inputValidation(
+  type,
+  input,
+  setIsValid,
+  setErrorMsg,
+  canBeEmpty
+) {
+  let value = input?.current?.value || input;
+  if (!value.length || !value) value = "";
+  console.log(value.length);
 
-    if (input.current.value === "") {
+  if (type === "password") {
+    setIsValid(passwordValidation(value));
+
+    if (!canBeEmpty && value.length === 0) {
       setErrorMsg("Please fill out this field.");
-    } else if (input.current.value.length < 10) {
+    } else if (value.length < 10) {
       setErrorMsg("Password must have at least 10 characters");
-    } else if (!/^(?=.*[a-z])(?=.*[A-Z])/.test(input.current.value)) {
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])/.test(value)) {
       setErrorMsg(
         "Password must have at least one lowercase and uppercase letter"
       );
-    } else if (!/.*[0-9].*/.test(input.current.value)) {
+    } else if (!/.*[0-9].*/.test(value)) {
       setErrorMsg("Password must have at least one number 0-9");
-    } else if (
-      !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(input.current.value)
-    ) {
+    } else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(value)) {
       setErrorMsg("Password must have at least one special character");
+    } else {
+      setErrorMsg("");
     }
   }
 
   if (type === "email") {
-    setIsValid(emailValidation(input.current.value));
+    setIsValid(emailValidation(value));
 
-    if (input.current.value === "") {
+    if (!canBeEmpty && value.length === 0) {
       setErrorMsg("Please fill out this field.");
-    } else if (!input.current.value.includes("@")) {
+    } else if (!value.includes?.("@")) {
       setErrorMsg("Email must includes @");
-    } else if (!emailValidation(input.current.value))
+    } else if (!emailValidation(value)) {
       setErrorMsg("Invalid email.");
+    } else {
+      setErrorMsg("");
+    }
   }
 
   if (type === "nick") {
-    setIsValid(nickValidation(input.current.value));
+    setIsValid(nickValidation(value));
 
-    if (input.current.value === "") {
+    if (value.length === 0) {
       setErrorMsg("Please fill out this field.");
-    } else if (
-      input.current.value.length < 3 ||
-      input.current.value.length > 25
-    ) {
+    } else if (value.length < 3 || value.length > 25) {
       setErrorMsg("Nick must be between 3-25 length");
-    } else if (!nickValidation(input.current.value))
+    } else if (!nickValidation(value)) {
       setErrorMsg(
         "Nick may contain only letters, numbers, dots and underscores"
       );
+    } else {
+      setErrorMsg("");
+    }
   }
 }

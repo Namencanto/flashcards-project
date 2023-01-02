@@ -163,7 +163,12 @@ const GeneralAvatar = ({
         )}
 
         {currentAvatar !== defaultAvatar ? (
-          <button onClick={deleteAvatarHandler}>I want to delete avatar</button>
+          <button
+            className={classNames(cx("settings-general-avatar-delete-btn"))}
+            onClick={deleteAvatarHandler}
+          >
+            I want to delete avatar
+          </button>
         ) : (
           ""
         )}

@@ -3,9 +3,10 @@ import { checkToken } from "./checkToken.js";
 
 export const getInformation = (req, res) => {
   checkToken(req, res, (userInfo) => {
-    const q = "SELECT * FROM user_description WHERE uid = " + userInfo.id + ";";
+    const q =
+      "SELECT `about_me_info`, `languages`, `levels` FROM `user_description` WHERE `uid` = ?";
 
-    db.query(q, (err, data) => {
+    db.query(q, [userInfo.id], (err, data) => {
       if (err) return res.status(500).send(err);
 
       return res.status(200).json(data);
@@ -16,12 +17,8 @@ export const getInformation = (req, res) => {
 export const addInformation = (req, res) => {
   checkToken(req, res, (userInfo) => {
     const q =
-      "UPDATE `user_description` SET `about_me_info` = '" +
-      req.body.aboutMeText +
-      "' WHERE (`uid` = '" +
-      userInfo.id +
-      "')";
-    db.query(q, (err, data) => {
+      "UPDATE `user_description` SET `about_me_info` = ? WHERE (`uid` = ?)";
+    db.query(q, [req.body.aboutMeText, userInfo.id], (err, data) => {
       if (err) return res.status(500).json(err);
       return res.json("Post has been created.");
     });
@@ -39,14 +36,6 @@ export const addLanguage = (req, res) => {
         return res.status(403).json("'/' Character is not allowed");
     }
 
-    // default query
-    let query =
-      "concat(languages,'" +
-      req.body.language +
-      "/'), `levels` = concat(levels,'" +
-      req.body.level +
-      "/')";
-
     if (req.body.change) {
       for (let i = 0; i < req.body.language.length; i++) {
         if (req.body.language[i - 1] === "/" && req.body.language[i] === "/") {
@@ -58,19 +47,19 @@ export const addLanguage = (req, res) => {
           return res.status(403).json("'//' Character is not allowed");
         }
       }
-
-      query =
-        "'" + req.body.language + "', `levels` = '" + req.body.level + "'";
     }
 
-    const q =
-      "UPDATE `user_description` SET `languages` = " +
-      query +
-      " WHERE (`uid` = '" +
-      userInfo.id +
-      "')";
+    let queryDefault =
+      "UPDATE `user_description` SET `languages` = concat(languages, ?), `levels` = concat(levels, ?) WHERE (`uid` = ?)";
+    if (req.body.change) {
+      queryDefault =
+        "UPDATE `user_description` SET `languages` = ?, `levels` = ? WHERE (`uid` = ?)";
+    }
+    const parameters = !req.body.change
+      ? [req.body.language + "/", req.body.level + "/", userInfo.id]
+      : [req.body.language, req.body.level, userInfo.id];
 
-    db.query(q, (err, data) => {
+    db.query(queryDefault, parameters, (err, data) => {
       if (err) return res.status(500).json(err);
       return res.json("Post has been created.");
     });
@@ -78,15 +67,13 @@ export const addLanguage = (req, res) => {
 };
 
 export const getRanking = (req, res) => {
-  checkToken(req, res, (userInfo) => {
+  checkToken(req, res, () => {
     const today = new Date();
     const month = today.toISOString().split("T")[0].slice(0, -3);
     const qFirst =
-      "SELECT `month_score`, `user_uid` FROM `users_monthly_statistics` WHERE month = '" +
-      month +
-      "' ORDER BY month_score DESC LIMIT 10;";
+      "SELECT `month_score`, `user_uid` FROM `users_monthly_statistics` WHERE month = ? ORDER BY month_score DESC LIMIT 10;";
 
-    db.query(qFirst, (err, dataFirst) => {
+    db.query(qFirst, [month], (err, dataFirst) => {
       if (err) return res.status(500).json(err);
       let qSecond = "";
       for (const data of dataFirst) {
@@ -106,7 +93,10 @@ export const getRanking = (req, res) => {
 };
 
 ///////////////////////////////////////////////////
+// * USER SETTINGS PART
+///////////////////////////////////////////////////
 
+import { nickValidation } from "./server-validations/inputsValidation.js";
 import sharp from "sharp";
 import path from "path";
 import { dirname } from "path";
@@ -116,13 +106,30 @@ const __dirname = dirname(__filename);
 const UPLOAD_PATH = path.join(__dirname, ".././uploads");
 import fs from "fs";
 
+// * GENERAL SETTINGS PART
+// GET GENERAL SETTINGS
+export const getGeneralInformation = (req, res) => {
+  checkToken(req, res, async (userInfo) => {
+    const q = "SELECT `avatar`, `nick` FROM `users` WHERE `id` = ?";
+
+    db.query(q, [userInfo.id], (err, data) => {
+      if (err) return res.status(500).send(err);
+
+      return res
+        .status(200)
+        .json({ avatar: data[0].avatar, nick: data[0].nick });
+    });
+  });
+};
+
+// POST FOR UPLOAD & UPDATE USER AVATAR
 export const postUserAvatar = (req, res) => {
   checkToken(req, res, (userInfo) => {
     // * DELETE AVATAR
 
     const qCheckPreviousAvatarExist =
-      "SELECT avatar FROM techcards.users WHERE id = " + userInfo.id + ";";
-    db.query(qCheckPreviousAvatarExist, async (err, avatar) => {
+      "SELECT avatar FROM techcards.users WHERE id = ?";
+    db.query(qCheckPreviousAvatarExist, [userInfo.id], async (err, avatar) => {
       const previousAvatar = avatar[0].avatar;
       if (err) return res.status(500).json(err);
 
@@ -135,6 +142,7 @@ export const postUserAvatar = (req, res) => {
           }
         });
       }
+
       //
 
       const { file } = req;
@@ -157,14 +165,9 @@ export const postUserAvatar = (req, res) => {
           console.log("File saved successfully");
         }
       });
-      const qAvatar =
-        "UPDATE `users` SET avatar = '" +
-        fileName +
-        "' WHERE id = " +
-        userInfo.id +
-        ";";
+      const qAvatar = "UPDATE `users` SET avatar = ? WHERE id = ?";
 
-      db.query(qAvatar, (err, data) => {
+      db.query(qAvatar, [fileName, userInfo.id], (err, data) => {
         if (err) return res.status(500).json(err);
         console.log(fileName);
         return res.status(200).json(fileName);
@@ -172,23 +175,48 @@ export const postUserAvatar = (req, res) => {
     });
   });
 };
-import { nickValidation } from "./server-validations/inputsValidation.js";
 
+// POST FOR DELETE USER AVATAR
+export const postUserAvatarDelete = (req, res) => {
+  checkToken(req, res, (userInfo) => {
+    const qCheckPreviousAvatarExist =
+      "SELECT avatar FROM techcards.users WHERE id = ?";
+    db.query(qCheckPreviousAvatarExist, [userInfo.id], async (err, avatar) => {
+      const previousAvatar = avatar[0].avatar;
+      if (err) return res.status(500).json(err);
+
+      if (previousAvatar && previousAvatar.startsWith(`user-avatar-`)) {
+        fs.unlink(`${UPLOAD_PATH}/${previousAvatar}`, (error) => {
+          if (error) {
+            res.status(500).json("Somethin went wrong...");
+          } else {
+            console.log("avatar successfully deleted");
+          }
+        });
+      }
+      const q = "UPDATE `users` SET `avatar` = NULL WHERE `id` = ?";
+
+      db.query(q, [userInfo.id], (err, data) => {
+        if (err) return res.status(500).send(err);
+
+        return res.status(200).json("Avatar successfully deleted");
+      });
+    });
+  });
+};
+
+//
+
+// POST FOR CHANGE USER NICK
 export const postChangeUserNick = (req, res) => {
   checkToken(req, res, async (userInfo) => {
     const nick = req.body.nick;
     if (!nickValidation(nick)) {
       return res.status(422).json("Invalid nick pattern");
     }
-    const q =
-      "UPDATE `users` SET `nick` = '" +
-      nick +
-      "' WHERE `id` = '" +
-      userInfo.id +
-      "'";
+    const q = "UPDATE `users` SET `nick` = ? WHERE `id` = ?";
 
-    db.query(q, (err, data) => {
-      console.log(data);
+    db.query(q, [nick, userInfo.id], (err, data) => {
       if (err) return res.status(500).send(err);
 
       return res.status(200).json("Successfully changed nick");
@@ -196,17 +224,73 @@ export const postChangeUserNick = (req, res) => {
   });
 };
 
-export const getGeneralInformation = (req, res) => {
-  checkToken(req, res, async (userInfo) => {
-    const q = "SELECT avatar, nick FROM users WHERE id = " + userInfo.id + "";
+// * PRIVATY AND LOGIN SETTINGS PART
 
-    db.query(q, (err, data) => {
-      console.log(data);
+// GET PRIVATY AND LOGIN DATA
+export const getPrivatyAndLogin = (req, res) => {
+  checkToken(req, res, async (userInfo) => {
+    const q = "SELECT `notifications`, `public` FROM `users` WHERE `id` = ?";
+    db.query(q, userInfo.id, (err, data) => {
       if (err) return res.status(500).send(err);
 
       return res
         .status(200)
-        .json({ avatar: data[0].avatar, nick: data[0].nick });
+        .json({ notifications: data[0].notifications, public: data[0].public });
+    });
+  });
+};
+
+export const postPrivatyAndLoginPublicNotifications = (req, res) => {
+  checkToken(req, res, async (userInfo) => {
+    const qNotifications =
+      "UPDATE `users` SET `notifications` = ? WHERE `id` = ?";
+    const qPublic = "UPDATE `users` SET `public` = ? WHERE `id` = ?";
+
+    const q =
+      req.body.public !== undefined
+        ? qPublic
+        : req.body.notifications !== undefined
+        ? qNotifications
+        : "";
+
+    const data =
+      req.body.public !== undefined
+        ? req.body.public
+        : req.body.notifications !== undefined
+        ? req.body.notifications
+        : "";
+    console.log(data);
+    db.query(q, [data, userInfo.id], (err, data) => {
+      if (err) return res.status(500).send(err);
+
+      return res.status(200).json(data);
+    });
+  });
+};
+
+// * LEARNING SETTINGS PART
+export const getLearningDifficult = (req, res) => {
+  checkToken(req, res, async (userInfo) => {
+    const q = "SELECT `learning_difficult` FROM `users` WHERE `id` = ?";
+
+    db.query(q, userInfo.id, (err, data) => {
+      if (err) return res.status(500).send(err);
+
+      return res
+        .status(200)
+        .json({ learningDifficult: data[0].learning_difficult });
+    });
+  });
+};
+
+export const postLearningDifficult = (req, res) => {
+  checkToken(req, res, async (userInfo) => {
+    const q = "UPDATE `users` SET `learning_difficult` = ? WHERE `id` = ?";
+
+    db.query(q, [req.body.learningDifficult, userInfo.id], (err, data) => {
+      if (err) return res.status(500).send("Something went wrong...");
+
+      return res.status(200).json(data);
     });
   });
 };

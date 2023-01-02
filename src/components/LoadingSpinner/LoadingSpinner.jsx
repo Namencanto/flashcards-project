@@ -47,11 +47,11 @@ function LoadingSpinner() {
       <div className={classNames(cx("spinner-container"))}>
         <div className={classNames(cx("spinner-bounce"))}></div>
         <div
-          style={{ "animation-delay": "0.16s" }}
+          style={{ animationDelay: "0.16s" }}
           className={classNames(cx("spinner-bounce"))}
         ></div>
         <div
-          style={{ "animation-delay": "0.32s" }}
+          style={{ animationDelay: "0.32s" }}
           className={classNames(cx("spinner-bounce"))}
         ></div>
       </div>

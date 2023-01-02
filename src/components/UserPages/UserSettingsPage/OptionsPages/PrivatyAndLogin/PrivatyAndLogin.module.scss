@@ -5,10 +5,20 @@
     flex-direction: column;
     align-items: center;
     margin-top: 3rem;
-    & p {
-      font-size: 1.3rem;
-      text-align: center;
+    // & input[type="email"],
+    // input[type="password"] {
+    //   max-width: 20rem;
+    // }
+    & form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+    &-error-message {
+      max-width: 20rem;
+      color: red;
+    }
+
     & button {
       max-width: 14.684rem;
       margin: 1.5rem auto 0 auto;
@@ -16,7 +26,7 @@
 
     &-checkboxes {
       max-width: 20rem;
-      margin-bottom: 2.5rem;
+      margin: 0 auto 2.5rem auto;
     }
     &-checkbox-content {
       width: 20rem;
@@ -26,7 +36,9 @@
       //   margin-bottom: 1rem;
 
       & label {
-        width: 13.5rem;
+        width: 15rem;
+      }
+      & svg {
       }
       & input {
         width: 1.5rem;
@@ -60,6 +72,15 @@
         margin-left: 10%;
         position: absolute;
         z-index: 1000;
+      }
+    }
+    &-input-wrapper {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      & p {
+        font-size: 1.125rem;
+        text-align: center;
       }
     }
   }

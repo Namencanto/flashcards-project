@@ -481,3 +481,43 @@
     }
   }
 }
+
+// ERRORS
+.server {
+  @mixin server-accepted {
+    text-align: center;
+    color: green;
+  }
+  @mixin server-denied {
+    text-align: center;
+    color: red;
+  }
+  &-accepted {
+    &-large {
+      @include server-accepted;
+      font-size: 2.4rem;
+    }
+    &-medium {
+      @include server-accepted;
+      font-size: 1.8rem;
+    }
+    &-small {
+      @include server-accepted;
+      font-size: 1.2rem;
+    }
+  }
+  &-denied {
+    &-large {
+      @include server-denied;
+      font-size: 2.4rem;
+    }
+    &-medium {
+      @include server-denied;
+      font-size: 1.8rem;
+    }
+    &-small {
+      @include server-denied;
+      font-size: 1.2rem;
+    }
+  }
+}

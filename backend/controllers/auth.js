@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { passwordValidation } from "./server-validations/inputsValidation.js";
 import { emailValidation } from "./server-validations/inputsValidation.js";
 import { nickValidation } from "./server-validations/inputsValidation.js";
-
+import { checkToken } from "./checkToken.js";
 //
 
 export const register = (req, res) => {
@@ -115,4 +115,117 @@ export const logout = (req, res) => {
     })
     .status(200)
     .json("User has been logged out.");
+};
+
+// * CHANGE LOGIN DATA
+export const changeUserLoginData = (req, res) => {
+  checkToken(req, res, async (userInfo) => {
+    const { newEmail, newPassword, email, password } = req.body;
+    console.log(newEmail, newPassword, email, password);
+    // const q = "SELECT `notifications`, `public` FROM `users` WHERE `id` = ?";
+
+    const qEmailSearch = "SELECT `id` FROM `users` WHERE `email` = ? LIMIT 1";
+    const qVerifyUserLoginData =
+      "SELECT `password` FROM `users` WHERE `email` = ? AND `id` = ?";
+
+    db.query(qVerifyUserLoginData, [email, userInfo.id], (err, data) => {
+      if (err) return res.status(500).send(err);
+      if (data.length === 0)
+        return res.status(404).json("Wrong email or password");
+
+      const isPasswordCorrect = bcrypt.compareSync(
+        req.body.password,
+        data[0].password
+      );
+
+      if (!isPasswordCorrect)
+        return res.status(404).json("Wrong email or password");
+
+      // Change email and password case
+      if (newEmail && newPassword) {
+        console.log("ALL CASE");
+
+        db.query(qEmailSearch, newEmail, (err, data) => {
+          if (err) return res.status(500).send(err);
+          if (data.length) return res.status(409).json("Email already exists!");
+
+          // * HASH THE PASSWORD
+          const salt = bcrypt.genSaltSync(10);
+          const hash = bcrypt.hashSync(newPassword, salt);
+
+          const qAllCase =
+            "UPDATE `users` SET `email` = ?, `password` = ? WHERE `id` = ?";
+
+          db.query(qAllCase, [newEmail, hash, userInfo.id], (err, data) => {
+            if (err) return res.status(500).send(err);
+            return res.status(200).json("success");
+          });
+        });
+      }
+
+      // Change email case
+      if (newEmail && !newPassword) {
+        console.log("EMAIL CASE");
+
+        db.query(qEmailSearch, newEmail, (err, data) => {
+          if (err) return res.status(500).send(err);
+          if (data.length) return res.status(409).json("Email already exists!");
+
+          const qEmailCase = "UPDATE `users` SET `email` = ? WHERE `id` = ?";
+
+          db.query(qEmailCase, [newEmail, userInfo.id], (err) => {
+            if (err) return res.status(500).send(err);
+            return res.status(200).json("Successfully changed email");
+          });
+        });
+      }
+      // Change password case
+      if (newPassword && !newEmail) {
+        console.log("PASSWORD CASE");
+
+        // HASH THE PASSWORD
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(newPassword, salt);
+
+        const qPasswordCase =
+          "UPDATE `users` SET `password` = ? WHERE `id` = ?";
+
+        db.query(qPasswordCase, [hash, userInfo.id], (err, data) => {
+          if (err) return res.status(500).send(err);
+          return res.status(200).json("Successfully changed password");
+        });
+      }
+    });
+  });
+};
+
+// * DELETE ACCOUNT PART
+export const deleteAccount = (req, res) => {
+  checkToken(req, res, async (userInfo) => {
+    const { email, password } = req.body;
+    const qVerifyUserLoginData =
+      "SELECT `password` FROM `users` WHERE `email` = ? AND `id` = ?";
+
+    const qDeleteAccount = "DELETE FROM `users` WHERE `id` = ?";
+
+    db.query(qVerifyUserLoginData, [email, userInfo.id], (err, data) => {
+      if (err) return res.status(500).send(err);
+      if (data.length === 0)
+        return res.status(404).json("Wrong email or password");
+
+      const isPasswordCorrect = bcrypt.compareSync(password, data[0].password);
+
+      if (!isPasswordCorrect)
+        return res.status(404).json("Wrong email or password");
+
+      db.query(qDeleteAccount, [userInfo.id], (err, data) => {
+        if (err) return res.status(500).send("Something went wrong...");
+
+        res.cookie("account-deleted", true);
+        res.clearCookie("jwt");
+        res.clearCookie("jwtTime");
+        return res.status(200).json(data);
+      });
+    });
+  });
 };

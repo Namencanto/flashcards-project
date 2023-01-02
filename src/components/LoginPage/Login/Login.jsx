@@ -8,7 +8,9 @@ import { useNavigate } from "react-router-dom";
 
 import { inputValidation } from "../../../hooks/useInputValidation";
 
+import useCookie from "../../../hooks/useCookie";
 import { AuthContext } from "../../../context/AuthContext";
+import { useEffect } from "react";
 
 function Login() {
   const cx = classNames.bind(classes);
@@ -22,9 +24,18 @@ function Login() {
   const [inputPasswordErrorMessage, setInputPasswordErrorMessage] =
     useState("");
 
+  const [accountDeleted, setAccountDeleted, removeAccountDeleted] =
+    useCookie("account-deleted");
   const inputEmailRef = useRef();
   const inputPasswordRef = useRef();
 
+  useEffect(() => {
+    if (accountDeleted) {
+      setServerMessage("Account successfully deleted");
+      setServerMessageClass("server-accepted-large");
+      removeAccountDeleted();
+    }
+  }, []);
   /**
    * * SERVER MESSAGES STATES
    */
@@ -50,13 +61,13 @@ function Login() {
         console.log(res);
         if (res.status === 200) {
           setServerMessage("Successfully logged!");
-          setServerMessageClass("register-server-accepted");
+          setServerMessageClass("login-server-accepted");
           navigate("/user");
         }
       } catch (error) {
         console.log(error);
         setServerMessage(error.response.data);
-        setServerMessageClass("register-server-denied");
+        setServerMessageClass("login-server-denied");
         setServerLoading(false);
       }
 

@@ -2,56 +2,80 @@ import classNames from "classnames/bind";
 import classes from "../General.module.scss";
 import React, { useState, useRef } from "react";
 import { inputValidation } from "../../../../../../hooks/useInputValidation";
+import { useEffect } from "react";
 
 const GeneralUserInformation = ({
   postGeneralNick,
   currentNick,
   serverMessage,
   serverMessageTypeIsError,
+  resetServerMessage,
 }) => {
   const cx = classNames.bind(classes);
 
   const [inputNickIsValid, setInputNickIsValid] = useState(true);
   const [inputNickErrorMessage, setInputNickErrorMessage] = useState("");
+  const [displayBtnToSubmitChanges, setDisplayBtnToSubmitChanges] =
+    useState(false);
+  const [inputNickValue, setInputNickValue] = useState("");
+  console.log(currentNick);
 
-  const nickRef = useRef();
+  useEffect(() => {
+    if (inputNickValue !== currentNick && inputNickIsValid) {
+      setDisplayBtnToSubmitChanges(true);
+    } else {
+      setDisplayBtnToSubmitChanges(false);
+    }
+  }, [inputNickValue]);
 
+  console.log(inputNickErrorMessage);
   const nickChangePostHandler = () => {
-    const newNick = nickRef.current.value;
+    const newNick = inputNickValue;
     if (setInputNickIsValid && newNick.length > 0 && inputNickIsValid) {
       postGeneralNick(newNick);
     } else {
       inputValidation(
         "nick",
-        nickRef,
+        inputNickValue,
         setInputNickIsValid,
         setInputNickErrorMessage
       );
-      checkPreviousIdentity();
     }
   };
-  const checkPreviousIdentity = () => {
-    if (nickRef.current.value === currentNick) {
-      setInputNickIsValid(false);
-      setInputNickErrorMessage(
-        "The nick must not be the same as the previous one"
-      );
-    }
-  };
+
   return (
     <div className={classNames(cx("settings-general-user-info"))}>
       <div style={{ marginTop: "1.5rem" }} className="input-default">
         <input
-          onChange={() => {
+          onChange={(e) => {
             inputValidation(
               "nick",
-              nickRef,
+              e.target.value,
               setInputNickIsValid,
               setInputNickErrorMessage
             );
-            checkPreviousIdentity();
+            resetServerMessage();
+            setInputNickValue(e.target.value);
+            if (e.target.value !== currentNick && inputNickIsValid) {
+              setDisplayBtnToSubmitChanges(true);
+            } else {
+              setDisplayBtnToSubmitChanges(false);
+            }
+            console.log(displayBtnToSubmitChanges);
+            if (e.target.value === currentNick) {
+              setInputNickIsValid(false);
+              setDisplayBtnToSubmitChanges(false);
+              setInputNickErrorMessage("Nick cannot be the same as previous");
+            } else {
+              inputValidation(
+                "nick",
+                e.target.value,
+                setInputNickIsValid,
+                setInputNickErrorMessage
+              );
+            }
           }}
-          ref={nickRef}
+          value={inputNickValue}
           id="nick"
           type="text"
           defaultValue={currentNick}
@@ -66,9 +90,13 @@ const GeneralUserInformation = ({
       )}
 
       <div className={classNames(cx("settings-general-user-info-btn-wrapper"))}>
-        <button onClick={nickChangePostHandler} className="btn-solid-large">
-          Change
-        </button>
+        {displayBtnToSubmitChanges ? (
+          <button onClick={nickChangePostHandler} className="btn-solid-large">
+            Change
+          </button>
+        ) : (
+          ""
+        )}
       </div>
       <p style={{ color: serverMessageTypeIsError ? "red" : "green" }}>
         {serverMessage}
