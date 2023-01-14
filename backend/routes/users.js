@@ -11,6 +11,7 @@ import {
   postPrivatyAndLoginPublicNotifications,
   getLearningDifficult,
   postLearningDifficult,
+  getLastLearned,
 } from "../controllers/user.js";
 import multer from "multer";
 
@@ -50,9 +51,11 @@ const router = express.Router();
 
 router.get("/general", getGeneralInformation);
 router.get("/privaty-login", getPrivatyAndLogin);
-router.get("/learning-settings", getLearningDifficult);
 
+router.get("/learning-settings", getLearningDifficult);
 router.post("/learning-settings", postLearningDifficult);
+
+router.get("/last-learned", getLastLearned);
 
 router.get("/ranking", getRanking);
 

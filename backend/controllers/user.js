@@ -96,6 +96,58 @@ export const getRanking = (req, res) => {
   });
 };
 
+// * GET 3 LAST LEARNING LIST
+export const getLastLearned = (req, res) => {
+  checkToken(req, res, ({ id }) => {
+    try {
+      const qSelectLastLearnedId =
+        "SELECT DISTINCT `list_uid` FROM `lists_statistics` WHERE `user_uid` = ? ORDER BY `id` DESC LIMIT 5;";
+
+      // SELECT LAST 3 LEARNED LIST
+      db.query(qSelectLastLearnedId, [id], (err, selectLastLearnedIdData) => {
+        let qSelectLastList = "";
+        let qSelectLastListData = [];
+
+        for (const { list_uid } of selectLastLearnedIdData) {
+          qSelectLastListData.push(list_uid);
+          qSelectLastList += "SELECT * FROM `lists` WHERE `id` = ?;";
+        }
+
+        // GET INFORMATION ABOUT LAST 3 LEARNED LIST
+        db.query(
+          qSelectLastList,
+          qSelectLastListData,
+          (err, selectLastListData) => {
+            let qSearchFoldersName = "";
+
+            const foldersId = selectLastListData.map(
+              (arr) => arr[0].folder_uid
+            );
+            for (let i = 0; i < foldersId.length; i++) {
+              qSearchFoldersName +=
+                "SELECT folder FROM `folders` WHERE `id` = ?;";
+            }
+
+            // GET INFORMATION ABOUT LAST 3 LEARNED LIST FOLDERS NAME
+            db.query(
+              qSearchFoldersName,
+              foldersId,
+              (err, selectFoldersName) => {
+                return res.json({
+                  lastLists: selectLastListData,
+                  foldersName: selectFoldersName,
+                });
+              }
+            );
+          }
+        );
+      });
+    } catch (err) {
+      if (err) return res.status(500).json("Something went wrong...");
+    }
+  });
+};
+
 ///////////////////////////////////////////////////
 // * USER SETTINGS PART
 ///////////////////////////////////////////////////
@@ -192,7 +244,7 @@ export const postUserAvatarDelete = (req, res) => {
       if (previousAvatar && previousAvatar.startsWith(`user-avatar-`)) {
         fs.unlink(`${UPLOAD_PATH}/${previousAvatar}`, (error) => {
           if (error) {
-            res.status(500).json("Somethin went wrong...");
+            res.status(500).json("Something went wrong...");
           } else {
             console.log("avatar successfully deleted");
           }

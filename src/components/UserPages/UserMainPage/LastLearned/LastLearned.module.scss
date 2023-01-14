@@ -14,11 +14,10 @@
     background-color: $color-white;
     border-radius: 1rem;
     padding: 1rem 1rem 9rem 1rem;
-
     @media only screen and (min-width: $bp-1000) {
       border-radius: 0;
       min-height: 0;
-      padding: 0;
+      padding: 1rem;
 
       height: 20vh;
     }
@@ -29,8 +28,14 @@
       flex-direction: column;
       justify-content: center;
       height: 100%;
+      @media only screen and (min-width: $bp-1000) {
+        margin-top: -1.3rem;
+      }
       & li {
+        display: flex;
+
         & a {
+          padding: 0.2rem 0;
           text-decoration: none;
           display: flex;
           align-items: center;
@@ -41,12 +46,30 @@
           }
           & p {
             color: $color-black;
-            margin-left: 0.8rem;
+            margin-left: 0.6rem;
           }
           & img {
+            margin-left: 0.6rem;
+            width: 3.5rem;
+            @media only screen and (min-width: $bp-1000) {
+              margin-left: -2.5rem;
+            }
           }
         }
       }
+    }
+    & h2 {
+      margin-bottom: 1rem;
+      font-size: 2.4rem;
+      color: black;
+      text-align: center;
+      @media only screen and (min-width: $bp-1000) {
+        margin-bottom: 0;
+      }
+    }
+    &-empty {
+      color: black;
+      text-align: center;
     }
   }
 }

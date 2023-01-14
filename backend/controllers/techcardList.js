@@ -25,10 +25,10 @@ export const getTechcardList = (req, res) => {
 
         return res.status(200).json({
           techcardsData,
-          folderID: listsData[0][0].folder_uid,
-          listImage: listsData[0][0].image,
-          firstSidesFlag: listsData[1][0].first_sides_flag,
-          secondSidesFlag: listsData[1][0].second_sides_flag,
+          folderID: listsData[0][0]?.folder_uid,
+          listImage: listsData[0][0]?.image,
+          firstSidesFlag: listsData[1][0]?.first_sides_flag,
+          secondSidesFlag: listsData[1][0]?.second_sides_flag,
         });
       });
     });

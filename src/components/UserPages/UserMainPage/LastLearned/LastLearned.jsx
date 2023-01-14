@@ -1,54 +1,80 @@
 import classes from "./LastLearned.module.scss";
 import classNames from "classnames/bind";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBookOpen,
-  faGear,
-  faArrowLeft,
-} from "@fortawesome/free-solid-svg-icons";
-import ReactCountryFlag from "react-country-flag";
+import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
 
 import UserMobileCard from "../UserMobileCard/UserMobileCard";
 
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
+import { useEffect, useState } from "react";
+
+import axios from "axios";
+import LastLearnedContent from "./LastLearnedContent";
 
 function LastLearned(props) {
   const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
 
-  const content = (
-    <div className={classNames(cx("last-learned-content"))}>
-      <ul>
-        <li>
-          <Link to="/user/learn/id">
-            <ReactCountryFlag svg countryCode="GB" />
-            <p> English grammar 105/250</p>
-          </Link>
-        </li>
-        <li>
-          <Link to="/user/learn/id">
-            <ReactCountryFlag svg countryCode="GB" />
-            <p> English phrasal verbs 291/500</p>
-          </Link>
-        </li>
-        <li>
-          <Link to="/user/learn/id">
-            <ReactCountryFlag svg countryCode="KR" />
-            <p>Korean at the airport 64/100</p>
-          </Link>
-        </li>
-      </ul>
-    </div>
-  );
+  const URL = process.env.REACT_APP_URL;
+
+  const [lastLearned, setLastLearned] = useState({
+    list: [],
+    image: [],
+  });
+  const [isFetched, setIsFetched] = useState(false);
+  const [lastLearnedErrorMessage, setLastLearnedErrorMessage] = useState("");
+
+  useEffect(() => {
+    const fetchLastLearned = async () => {
+      try {
+        setIsFetched(false);
+        const res = await axios.get("/users/last-learned");
+
+        const listsName = res.data.lastLists.map((arr) => arr[0]?.list);
+        const images = res.data.lastLists.map((arr) => {
+          console.log(arr[0]?.image);
+          if (arr[0]?.image) {
+            return arr[0]?.image.startsWith("list-image-")
+              ? `${URL}/${arr[0]?.image}`
+              : arr[0]?.image;
+          }
+        });
+        console.log(images);
+        const listsId = res.data.lastLists.map((arr) => arr[0]?.id);
+        const foldersName = res.data.foldersName.map((arr) => arr[0]?.folder);
+        setLastLearned({
+          list: listsName,
+          image: images,
+          listId: listsId,
+          folder: foldersName,
+        });
+      } catch (err) {
+        setIsFetched(true);
+        setLastLearnedErrorMessage(err.response.data);
+      }
+      setIsFetched(true);
+    };
+    fetchLastLearned();
+  }, []);
 
   return (
     <div className={classNames(cx("last-learned"))}>
       <div className="grid-mainpage-last-learned">
         {minWidth1000 ? (
-          <UserMobileCard icon={faBookOpen}>{content}</UserMobileCard>
+          <UserMobileCard icon={faBookOpen}>
+            {
+              <LastLearnedContent
+                isFetched={isFetched}
+                lastLearned={lastLearned}
+                errorMessage={lastLearnedErrorMessage}
+              />
+            }
+          </UserMobileCard>
         ) : (
-          content
+          <LastLearnedContent
+            isFetched={isFetched}
+            lastLearned={lastLearned}
+            errorMessage={lastLearnedErrorMessage}
+          />
         )}
       </div>
     </div>
