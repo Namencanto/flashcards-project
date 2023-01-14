@@ -1,0 +1,79 @@
+@import "../../../../assets/base.scss";
+.membership-type {
+  background-color: $color-offWhite;
+  margin: 0 -2rem;
+
+  @media only screen and (min-width: $bp-1000) {
+    max-width: 40rem;
+    margin-left: auto;
+    margin-top: -2.4rem;
+    height: 38rem;
+  }
+  & main {
+    margin: 0 2rem;
+  }
+  &-price {
+    margin-top: 2rem;
+    padding: 2rem 0;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #aaa;
+    & svg {
+      color: #555;
+      font-size: 3.4rem;
+      margin-right: 0.5rem;
+    }
+    & h3 {
+      color: #222;
+      font-size: 3.4rem;
+    }
+    & p {
+      color: #666;
+      font-size: 2.4rem;
+      align-self: flex-end;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+  }
+
+  &-benefits {
+    padding: 2rem 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    & li {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      width: 50%;
+
+      & p {
+        color: #333;
+        font-size: 1.4rem;
+      }
+      & svg {
+        color: $color-purple;
+        width: 1.6rem;
+        margin-right: 0.8rem;
+      }
+    }
+  }
+
+  &-other-info {
+    padding-bottom: 2rem;
+    &-element {
+      display: flex;
+      align-items: center;
+
+      & svg {
+        width: 1.6rem;
+        margin-right: 0.8rem;
+      }
+    }
+    &-trial {
+      & p {
+        margin-top: 5rem !important;
+      }
+    }
+  }
+}

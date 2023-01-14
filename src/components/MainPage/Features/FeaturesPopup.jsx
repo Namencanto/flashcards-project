@@ -5,10 +5,9 @@ import classNames from "classnames/bind";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare, faX } from "@fortawesome/free-solid-svg-icons";
-import { propTypes } from "infinite-react-carousel/lib/carousel/types";
 
 import lightBoxImg from "../../../images/details-lightbox.png";
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 function FeaturesPopup(props) {
   const cx = classNames.bind(classes);
 

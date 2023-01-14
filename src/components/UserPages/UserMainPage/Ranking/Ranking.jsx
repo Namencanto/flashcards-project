@@ -1,15 +1,14 @@
 import classes from "./Ranking.module.scss";
 import classNames from "classnames/bind";
 
-import { useContext } from "react";
 import { AuthContext } from "../../../../context/AuthContext";
 import { faRankingStar } from "@fortawesome/free-solid-svg-icons";
 
 import UserMobileCard from "../UserMobileCard/UserMobileCard";
 
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+
 import axios from "axios";
 import RankingContent from "./RankingContent";
 
@@ -25,35 +24,44 @@ function Ranking() {
     const fetchRanking = async () => {
       setIsFetched(false);
       try {
-        const res = await axios.get("/users/getRanking");
+        const res = await axios.get("/users/ranking");
 
-        let rankingDataObject = [];
+        if (res.data) {
+          console.log(res.data);
+          let rankingDataObject = [];
+          console.log(res.data.dataFirst);
+          res.data.dataFirst.forEach(({ user_uid, month_score }, i) => {
+            let nicks = [];
+            let avatars = [];
+            for (const arr of res.data.dataSecond) {
+              console.log(arr.length);
+              const nick = arr.length ? arr[0].nick : arr.nick;
+              const avatar = arr.length ? arr[0].avatar : arr.avatar;
 
-        res.data.dataFirst.forEach(({ user_uid, month_score }, i) => {
-          let nicks = [];
-          let avatars = [];
-          for (const arr of res.data.dataSecond) {
-            nicks.push(arr[0].nick);
-            if (arr[0].avatar) {
-              avatars.push(
-                arr[0].avatar.startsWith("user-avatar-")
-                  ? `${URL}/${arr[0].avatar}`
-                  : arr[0].avatar
-              );
-            } else avatars.push(null);
-          }
-          const userObject = {
-            user_name: nicks[i],
-            ranking_score: month_score,
-            avatar: avatars[i],
-            uid: user_uid,
-          };
-          rankingDataObject = [...rankingDataObject, userObject];
-        });
+              nicks.push(nick);
+              if (avatar) {
+                avatars.push(
+                  avatar.startsWith("user-avatar-")
+                    ? `${URL}/${avatar}`
+                    : avatar
+                );
+              } else avatars.push(null);
+            }
+            const userObject = {
+              user_name: nicks[i],
+              ranking_score: month_score,
+              avatar: avatars[i],
+              uid: user_uid,
+            };
+            rankingDataObject = [...rankingDataObject, userObject];
+          });
 
-        rankingDataObject?.sort((a, b) => b.ranking_score - a.ranking_score);
-        setRankingData(rankingDataObject);
+          rankingDataObject?.sort((a, b) => b.ranking_score - a.ranking_score);
+          console.log(rankingDataObject);
+          setRankingData(rankingDataObject);
+        }
       } catch (err) {
+        console.log(err);
         setFetchError(true);
       }
       setIsFetched(true);

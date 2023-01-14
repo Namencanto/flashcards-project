@@ -1,0 +1,92 @@
+@import "../../../../../assets/base.scss";
+.premium {
+  &-content {
+    min-height: 30rem;
+    text-align: center;
+    & h2 {
+      margin-bottom: 1.5rem;
+    }
+    & table {
+      font-size: 1.6rem;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 6px;
+      max-width: 80rem;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+
+      & th {
+        width: 18.5%;
+      }
+      & td {
+        text-align: center;
+        padding-left: 0.8rem;
+      }
+      & thead tr {
+        height: 5rem;
+        color: #fff;
+        background: $color-purple;
+      }
+      & tbody {
+        & tr {
+          height: 5rem;
+          margin: auto;
+          border-bottom: 1px solid rgba($color-purple, 0.25);
+          &:last-child {
+            border: 0;
+          }
+        }
+      }
+    }
+  }
+
+  &-dropdown {
+    position: relative;
+
+    &-dots {
+      cursor: pointer;
+      display: inline-block;
+
+      span {
+        margin: auto;
+        font-size: 3rem;
+        color: $color-purple;
+      }
+    }
+
+    &-menu {
+      background-color: #fff;
+      border: 1px solid $color-purple;
+      box-shadow: 2px 2px 2px gray;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      z-index: 1;
+      li {
+        cursor: pointer;
+        list-style: none;
+        padding: 8px;
+        border-bottom: 1px solid $color-purple;
+        &:last-child {
+          border-bottom: none;
+        }
+        &:hover {
+          background-color: $color-purple;
+          color: white;
+        }
+      }
+    }
+    &-invoice {
+      position: absolute;
+    }
+    &-button {
+      color: #555;
+    }
+  }
+  &-unsubscribed {
+    line-height: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+  }
+}

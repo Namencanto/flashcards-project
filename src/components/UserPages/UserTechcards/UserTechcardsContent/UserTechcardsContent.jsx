@@ -6,9 +6,7 @@ import classNames from "classnames/bind";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useRef } from "react";
 import { countStatus } from "../../../../HelperComponents/countStatus";

@@ -7,6 +7,7 @@ import PrivatyAndLogin from "./OptionsPages/PrivatyAndLogin/PrivatyAndLogin";
 
 import DeleteAccount from "./OptionsPages/DeleteAccount/DeleteAccount";
 import Learning from "./OptionsPages/Learning/Learning";
+import Premium from "./OptionsPages/Premium/Premium";
 function UserSettingsPageNavigator() {
   const cx = classNames.bind(classes);
 
@@ -17,6 +18,7 @@ function UserSettingsPageNavigator() {
         <Route path="privaty-login" element={<PrivatyAndLogin />}></Route>
         <Route path="delete-account" element={<DeleteAccount />}></Route>
         <Route path="learning" element={<Learning />}></Route>
+        <Route path="premium" element={<Premium />}></Route>
         <Route path="" element={<UserSettingsPageMainContent />}></Route>
       </Routes>
     </div>

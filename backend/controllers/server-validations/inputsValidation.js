@@ -14,3 +14,8 @@ export function emailValidation(email) {
 export function nickValidation(nick) {
   return /^[a-zA-Z0-9_.]{3,25}$/.test(nick);
 }
+export function courseNameValidation(name) {
+  return /^(Techcards English Course|Most common english words 1|Most common english words 2|Most common english words 3)$/.test(
+    name
+  );
+}

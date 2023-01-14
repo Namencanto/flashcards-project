@@ -38,11 +38,14 @@ function UserTechcards() {
           folder,
         },
       });
-      setlistImage(
-        res.data.listImage.startsWith("list-image-")
-          ? `${URL}/${res.data.listImage}`
-          : res.data.listImage
-      );
+
+      if (res.data.listImage) {
+        setlistImage(
+          res.data.listImage.startsWith("list-image-")
+            ? `${URL}/${res.data.listImage}`
+            : res.data.listImage
+        );
+      }
 
       let firstSidesArr = [];
       let secondSidesArr = [];
@@ -56,7 +59,7 @@ function UserTechcards() {
         idsArr.push(id);
         if (image) {
           imagesArr.push(
-            image.startsWith("techcard-image-") ? `${URL}/${image}` : image
+            image?.startsWith("techcard-image-") ? `${URL}/${image}` : image
           );
         } else imagesArr.push(null);
       }

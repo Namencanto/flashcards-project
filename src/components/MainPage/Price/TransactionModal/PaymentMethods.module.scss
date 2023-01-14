@@ -1,0 +1,174 @@
+@import "../../../../assets/base.scss";
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+
+  @media only screen and (min-width: $bp-1000) {
+    width: 50rem;
+  }
+  &-options {
+    margin-top: 1rem;
+    display: flex;
+    border-bottom: 1px solid #aaa;
+    & button {
+      background-color: transparent;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      width: 25%;
+      height: 6rem;
+      & p {
+        font-size: 1.2rem;
+      }
+      & svg {
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 3rem;
+      }
+    }
+  }
+
+  &-card {
+    margin: 1.5rem 0;
+
+    & h2 {
+      margin-bottom: 1rem;
+      @media only screen and (min-width: $bp-1000) {
+        margin-bottom: 2rem;
+      }
+    }
+    &-input-box {
+      display: flex;
+      margin: 1rem 0;
+      @media only screen and (min-width: $bp-1000) {
+        margin: 1.5rem 0;
+      }
+      & div {
+        width: 33.33%;
+      }
+    }
+    &-input-invoice-box {
+      display: flex;
+      margin: 1rem 0;
+      @media only screen and (min-width: $bp-1000) {
+        margin: 1.5rem 0;
+      }
+      & div {
+        width: 50%;
+      }
+    }
+    & button {
+      width: 100%;
+      @media only screen and (min-width: $bp-1000) {
+        margin: 1.5rem 0;
+      }
+    }
+  }
+  &-paypal {
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+    & img {
+      cursor: pointer;
+      margin-top: 1.5rem;
+      width: 20rem;
+    }
+  }
+  &-bitcoin {
+    color: #000 !important;
+
+    margin-top: 2rem;
+
+    border-radius: 3px;
+    font-size: 12px;
+    & p {
+      font-family: Helvetica !important;
+      line-height: 18px;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    & a {
+      font-family: Helvetica !important;
+      color: #6a8fc2 !important;
+      &:hover {
+        color: #676573 !important;
+      }
+    }
+
+    & main {
+      padding: 0 24px 24px;
+    }
+    & header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 24px;
+      min-height: 93px;
+
+      & div:nth-child(1) img {
+        display: inline-block;
+        margin: 5px 0;
+      }
+    }
+
+    &-1 {
+      text-align: center;
+      font-size: 14px;
+      margin: 12px 0;
+    }
+    &-address {
+      font-size: 1.2rem;
+      text-align: center;
+      margin: 12px 0;
+      font-weight: 700;
+    }
+    &-topline {
+      border-top: 1px solid #dedede !important;
+      padding-top: 12px;
+    }
+    &-item {
+      padding: 4px 0;
+      display: flex;
+      align-items: baseline;
+    }
+    &-label {
+      display: inline-block;
+      width: 45%;
+      padding-right: 24px;
+      box-sizing: border-box;
+      vertical-align: top;
+      font-size: 12px;
+      opacity: 0.5;
+      text-align: right;
+    }
+    &-value {
+      display: inline-block;
+      width: 48%;
+      box-sizing: border-box;
+    }
+    &-confirm {
+      display: inline-block;
+      background-color: #dc3545 !important;
+      width: 12px;
+      height: 12px;
+      font-size: 9px;
+      line-height: 12px;
+      text-align: center;
+      color: #fff !important;
+      border-radius: 50%;
+      margin-left: 3px;
+      background-color: #28a745 !important;
+    }
+  }
+  &-other {
+    display: flex;
+    & img {
+      cursor: pointer;
+      width: 7.5rem;
+      margin: 1rem;
+    }
+  }
+}

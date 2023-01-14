@@ -18,7 +18,7 @@ function LastLearned(props) {
   const cx = classNames.bind(classes);
 
   const content = (
-    <div className={classNames(cx("last-learned-container"))}>
+    <div className={classNames(cx("last-learned-content"))}>
       <ul>
         <li>
           <Link to="/user/learn/id">

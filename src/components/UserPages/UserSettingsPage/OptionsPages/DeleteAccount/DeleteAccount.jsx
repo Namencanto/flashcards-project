@@ -34,12 +34,10 @@ function DeleteAccount() {
           email: inputEmailRef.current.value,
           password: inputPasswordRef.current.value,
         });
-        console.log(res.data);
         if (res.status === 200) {
           navigate("/login");
         }
       } catch (e) {
-        console.log(e);
         setDeleteAccountErrorMessage(e.response.data);
       }
     } else {

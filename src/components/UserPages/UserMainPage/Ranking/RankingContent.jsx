@@ -2,8 +2,6 @@ import classes from "./Ranking.module.scss";
 import classNames from "classnames/bind";
 
 import { Link } from "react-router-dom";
-import ReactCountryFlag from "react-country-flag";
-import { languagesArray } from "../../../../languagesFlags/languagesArray";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 function RankingContent({
   rankingTitleFunction,
