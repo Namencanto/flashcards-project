@@ -1,34 +1,22 @@
 import { db } from "../config/db.js";
-import jwt from "jsonwebtoken";
-import jwt_decode from "jwt-decode";
 import { checkToken } from "./checkToken.js";
 
 export const getUserStats = (req, res) => {
-  checkToken(req, res, (userInfo) => {
+  checkToken(req, res, ({ id }) => {
     const qLearned =
-      "SELECT status FROM `techcards` WHERE user_uid = " +
-      userInfo.id +
-      " AND status = 0;";
-    const qJoinedDate =
-      " SELECT joined_date FROM `users` WHERE id = " + userInfo.id + ";";
-    const qCountFolders =
-      " SELECT COUNT(*) FROM `folders` WHERE user_uid = " + userInfo.id + ";";
-    const qCountLists =
-      " SELECT COUNT(*) FROM `lists` WHERE user_uid = " + userInfo.id + ";";
+      "SELECT status FROM `techcards` WHERE user_uid = ? AND status = 0;";
+    const qJoinedDate = " SELECT joined_date FROM `users` WHERE id = ?;";
+    const qCountFolders = " SELECT COUNT(*) FROM `folders` WHERE user_uid = ?;";
+    const qCountLists = " SELECT COUNT(*) FROM `lists` WHERE user_uid = ?;";
     const qCountTechcards =
-      " SELECT COUNT(*) FROM `techcards` WHERE user_uid = " + userInfo.id + ";";
+      " SELECT COUNT(*) FROM `techcards` WHERE user_uid = ?;";
     const qCountRanking =
-      "SELECT COUNT(*) as 'rank' FROM users_monthly_statistics WHERE month_score > (SELECT month_score FROM users_monthly_statistics WHERE user_uid = " +
-      userInfo.id +
-      ");";
+      "SELECT COUNT(*) as 'rank' FROM users_monthly_statistics WHERE month_score > (SELECT month_score FROM users_monthly_statistics WHERE user_uid = ?);";
     const qAllActivity =
-      "SELECT date, wrong_answers, right_answers, time_spent FROM `folders_statistics` WHERE user_uid = " +
-      userInfo.id +
-      ";";
+      "SELECT date, wrong_answers, right_answers, time_spent FROM `folders_statistics` WHERE user_uid = ?;";
+    const qGroupConcatMaxLen = "SET SESSION group_concat_max_len = 250000;";
     const qAllStatuses =
-      "SELECT GROUP_CONCAT(status SEPARATOR ',') as statuses FROM techcards WHERE user_uid = " +
-      userInfo.id +
-      ";";
+      "SELECT GROUP_CONCAT(status SEPARATOR ',') as statuses FROM techcards WHERE user_uid = ?;";
 
     const finalQ =
       qLearned +
@@ -38,10 +26,22 @@ export const getUserStats = (req, res) => {
       qCountTechcards +
       qCountRanking +
       qAllActivity +
+      qGroupConcatMaxLen +
       qAllStatuses;
 
-    db.query(finalQ, (err, data) => {
+    db.query(finalQ, [id, id, id, id, id, id, id, id], (err, data) => {
+      console.log(finalQ);
+      console.log("err");
+      console.log(err);
+      console.log(data);
       if (err) return res.status(500).send(err);
+      let statusesArr = [];
+      try {
+        statusesArr = JSON.parse(`[${data[8][0].statuses}]`);
+      } catch (err) {
+        console.error(err);
+      }
+
       return res.status(200).json([
         {
           learnedNumber: data[0].length,
@@ -54,12 +54,13 @@ export const getUserStats = (req, res) => {
         },
         {
           allActivity: data[6],
-          allStatuses: JSON.parse(`[${data[7][0].statuses}]`),
+          allStatuses: statusesArr,
         },
       ]);
     });
   });
 };
+
 export const getFolderOrListStats = (req, res) => {
   checkToken(req, res, (userInfo) => {
     const { id, folder, list } = req.query;
@@ -74,54 +75,30 @@ export const getFolderOrListStats = (req, res) => {
       type = "lists_statistics";
       whereSelect = "`list_uid`";
     }
+
     const q =
       "SELECT `date`, `wrong_answers`, `right_answers`, `time_spent` FROM " +
       type +
-      " WHERE `user_uid` = '" +
-      userInfo.id +
-      "' AND  " +
+      " WHERE `user_uid` = ? AND  " +
       whereSelect +
-      " = '" +
-      id +
-      "' ";
+      " = ?;";
 
-    db.query(q, (err, data) => {
+    db.query(q, [userInfo.id, id], (err, data) => {
       if (err) return res.status(500).send(err);
 
       return res.status(200).json(data);
     });
   });
 };
+
 export const getUserStrike = (req, res) => {
   checkToken(req, res, (userInfo) => {
-    const q =
-      "SELECT `date` FROM folders_statistics WHERE `user_uid` = '" +
-      userInfo.id +
-      "'";
+    const q = "SELECT `date` FROM folders_statistics WHERE `user_uid` = ?;";
 
-    db.query(q, (err, data) => {
+    db.query(q, [userInfo.id], (err, data) => {
       if (err) return res.status(500).send(err);
 
       return res.status(200).json(data);
-    });
-  });
-};
-
-export const addUserStats = (req, res) => {
-  checkToken(req, res, (userInfo) => {
-    const { id, folder, list, right, wrong } = req.body;
-
-    const changeStatusQuery =
-      "UPDATE `techcards` SET `status` = '" +
-      statusToChange +
-      "', `when_the_status_can_be_changed` = '" +
-      tomorrow +
-      "' WHERE (`id` = " +
-      userInfo.id +
-      ");";
-    db.query(changeStatusQuery, (err, data) => {
-      if (err) return res.status(500).json(err);
-      return res.json(data);
     });
   });
 };
@@ -148,10 +125,9 @@ export const addFolderOrListStats = (req, res) => {
       selectWithTodayDate +
       " AND `" +
       typeUid +
-      "` = " +
-      id +
-      ";";
-    db.query(checkIfDateExistQuery, (err, dateData) => {
+      "` = ?;";
+
+    db.query(checkIfDateExistQuery, [id], (err, dateData) => {
       if (err) return res.status(500).json(err);
       const dbTime = dateData[0]?.date
         .toISOString()
@@ -196,13 +172,12 @@ export const addFolderOrListStats = (req, res) => {
         whereToSet +
         ", " +
         updateType +
-        ", user_uid = '" +
-        userInfo.id +
-        "' " +
+        ", user_uid = ? " +
         whereToUpdate +
         "";
-
-      db.query(setQuery, (err, data) => {
+      console.log("setQuery");
+      console.log(setQuery);
+      db.query(setQuery, [userInfo.id], (err, data) => {
         if (err) return res.status(500).json(err);
         return res.json(data);
       });

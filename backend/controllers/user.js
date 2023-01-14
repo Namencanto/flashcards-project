@@ -72,7 +72,7 @@ export const getRanking = (req, res) => {
     const month = today.toISOString().split("T")[0].slice(0, -3);
     const qFirst =
       "SELECT `month_score`, `user_uid` FROM `users_monthly_statistics` WHERE month = ? ORDER BY month_score DESC LIMIT 10;";
-
+    console.log(month);
     db.query(qFirst, [month], (err, dataFirst) => {
       if (err) return res.status(500).json(err);
       let qSecond = "";
@@ -82,7 +82,11 @@ export const getRanking = (req, res) => {
           data.user_uid +
           ";";
       }
-
+      console.log(qSecond.length === 0);
+      console.log(qSecond);
+      if (qSecond.length === 0) {
+        return res.status(200).json(null);
+      }
       db.query(qSecond, (err, dataSecond) => {
         if (err) return res.status(500).json(err);
 
@@ -288,9 +292,46 @@ export const postLearningDifficult = (req, res) => {
     const q = "UPDATE `users` SET `learning_difficult` = ? WHERE `id` = ?";
 
     db.query(q, [req.body.learningDifficult, userInfo.id], (err, data) => {
-      if (err) return res.status(500).send("Something went wrong...");
+      if (err) return res.status(500).json("Something went wrong...");
 
       return res.status(200).json(data);
     });
   });
 };
+
+// * Premium access logic
+// export const postPremiumAccess = (req, res) => {
+//   checkToken(req, res, async (userInfo) => {
+//     let date = new Date();
+//     let premium = 0;
+//     const premiumType = req.body.premiumType;
+
+//     if (premiumType === "Trial") {
+//       date.setDate(date.getDate() + 14);
+//       premium = 1;
+//     }
+//     if (premiumType === "Advanced") {
+//       date.setFullYear(date.getFullYear() + 1);
+//       premium = 1;
+//     }
+//     if (premiumType === "Complete") {
+//       date.setFullYear(date.getFullYear() + 1);
+//       premium = 2;
+//     }
+
+//     let premiumExpiry = date.toISOString();
+//     premiumExpiry =
+//       premiumExpiry.split("T")[0] +
+//       " " +
+//       premiumExpiry.split("T")[1].slice(0, 8);
+
+//     const q =
+//       "UPDATE `users` SET `premium` = ?, `premium_expiry` = ? WHERE `id` = ?";
+//     console.log(premium, premiumExpiry, userInfo.id);
+//     db.query(q, [premium, premiumExpiry, userInfo.id], (err, data) => {
+//       if (err) return res.status(500).json("Something went wrong...");
+
+//       return res.status(200).json("Transaction successful");
+//     });
+//   });
+// };

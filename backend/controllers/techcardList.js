@@ -3,20 +3,24 @@ import jwt from "jsonwebtoken";
 import sharp from "sharp";
 import { checkToken } from "./checkToken.js";
 
+const executeQuery = (res, query, data) => {
+  db.query(query, data, (err, result) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    return res.status(200).json(result);
+  });
+};
+
 export const getTechcardList = (req, res) => {
   checkToken(req, res, (userInfo) => {
     const qList =
-      "SELECT * FROM lists WHERE id = '" +
-      req.query.id +
-      "'; SELECT first_sides_flag, second_sides_flag FROM folders WHERE folder = '" +
-      req.query.folder +
-      "'; ";
-    db.query(qList, (err, listsData) => {
+      "SELECT * FROM lists WHERE id = ?; SELECT first_sides_flag, second_sides_flag FROM folders WHERE folder = ?; ";
+    db.query(qList, [req.query.id, req.query.folder], (err, listsData) => {
       if (err) return res.status(500).send(err);
 
-      const qTechcards =
-        "SELECT * FROM techcards WHERE list_uid = '" + listsData[0][0].id + "'";
-      db.query(qTechcards, (err, techcardsData) => {
+      const qTechcards = "SELECT * FROM techcards WHERE list_uid = ?";
+      db.query(qTechcards, [listsData[0][0].id], (err, techcardsData) => {
         if (err) return res.status(500).send(err);
 
         return res.status(200).json({
@@ -69,6 +73,7 @@ export const uploadImage = (req, res) => {
         techcardsToUpdate,
         techcardsToDelete,
       } = req.body;
+
       const deleteImageFunction = async (path) => {
         try {
           await unlink(path);
@@ -84,34 +89,28 @@ export const uploadImage = (req, res) => {
         const { firstSide, secondSide, image } = techcardsToAdd;
 
         if (image) {
-          const imageToDB = image;
           q =
-            "INSERT INTO `techcards` (`first_side`, `second_side`, `image`, `list_uid`, `folder_uid`, `user_uid`) VALUES ('" +
-            firstSide +
-            "', '" +
-            secondSide +
-            "', '" +
-            imageToDB +
-            "', '" +
-            id +
-            "', '" +
-            folderID +
-            "', '" +
-            userInfo.id +
-            "');";
+            "INSERT INTO `techcards` SET `first_side` = ?, `second_side` = ?, `image` = ?, `list_uid` = ?, `folder_uid` = ?, `user_uid` = ?;";
+
+          return executeQuery(res, q, [
+            firstSide,
+            secondSide,
+            image,
+            id,
+            folderID,
+            userInfo.id,
+          ]);
         } else {
           q =
-            "INSERT INTO `techcards` (`first_side`, `second_side`, `list_uid`, `folder_uid`, `user_uid`) VALUES ('" +
-            firstSide +
-            "', '" +
-            secondSide +
-            "', '" +
-            id +
-            "', '" +
-            folderID +
-            "', '" +
-            userInfo.id +
-            "');";
+            "INSERT INTO `techcards` SET `first_side` = ?, `second_side` = ?, `list_uid` = ?, `folder_uid` = ?, `user_uid` = ?;";
+
+          return executeQuery(res, q, [
+            firstSide,
+            secondSide,
+            id,
+            folderID,
+            userInfo.id,
+          ]);
         }
       }
 
@@ -140,24 +139,19 @@ export const uploadImage = (req, res) => {
             imageToDB = `${process.env.REACT_APP_URL}/${image}`;
 
           q =
-            "UPDATE `techcards` SET `first_side` = '" +
-            firstSide +
-            "', `second_side` = '" +
-            secondSide +
-            "', `image` = '" +
-            imageToDB +
-            "' WHERE (`id` = '" +
-            techcardID +
-            "');";
+            "UPDATE `techcards` SET `first_side` = ?, `second_side` = ?, `image` = ? WHERE (`id` = ?);";
+
+          return executeQuery(res, q, [
+            firstSide,
+            secondSide,
+            imageToDB,
+            techcardID,
+          ]);
         } else if (!deleteImage) {
           q =
-            "UPDATE `techcards` SET `first_side` = '" +
-            firstSide +
-            "', `second_side` = '" +
-            secondSide +
-            "' WHERE (`id` = '" +
-            techcardID +
-            "');";
+            "UPDATE `techcards` SET `first_side` = ?, `second_side` = ? WHERE (`id` = ?);";
+
+          return executeQuery(res, q, [firstSide, secondSide, techcardID]);
         } else {
           if (oldImage) {
             deleteImageFunction(
@@ -167,20 +161,15 @@ export const uploadImage = (req, res) => {
               )}`
             );
           }
-          q =
-            "UPDATE `techcards` SET `image` = NULL WHERE (`id` = '" +
-            techcardID +
-            "');";
+          q = "UPDATE `techcards` SET `image` = NULL WHERE (`id` = ?);";
+
+          return executeQuery(res, q, [techcardID]);
         }
       }
 
       // * DELETE CASE
       if (techcardsToDelete) {
         const { techcardsIDS, images } = techcardsToDelete;
-
-        for (const techcardID of techcardsIDS) {
-          q += "DELETE FROM `techcards` WHERE (`id` = '" + techcardID + "');";
-        }
 
         for (const image of images) {
           if (image) {
@@ -192,12 +181,15 @@ export const uploadImage = (req, res) => {
             );
           }
         }
-      }
-      db.query(q, (err, data) => {
-        if (err) return res.status(500).send(err);
 
-        return res.status(200).json(data);
-      });
+        let techcardsIDArr = [];
+        for (const techcardID of techcardsIDS) {
+          q += "DELETE FROM `techcards` WHERE `id` = ?;";
+          techcardsIDArr.push(techcardID);
+        }
+
+        return executeQuery(res, q, techcardsIDArr);
+      }
     }
   });
 };
@@ -251,14 +243,7 @@ export const uploadListImage = (req, res) => {
         }
 
         if (image) {
-          const imageToDB = image;
-
-          q =
-            "UPDATE `lists` SET `image` = '" +
-            imageToDB +
-            "' WHERE (`id` = '" +
-            id +
-            "');";
+          q = "UPDATE `lists` SET `image` = ? WHERE (`id` = ?);";
         } else {
           if (oldImage) {
             deleteImageFunction(
@@ -268,13 +253,13 @@ export const uploadListImage = (req, res) => {
               )}`
             );
           }
-          q = "UPDATE `lists` SET `image` = NULL WHERE (`id` = '" + id + "');";
+          q = "UPDATE `lists` SET `image` = NULL WHERE (`id` = ?);";
         }
       }
 
       // * DELETE CASE
       if (deleteType) {
-        q = "UPDATE `lists` SET `image` = NULL WHERE (`id` = '" + id + "');";
+        q = "UPDATE `lists` SET `image` = NULL WHERE (`id` = ?);";
 
         deleteImageFunction(
           `${UPLOAD_PATH}/${oldImage.replace(
@@ -284,7 +269,9 @@ export const uploadListImage = (req, res) => {
         );
       }
 
-      db.query(q, (err, data) => {
+      const dataArr = image ? [image, id] : [id];
+
+      db.query(q, dataArr, (err, data) => {
         if (err) return res.status(500).send(err);
 
         return res.status(200).json(data);

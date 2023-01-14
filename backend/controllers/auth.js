@@ -18,14 +18,14 @@ export const register = (req, res) => {
   ) {
     return res.status(422).json("Invalid credentials");
   }
-  const qEmail = "SELECT * FROM users WHERE email = '" + email + "';";
-  const qNick = "SELECT * FROM users WHERE nick = '" + nick + "'";
+  const qEmail = "SELECT * FROM users WHERE email = ?;";
+  const qNick = "SELECT * FROM users WHERE nick = ?";
 
-  db.query(qEmail, (err, data) => {
+  db.query(qEmail, [email], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length) return res.status(409).json("Email already exists!");
 
-    db.query(qNick, (err, data) => {
+    db.query(qNick, [nick], (err, data) => {
       if (err) return res.status(500).json(err);
       if (data.length) return res.status(409).json("Nick already exists!");
 

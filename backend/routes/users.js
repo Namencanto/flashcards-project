@@ -54,7 +54,7 @@ router.get("/learning-settings", getLearningDifficult);
 
 router.post("/learning-settings", postLearningDifficult);
 
-router.get("/getRanking", getRanking);
+router.get("/ranking", getRanking);
 
 router.get("/getInformation", getInformation);
 router.post("/addInformation", addInformation);
