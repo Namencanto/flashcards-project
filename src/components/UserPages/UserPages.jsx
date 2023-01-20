@@ -12,9 +12,11 @@ import Ranking from "./UserMainPage/Ranking/Ranking";
 import UserTechcards from "./UserTechcards/UserTechcards";
 import UserTechcardsList from "./UserTechcardsList/UserTechcardsList";
 import Courses from "./Courses/Courses";
+
+import { RepetitionsContextProvider } from "../../context/RepetitionsContext";
 function UserPages() {
   return (
-    <>
+    <RepetitionsContextProvider>
       <UserHeader />
 
       <Routes>
@@ -35,7 +37,7 @@ function UserPages() {
         {/* <Route path="learning" element={<LearningPage />}></Route> */}
         <Route path="settings/*" element={<UserSettingsPage />}></Route>
       </Routes>
-    </>
+    </RepetitionsContextProvider>
   );
 }
 

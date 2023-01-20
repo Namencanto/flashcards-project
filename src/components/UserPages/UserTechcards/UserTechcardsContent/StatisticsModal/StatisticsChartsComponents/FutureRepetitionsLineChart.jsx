@@ -1,54 +1,116 @@
 import { Line } from "react-chartjs-2";
-function FutureRepetitionsLineCharts({ data, options }) {
-  const repetitionPlanData = {
-    labels:
-      data.allDates.length === 1
-        ? data.allDates
-            .concat(data.allDates[0])
-            .map((date) => date.slice(0, 10))
-        : data.allDates.map((date) => date.slice(0, 10)),
 
-    datasets: [
-      {
-        label: "Current repetitions",
-        data:
-          data.allRight.length === 1
-            ? data.allRight.concat(data.allRight[0]).map((wrong) => wrong)
-            : data.allRight.map((wrong) => wrong),
+import { useContext } from "react";
+import { RepetitionsContext } from "../../../../../../context/RepetitionsContext";
+function FutureRepetitionsLineCharts({ statisticsIds, options }) {
+  const { allRepetitions } = useContext(RepetitionsContext);
+  if (allRepetitions) {
+    const dates = allRepetitions.dates;
+    const ids = allRepetitions.ids;
 
-        backgroundColor: "rgba(95,77,238,0.9)",
-        borderColor: "rgba(95,77,238,1)",
-        pointBackgroundColor: "#2810e8",
-        pointBorderColor: "#2810e8",
-        pointRadius: 1.33,
-      },
-      {
-        label: "Future repetitions",
-        data:
-          data.allWrong.length === 1
-            ? data.allWrong.concat(data.allRight[0]).map((wrong) => wrong)
-            : data.allWrong.map((wrong) => wrong),
-        backgroundColor: "rgba(95,77,238,0.5)",
-        borderColor: "rgba(95,77,238,0.6)",
-        pointBackgroundColor: "#2810e8",
-        pointBorderColor: "#2810e8",
-        pointRadius: 1.33,
-      },
-    ],
-  };
+    let repetitionsData = dates.map((date, i) => ({ date, id: ids[i] }));
+    if (statisticsIds !== "all") {
+      const filteredRepetitionData = repetitionsData.filter(
+        (item) => statisticsIds.indexOf(item.id) !== -1
+      );
+      if (filteredRepetitionData.length !== 0) {
+        repetitionsData = filteredRepetitionData;
+      }
+    }
+    console.log(repetitionsData);
 
-  return data.allDates.length !== 0 ? (
-    <>
-      <h2>Your repetitions plan:</h2>
-      <Line
-        drawOnChartArea={true}
-        data={repetitionPlanData}
-        options={options}
-      />
-    </>
-  ) : (
-    ""
-  );
+    repetitionsData.sort((a, b) => {
+      let dateA = new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      }).format(new Date(a.date));
+      let dateB = new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      }).format(new Date(b.date));
+      return dateA.localeCompare(dateB);
+    });
+
+    let dateCount = new Map();
+
+    for (let i = 0; i < repetitionsData.length; i++) {
+      const dateString = new Intl.DateTimeFormat(navigator.language).format(
+        new Date(repetitionsData[i].date)
+      );
+      const nowString = new Intl.DateTimeFormat(navigator.language).format(
+        new Date()
+      );
+
+      const date = new Date(repetitionsData[i].date);
+      const now = new Date();
+
+      if (dateCount.has(dateString)) {
+        dateCount.set(dateString, dateCount.get(dateString) + 1);
+      } else if (dateCount.has(nowString) && date <= now) {
+        dateCount.set(nowString, dateCount.get(nowString) + 1);
+      } else {
+        if (date <= now) {
+          dateCount.set(nowString, 1);
+        } else {
+          dateCount.set(dateString, 1);
+        }
+      }
+    }
+
+    const calculatedRepetitions = [];
+    for (let [date, count] of dateCount.entries()) {
+      calculatedRepetitions.push({
+        date: date.replaceAll(".", "-"),
+        repetitions: count,
+      });
+    }
+
+    const repetitionPlanData = {
+      labels:
+        calculatedRepetitions.length === 1
+          ? calculatedRepetitions
+              .concat(calculatedRepetitions[0])
+              .map((date, i) => "Today")
+          : calculatedRepetitions.map(({ date }, i) =>
+              i === 0 ? "Today" : date
+            ),
+
+      datasets: [
+        {
+          label: "repetitions",
+          data:
+            calculatedRepetitions.length === 1
+              ? calculatedRepetitions
+                  .concat(calculatedRepetitions[0])
+                  .map(({ repetitions }) => repetitions)
+              : calculatedRepetitions.map(({ repetitions }) => repetitions),
+
+          backgroundColor: "rgba(255,83,73,0.75)",
+          borderColor: "rgba(255,83,73,1)",
+          pointBackgroundColor: "#cf3e36",
+          pointBorderColor: "#cf3e36",
+          pointRadius: 1.33,
+        },
+      ],
+    };
+
+    return ids.length !== 0 ? (
+      <>
+        <h2>Your repetitions plan:</h2>
+        <Line
+          drawOnChartArea={true}
+          data={repetitionPlanData}
+          options={options}
+        />
+      </>
+    ) : (
+      ""
+    );
+  }
 }
 
 export default FutureRepetitionsLineCharts;

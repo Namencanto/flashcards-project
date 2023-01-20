@@ -11,12 +11,19 @@ import {
   faArrowLeft,
   faPencil,
   faTrashCan,
+  faRepeat,
+  faLeaf,
+  faHammer,
+  faPlus,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import ReactCountryFlag from "react-country-flag";
 import { useRef } from "react";
 import { handleFileSelect } from "./UserTechcardsListContentHelpers";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
+
+import StartButtons from "./StartButtons";
 
 function UserTechcardsListContent({
   fetchTechcards,
@@ -32,6 +39,7 @@ function UserTechcardsListContent({
   firstSidesFlag,
   secondSidesFlag,
   isFetched,
+  statuses,
 }) {
   const defaultImage =
     "https://miro.medium.com/max/250/1*DSNfSDcOe33E2Aup1Sww2w.jpeg";
@@ -642,20 +650,15 @@ function UserTechcardsListContent({
                   )}
                 </>
               ) : firstSides !== null && firstSides?.length !== 0 ? (
-                <button
-                  onClick={() => {
-                    displayLearningModal({
-                      techcardsIDS,
-                      firstSides,
-                      secondSides,
-                      techcardsImages,
-                      listTitle: list,
-                    });
-                  }}
-                  className="btn-solid-small"
-                >
-                  Start
-                </button>
+                <StartButtons
+                  techcardsIDS={techcardsIDS}
+                  firstSides={firstSides}
+                  secondSides={secondSides}
+                  techcardsImages={techcardsImages}
+                  list={list}
+                  displayLearningModal={displayLearningModal}
+                  statuses={statuses}
+                />
               ) : (
                 ""
               )

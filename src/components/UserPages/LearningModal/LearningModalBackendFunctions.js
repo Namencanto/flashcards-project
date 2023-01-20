@@ -1,6 +1,10 @@
 import axios from "axios";
 
-export const sendKnowedTechcardToChange = async (id, round) => {
+export const sendKnowedTechcardToChange = async (
+  id,
+  round,
+  fetchRepetitions
+) => {
   try {
     const res = await axios.post("/learnings/changeTechcardStatus", {
       id,
@@ -8,11 +12,17 @@ export const sendKnowedTechcardToChange = async (id, round) => {
       type: "KNOWED",
     });
     console.log(res);
+    console.log(res);
+    fetchRepetitions();
   } catch (err) {
     console.log(err);
   }
 };
-export const sendUnknowedTechcardToChange = async (id, round) => {
+export const sendUnknowedTechcardToChange = async (
+  id,
+  round,
+  fetchRepetitions
+) => {
   console.log(id);
   try {
     const res = await axios.post("/learnings/changeTechcardStatus", {
@@ -21,6 +31,7 @@ export const sendUnknowedTechcardToChange = async (id, round) => {
       type: "UNKNOWED",
     });
     console.log(res);
+    fetchRepetitions();
   } catch (err) {
     console.log(err);
   }

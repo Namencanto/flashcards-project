@@ -325,4 +325,79 @@
       }
     }
   }
+  &-btns {
+    margin: 2.5rem 0 1rem 0;
+    display: flex;
+    justify-content: space-around;
+    width: 65rem;
+  }
+  &-btn {
+    &-start {
+      @mixin btn-start {
+        cursor: pointer;
+        & span {
+          margin-top: 0.2rem;
+          color: white;
+          // position: absolute;
+          z-index: 10;
+          margin-left: 1rem;
+
+          & svg {
+            padding-right: 0.5rem;
+            width: 1.3rem;
+          }
+        }
+        & button {
+          text-align: start;
+          // padding-left: 5.25rem;
+          cursor: pointer;
+          font-size: 1.4rem;
+          // position: relative;
+
+          width: 16rem;
+          height: 3rem;
+          border: none;
+          border-radius: 1rem;
+          color: white;
+          &:disabled {
+            filter: brightness(80%);
+          }
+        }
+      }
+      &-repetitions {
+        @include btn-start;
+        & button {
+          background-color: orangered;
+        }
+      }
+      &-new {
+        @include btn-start;
+        & button {
+          background-color: lightblue;
+        }
+      }
+      &-to-learn {
+        @include btn-start;
+        & button {
+          background-color: orange;
+        }
+      }
+      &-hard {
+        @include btn-start;
+        & button {
+          background-color: crimson;
+        }
+      }
+    }
+    &-quantity {
+      text-align: center;
+      & svg {
+        color: #555;
+        cursor: pointer;
+        border: none;
+        background-color: transparent;
+        width: 5rem;
+      }
+    }
+  }
 }

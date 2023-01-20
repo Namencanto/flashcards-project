@@ -11,6 +11,8 @@ export const getUserStats = (req, res) => {
     const qCountTechcards =
       " SELECT COUNT(*) FROM `techcards` WHERE user_uid = ?;";
     const qCountRanking =
+      "SELECT COUNT(*) + 2 as 'rank' FROM users_monthly_statistics WHERE month = DATE_FORMAT(CURDATE(), '%Y-%m') AND month_score > (SELECT month_score FROM users_monthly_statistics WHERE user_uid = ? AND month = DATE_FORMAT(CURDATE(), '%Y-%m'));";
+    const qCountRanking2 =
       "SELECT COUNT(*) as 'rank' FROM users_monthly_statistics WHERE month_score > (SELECT month_score FROM users_monthly_statistics WHERE user_uid = ?);";
     const qAllActivity =
       "SELECT date, wrong_answers, right_answers, time_spent FROM `folders_statistics` WHERE user_uid = ?;";
@@ -30,10 +32,6 @@ export const getUserStats = (req, res) => {
       qAllStatuses;
 
     db.query(finalQ, [id, id, id, id, id, id, id, id], (err, data) => {
-      console.log(finalQ);
-      console.log("err");
-      console.log(err);
-      console.log(data);
       if (err) return res.status(500).send(err);
       let statusesArr = [];
       try {
@@ -47,7 +45,7 @@ export const getUserStats = (req, res) => {
           learnedNumber: data[0].length,
           joinedDate: data[1][0].joined_date,
           timeSpent: 1000,
-          rankingPlace: data[5][0]["rank"] + 1,
+          rankingPlace: data[5][0]["rank"],
           createdFolders: data[2][0]["COUNT(*)"],
           createdLists: data[3][0]["COUNT(*)"],
           createdTechcards: data[4][0]["COUNT(*)"],

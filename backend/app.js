@@ -12,6 +12,7 @@ import learningRoutes from "./routes/learnings.js";
 import statisticsRoutes from "./routes/statistics.js";
 import coursesRoutes from "./routes/courses.js";
 import premiumRoutes from "./routes/premium.js";
+import repetitionRoutes from "./routes/repetitions.js";
 
 app.use(cors());
 app.use(express.json());
@@ -25,5 +26,6 @@ app.use("/api/learnings", learningRoutes);
 app.use("/api/statistics", statisticsRoutes);
 app.use("/api/courses", coursesRoutes);
 app.use("/api/premium", premiumRoutes);
+app.use("/api/repetitions", repetitionRoutes);
 
 export default app;

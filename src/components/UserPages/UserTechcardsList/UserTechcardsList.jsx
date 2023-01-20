@@ -13,6 +13,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useParams } from "react-router-dom";
+
 function UserTechcards() {
   const { minWidth1000 } = MediaQueries();
   const URL = process.env.REACT_APP_URL;
@@ -26,6 +27,7 @@ function UserTechcards() {
   const [techcardsImages, setTechcardsImages] = useState();
   const [firstSidesFlag, setFirstSidesFlag] = useState("");
   const [secondSidesFlag, setSecondSidesFlag] = useState("");
+  const [statuses, setStatuses] = useState([]);
 
   const [isFetched, setIsFetched] = useState(false);
 
@@ -51,12 +53,15 @@ function UserTechcards() {
       let secondSidesArr = [];
       let idsArr = [];
       let imagesArr = [];
+      let statusesArr = [];
 
-      for (const { id, first_side, second_side, image } of res.data
+      for (const { id, first_side, second_side, status, image } of res.data
         .techcardsData) {
         firstSidesArr.push(first_side);
         secondSidesArr.push(second_side);
         idsArr.push(id);
+        statusesArr.push(status);
+
         if (image) {
           imagesArr.push(
             image?.startsWith("techcard-image-") ? `${URL}/${image}` : image
@@ -64,6 +69,7 @@ function UserTechcards() {
         } else imagesArr.push(null);
       }
 
+      setStatuses(statusesArr);
       setTechcardsIDS(idsArr);
       setFirstSides(firstSidesArr);
       setSecondSides(secondSidesArr);
@@ -90,8 +96,8 @@ function UserTechcards() {
       return res;
     };
     try {
-      const resList = statsAddPost(id, false, true);
-      const resFolder = statsAddPost(folderID, true, false);
+      const resList = await statsAddPost(id, false, true);
+      const resFolder = await statsAddPost(folderID, true, false);
 
       console.log(resList);
       console.log(resFolder);
@@ -130,6 +136,7 @@ function UserTechcards() {
     firstSidesFlag,
     secondSidesFlag,
     isFetched,
+    statuses,
   };
 
   return (

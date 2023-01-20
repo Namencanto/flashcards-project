@@ -3,12 +3,10 @@ import "../../../assets/Global.scss";
 import classes from "./LearningModal.module.scss";
 import classNames from "classnames/bind";
 
-import { useRef, useEffect } from "react";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import LearningModalStatusBar from "./StatusBar/LearningModalStatusBar";
 import { faVolumeUp, faX, faGear } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useContext, useRef, useEffect } from "react";
 import LearningModalTimer from "./LearningModalTimer";
 
 import {
@@ -23,10 +21,13 @@ import WritingTypes from "./LearningTypes/WritingTypes";
 import IKnowIDontKnow from "./LearningTypes/IKnowIDontKnow";
 import Quiz from "./LearningTypes/Quiz/Quiz";
 
+import { RepetitionsContext } from "../../../context/RepetitionsContext";
 import { useOptions } from "./LearningModalSettings/useOptions";
 function LearningModal(props) {
   const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
+
+  const { fetchRepetitions } = useContext(RepetitionsContext);
 
   // * MAIN STATES
   const [learningOptions, setLearningOptions] = useState({
@@ -125,19 +126,20 @@ function LearningModal(props) {
 
       const lastKnowedId = knownTechcards.ids[knownTechcards.ids.length - 1];
       if (lastKnowedId) {
-        sendKnowedTechcardToChange(lastKnowedId, round);
+        sendKnowedTechcardToChange(lastKnowedId, round, fetchRepetitions);
       }
       for (const sendedTechcard of allSendedTechcards) {
         if (sendedTechcard === lastUnknowedId) isSended = true;
       }
       if (lastUnknowedId && !isSended) {
         setAllSendedTechcards([...allSendedTechcards, lastUnknowedId]);
-        sendUnknowedTechcardToChange(lastUnknowedId, round);
+        sendUnknowedTechcardToChange(lastUnknowedId, round, fetchRepetitions);
       }
     }
   }, [unknownTechcards, knownTechcards]);
   useEffect(() => {
-    // * SET LIST IS FINISHED IF ALL TECHCARDS IS KNOWED
+    // * SET LIST IS FINISHED IF ALL TECHCARDS IS KNOWN
+
     if (
       listIsFinished !== true &&
       learningTechcardsStatus.unknown === 0 &&

@@ -34,7 +34,7 @@ function UserTechcardsContent({
   isFetched,
 }) {
   const cx = classNames.bind(classes);
-
+  console.log(techcardsAllSides);
   const addFormRadio = useRef();
   const changeFormRadio = useRef();
   const deleteFormRadio = useRef();

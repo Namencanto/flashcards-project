@@ -1,5 +1,13 @@
 export const getOptionsLine = (minWidth1000) => {
   return {
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 5,
+        },
+      },
+    },
     aspectRatio: minWidth1000 ? 0.8 : 1.5,
     elements: {
       line: {

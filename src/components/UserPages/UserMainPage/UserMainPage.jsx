@@ -23,10 +23,12 @@ import Ranking from "./Ranking/Ranking";
 import axios from "axios";
 import { useEffect } from "react";
 import { AuthContext } from "../../../context/AuthContext";
+
 function UserMainPage() {
   const { minWidth1000 } = MediaQueries();
 
   const { currentUser } = useContext(AuthContext);
+
   const cx = classNames.bind(classes);
 
   const [boxIsOpen, setBoxIsOpen] = useState(false);
@@ -170,8 +172,8 @@ function UserMainPage() {
         </main>
       </div>
 
-      <div className={cx("user-main-frames")}>
-        <div className={cx("user-main-frame")}>
+      {/* <div className={cx("user-main-frames")}> */}
+      {/* <div className={cx("user-main-frame")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="none"
@@ -182,8 +184,8 @@ function UserMainPage() {
               transform="translate(0 -0.188)"
             ></path>
           </svg>
-        </div>
-        {/* <div className={cx("user-main-frame")}>
+        </div> */}
+      {/* <div className={cx("user-main-frame")}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             preserveAspectRatio="none"
@@ -207,7 +209,7 @@ function UserMainPage() {
             ></path>
           </svg>
         </div> */}
-      </div>
+      {/* </div> */}
     </>
   );
 }

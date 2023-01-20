@@ -18,6 +18,12 @@ function LastTenDaysTimeSpentLineChart({ data, options }) {
     allTimes: [],
   });
 
+  const oldestDate = new Date(
+    Math.min(...data.allDates.map((d) => new Date(d)))
+  )
+    .toISOString()
+    .slice(0, 10);
+
   const changeFromWhenDisplayStats = () => {
     const currentDate = new Date(fromWhenRef.current.value);
     const differenceInTime = today.getTime() - currentDate.getTime();
@@ -86,8 +92,8 @@ function LastTenDaysTimeSpentLineChart({ data, options }) {
           ref={fromWhenRef}
           onChange={changeFromWhenDisplayStats}
           type="date"
-          min={convertedData.allDates[0].slice(0, 10)}
-          max={convertedData.allDates[convertedData.allDates.length - 1].slice(
+          min={oldestDate}
+          max={convertedData.allDates[convertedData.allDates.length - 1]?.slice(
             0,
             10
           )}

@@ -19,6 +19,7 @@ function StatisticsModal({
   id,
   created_date,
   title,
+  statisticsIds,
 }) {
   const statisticsRef = useRef();
   const contentStatisticsRef = useRef();
@@ -59,6 +60,7 @@ function StatisticsModal({
         allRight: rightArr,
         allTimes: timeArr,
       };
+
       if (renderFolder) setStatisticFoldersData(statisticsObject);
       if (renderList) setStatisticListsData(statisticsObject);
     } catch (err) {
@@ -90,10 +92,15 @@ function StatisticsModal({
     }, 200);
   };
 
+  //
   const activityDate =
     type === "FOLDER"
-      ? new Date(statisticsFolderData.allDates?.[0])
-      : new Date(statisticsListData.allDates?.[0]);
+      ? statisticsFolderData.allDates?.[0]
+        ? new Date(statisticsFolderData.allDates?.[0])
+        : false
+      : statisticsListData.allDates?.[0]
+      ? new Date(statisticsListData.allDates?.[0])
+      : false;
 
   return (
     <>
@@ -124,7 +131,7 @@ function StatisticsModal({
                   <p>
                     First activity:{" "}
                     {activityDate
-                      ? activityDate?.toLocaleString(navigator.language)
+                      ? activityDate.toLocaleString(navigator.language)
                       : "Not started yet"}
                   </p>
                 </div>
@@ -136,6 +143,7 @@ function StatisticsModal({
                         : statisticsListData
                     }
                     statuses={statuses}
+                    statisticsIds={statisticsIds}
                   />
                 ) : (
                   ""

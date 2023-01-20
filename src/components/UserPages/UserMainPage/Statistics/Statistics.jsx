@@ -26,6 +26,7 @@ import {
   getOptionsStatusesPie,
 } from "./StatisticsOptions";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
+import FutureRepetitionsLineCharts from "../../UserTechcards/UserTechcardsContent/StatisticsModal/StatisticsChartsComponents/FutureRepetitionsLineChart";
 
 function Statistics() {
   const { minWidth1000 } = MediaQueries();
@@ -34,7 +35,7 @@ function Statistics() {
   const optionsAnswersPie = getOptionsAnswersPie(minWidth1000);
   const optionsStatusesPie = getOptionsStatusesPie(minWidth1000);
   const [isFetched, setIsFetched] = useState(false);
-
+  // todoo wiesz co
   const [mainStats, setMainStats] = useState({
     joinedDate: "",
     learnedNumber: 0,
@@ -132,6 +133,10 @@ function Statistics() {
                       data={allActivity}
                       options={optionsLine}
                     />
+                    <FutureRepetitionsLineCharts
+                      statisticsIds={"all"}
+                      options={optionsLine}
+                    />
                     <LastTenDaysTimeSpentLineChart
                       data={allActivity}
                       options={optionsLine}
@@ -164,6 +169,7 @@ function Statistics() {
                   data={allActivity}
                   options={optionsLine}
                 />
+                <FutureRepetitionsLineCharts ids={"all"} />
                 <LastTenDaysTimeSpentLineChart
                   data={allActivity}
                   options={optionsLine}

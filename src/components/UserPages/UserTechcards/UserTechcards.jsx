@@ -13,6 +13,7 @@ import { faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { countStatus } from "../../../HelperComponents/countStatus";
 
+import { countFutureRepetitions } from "./CountFutureRepetitions";
 function UserTechcards() {
   const { minWidth1000 } = MediaQueries();
 
@@ -37,9 +38,12 @@ function UserTechcards() {
 
   const [statisticsID, setStatisticsID] = useState();
   const [statisticsStatuses, setStatisticsStatuses] = useState([]);
+  const [statisticsIds, setStatisticsIds] = useState([]);
   const [statisticsCreatedDate, setStatisticsCreatedDate] = useState("");
   const [statisticsTitle, setStatisticsTitle] = useState("");
   const [folderOrListStats, setFolderOrListStats] = useState("");
+
+  const [repetitions, setRepetitions] = useState({});
 
   const [isFetched, setIsFetched] = useState(false);
 
@@ -52,7 +56,28 @@ function UserTechcards() {
       setTechcardsLists(res.data[1]);
       setTechcardsAllSides(res.data[2]);
 
-      console.log(res.data[0]);
+      const resRepetitionData = await axios.get("/repetitions/");
+      const repetitionsData = resRepetitionData.data[0].repetitionsData;
+
+      const statuses = repetitionsData.map((object) => object.status);
+
+      const whenTheDataCanBeChangedArr = repetitionsData.map(
+        (object) => object.when_the_status_can_be_changed
+      );
+      const nextRepetitionDate = repetitionsData.map(
+        (object) => object.next_repetition_date
+      );
+      const ids = repetitionsData.map((object) => object.id);
+
+      setRepetitions(
+        countFutureRepetitions({
+          ids,
+          statuses,
+          whenTheDataCanBeChangedArr,
+          nextRepetitionDate,
+          learningDifficult: resRepetitionData.data[0].learningDifficult,
+        })
+      );
     } catch (err) {
       console.log(err);
     }
@@ -84,15 +109,20 @@ function UserTechcards() {
 
   const setDataToStatistics = (id, type) => {
     let statusesArr = [];
+    let idArr = [];
     for (const allSides of techcardsAllSides) {
       for (const side of allSides) {
-        console.log(side);
-        if (side.list_uid === id && type === "LIST")
+        if (side.list_uid === id && type === "LIST") {
           statusesArr.push(side.status);
-        if (side.folder_uid === id && type === "FOLDER")
+          idArr.push(side.id);
+        }
+        if (side.folder_uid === id && type === "FOLDER") {
           statusesArr.push(side.status);
+          idArr.push(side.id);
+        }
       }
     }
+    setStatisticsIds(idArr);
     if (statusesArr.length > 0) {
       setStatisticsStatuses(countStatus(statusesArr));
     } else setStatisticsStatuses(countStatus([]));
@@ -103,7 +133,7 @@ function UserTechcards() {
 
   const displayFolderStatisticsModalHandler = (folderID) => {
     setDataToStatistics(folderID, "FOLDER");
-    console.log(techcardsFolders);
+
     for (const techcardsFolder of techcardsFolders) {
       if (techcardsFolder.id === folderID) {
         setStatisticsTitle(techcardsFolder.folder);
@@ -148,6 +178,7 @@ function UserTechcards() {
     displayFolderStatisticsModal: displayFolderStatisticsModalHandler,
     displayListStatisticsModal: displayListStatisticsModalHandler,
     isFetched,
+    repetitions,
   };
   return (
     <div className={classNames(cx("techcards"))}>
@@ -169,6 +200,7 @@ function UserTechcards() {
                 statisticsModalIsVisible={statisticsModalIsVisible}
                 created_date={statisticsCreatedDate}
                 title={statisticsTitle}
+                statisticsIds={statisticsIds}
               />,
               document.getElementById("overlay-root")
             )
