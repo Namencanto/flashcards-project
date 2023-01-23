@@ -12,13 +12,14 @@ import {
   faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
-function Footer() {
+function Footer({ backgroundColor }) {
   const cx = classNames.bind(classes);
 
   return (
     <>
       <div className={cx("footer-frame")}>
         <svg
+          style={backgroundColor && { backgroundColor }}
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
           viewBox="0 0 1920 79"
@@ -34,7 +35,7 @@ function Footer() {
         <div className={classNames(cx("footer-container"))}>
           <div className={classNames(cx("footer-main"))}>
             <div className={classNames(cx("footer-main-box"))}>
-              <h4>About Tivo</h4>
+              <h4>About Techcards</h4>
               <p>
                 We're passionate about designing and developing one of the best
                 marketing apps in the market

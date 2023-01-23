@@ -55,8 +55,6 @@ const NavbarIsVisible = (props) => {
         <li className={classNames(cx("navbar-nav-item"))}>
           <NavLink
             onClick={() => {
-              // addEventListener for execute after components loaded
-
               window.scroll({ top: 0, left: 0 });
             }}
             className={
@@ -103,13 +101,13 @@ const NavbarIsVisible = (props) => {
               setVideoIsVisible(false);
             }}
             onClick={() => {
-              scrollHandler("player");
+              videoIsVisible && scrollHandler("player");
             }}
             className={classNames(
               cx("navbar-nav-link"),
               cx("navbar-dropdown-toggle")
             )}
-            to="/video"
+            to={videoIsVisible && "/video"}
           >
             VIDEO
             <FontAwesomeIcon
@@ -120,16 +118,16 @@ const NavbarIsVisible = (props) => {
               <div className={classNames(cx("navbar-dropdown-menu"))}>
                 <NavLink
                   className={classNames(cx("navbar-dropdown-items-item"))}
-                  to="/video/article"
+                  to="/how-it-works"
                 >
                   <span className={classNames(cx("navbar-nav-item-text"))}>
-                    ARTICLE DETAILS
+                    HOW IT WORKS
                   </span>
                 </NavLink>
                 <div className={classNames(cx("navbar-dropdown-items"))}></div>
                 <NavLink
                   className={classNames(cx("navbar-dropdown-items-item"))}
-                  to="/video/terms"
+                  to="/terms-conditions"
                 >
                   <span className={classNames(cx("navbar-nav-item-text"))}>
                     TERMS CONDITIONS
@@ -138,7 +136,7 @@ const NavbarIsVisible = (props) => {
                 <div className={classNames(cx("navbar-dropdown-items"))}></div>
                 <NavLink
                   className={classNames(cx("navbar-dropdown-items-item"))}
-                  to="/video/policy"
+                  to="/privacy-policy"
                 >
                   <span className={classNames(cx("navbar-nav-item-text"))}>
                     PRIVACY POLICY
@@ -173,7 +171,7 @@ const NavbarIsVisible = (props) => {
                 cx("navbar-nav-link"),
                 cx("navbar-dropdown-toggle")
               )}
-              to="/user"
+              to={userIsVisible && "/user"}
             >
               {props.currentUser.nick.toUpperCase()}
               <FontAwesomeIcon
@@ -205,6 +203,9 @@ const NavbarIsVisible = (props) => {
                     className={classNames(cx("navbar-dropdown-items"))}
                   ></div>
                   <NavLink
+                    onClick={() => {
+                      scrollHandler("pricing");
+                    }}
                     className={classNames(cx("navbar-dropdown-items-item"))}
                     to="/pricing"
                   >

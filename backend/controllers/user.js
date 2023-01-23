@@ -121,7 +121,7 @@ export const getLastLearned = (req, res) => {
             let qSearchFoldersName = "";
 
             const foldersId = selectLastListData.map(
-              (arr) => arr[0].folder_uid
+              (arr) => arr[0]?.folder_uid
             );
             for (let i = 0; i < foldersId.length; i++) {
               qSearchFoldersName +=
@@ -179,6 +179,7 @@ export const getGeneralInformation = (req, res) => {
 };
 
 // POST FOR UPLOAD & UPDATE USER AVATAR
+import slugify from "slugify";
 export const postUserAvatar = (req, res) => {
   checkToken(req, res, (userInfo) => {
     // * DELETE AVATAR
@@ -202,7 +203,11 @@ export const postUserAvatar = (req, res) => {
       //
 
       const { file } = req;
-      const fileName = `user-avatar-${Date.now()}.${file.originalname}`;
+      const fileName = `user-avatar-${Date.now()}.${slugify(file.originalname, {
+        replacement: "_", // replace spaces with underscores
+        remove: /[^a-zA-Z0-9_.-]/g, // remove all non-alphanumeric characters
+        lower: true, // convert to lower case
+      })}`;
       const imagePath = UPLOAD_PATH + `/${fileName}`;
       const imageBuffer = await sharp(file.buffer)
         .resize({
@@ -350,40 +355,3 @@ export const postLearningDifficult = (req, res) => {
     });
   });
 };
-
-// * Premium access logic
-// export const postPremiumAccess = (req, res) => {
-//   checkToken(req, res, async (userInfo) => {
-//     let date = new Date();
-//     let premium = 0;
-//     const premiumType = req.body.premiumType;
-
-//     if (premiumType === "Trial") {
-//       date.setDate(date.getDate() + 14);
-//       premium = 1;
-//     }
-//     if (premiumType === "Advanced") {
-//       date.setFullYear(date.getFullYear() + 1);
-//       premium = 1;
-//     }
-//     if (premiumType === "Complete") {
-//       date.setFullYear(date.getFullYear() + 1);
-//       premium = 2;
-//     }
-
-//     let premiumExpiry = date.toISOString();
-//     premiumExpiry =
-//       premiumExpiry.split("T")[0] +
-//       " " +
-//       premiumExpiry.split("T")[1].slice(0, 8);
-
-//     const q =
-//       "UPDATE `users` SET `premium` = ?, `premium_expiry` = ? WHERE `id` = ?";
-//     console.log(premium, premiumExpiry, userInfo.id);
-//     db.query(q, [premium, premiumExpiry, userInfo.id], (err, data) => {
-//       if (err) return res.status(500).json("Something went wrong...");
-
-//       return res.status(200).json("Transaction successful");
-//     });
-//   });
-// };

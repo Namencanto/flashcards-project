@@ -194,7 +194,7 @@ function UserTechcardsContent({
             list: listsToChange,
           });
           fetchTechcards();
-          return setUserMessage(["green", res.data]);
+          setUserMessage(["green", res.data]);
         } catch (err) {
           setUserMessage(["red", "Something went wrong..."]);
         }
@@ -210,7 +210,7 @@ function UserTechcardsContent({
             secondSidesFlag: secondSidesFlagToChange,
           });
           fetchTechcards();
-          return setUserMessage(["green", res.data]);
+          setUserMessage(["green", res.data]);
         } catch (err) {
           setUserMessage(["red", "Something went wrong..."]);
         }

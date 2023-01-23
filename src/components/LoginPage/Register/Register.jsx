@@ -72,7 +72,6 @@ function Register() {
       }
     }
   };
-  console.log(inputEmailErrorMessage);
   const passwordValidation = () => {
     inputValidation(
       "password",
@@ -82,7 +81,6 @@ function Register() {
     );
     passwordConfirmValidation();
   };
-  console.log(inputNickIsValid);
   const formValidation = async (e) => {
     e.preventDefault();
 
@@ -238,7 +236,7 @@ function Register() {
             type="checkbox"
           />
           <p>
-            I've read and agree to Tivo's written
+            I've read and agree to Techcards' written
             <Link to="privacy-policy"> Privacy Policy </Link> and
             <Link to="terms-conditions"> Terms Conditions </Link>.
           </p>

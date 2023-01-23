@@ -64,19 +64,15 @@
     }
     &-item {
       padding: 0.4rem 1.2rem;
-
-      & li {
-        display: list-item;
-        text-align: -webkit-match-parent;
-      }
-      &-text {
-      }
     }
     &-link {
       color: $color-offWhite;
       opacity: 0.8;
       text-decoration: none;
       transition: all 0.2s ease;
+      &:hover {
+        opacity: 1 !important;
+      }
     }
   }
 
@@ -152,7 +148,9 @@
         white-space: nowrap;
         background-color: transparent;
         border: 0;
-
+        &:hover {
+          opacity: 1 !important;
+        }
         color: $color-offWhite;
         opacity: 0.8;
         font: 700 1.4rem "Open Sans", sans-serif;
@@ -182,8 +180,7 @@
     }
 
     & img {
-      width: 7.1rem;
-      height: 2.8rem;
+      height: 3.75rem;
     }
   }
   &-icon {

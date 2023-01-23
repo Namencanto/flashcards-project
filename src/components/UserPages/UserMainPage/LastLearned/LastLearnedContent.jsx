@@ -26,7 +26,7 @@ function LastLearnedContent({ errorMessage, lastLearned, isFetched }) {
                           alt="list illustration"
                         />
                       ) : (
-                        ""
+                        <i>-</i>
                       )}
                       <p>{list}</p>
                     </Link>

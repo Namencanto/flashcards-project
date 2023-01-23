@@ -3,7 +3,7 @@ import "../../../../assets/Global.scss";
 import classes from ".././UserTechcardsList.module.scss";
 import classNames from "classnames/bind";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,6 +23,7 @@ import { useRef } from "react";
 import { handleFileSelect } from "./UserTechcardsListContentHelpers";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 
+import { RepetitionsContext } from "../../../../context/RepetitionsContext";
 import StartButtons from "./StartButtons";
 
 function UserTechcardsListContent({
@@ -45,6 +46,8 @@ function UserTechcardsListContent({
     "https://miro.medium.com/max/250/1*DSNfSDcOe33E2Aup1Sww2w.jpeg";
 
   const cx = classNames.bind(classes);
+
+  const { filteredRepetitions } = useContext(RepetitionsContext);
 
   const [howManyTechcardsRender, setHowManyTechcardsRender] = useState(10);
   const howManyTechcardsLeft = firstSides?.length - howManyTechcardsRender;
@@ -649,7 +652,9 @@ function UserTechcardsListContent({
                     ""
                   )}
                 </>
-              ) : firstSides !== null && firstSides?.length !== 0 ? (
+              ) : firstSides !== null &&
+                firstSides?.length !== 0 &&
+                filteredRepetitions ? (
                 <StartButtons
                   techcardsIDS={techcardsIDS}
                   firstSides={firstSides}
@@ -658,6 +663,7 @@ function UserTechcardsListContent({
                   list={list}
                   displayLearningModal={displayLearningModal}
                   statuses={statuses}
+                  filteredRepetitions={filteredRepetitions}
                 />
               ) : (
                 ""

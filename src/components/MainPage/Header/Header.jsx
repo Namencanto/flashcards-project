@@ -14,6 +14,7 @@ import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import NavbarIsVisible from "./NavbarIsVisible";
 import HeaderContent from "./HeaderContent/HeaderContent";
 import MediaQueries from "../../../HelperComponents/MediaQueries";
+import PoliciesHeader from "./PoliciesHeader/PoliciesHeader";
 
 function Header(props) {
   const cx = classNames.bind(classes);
@@ -43,18 +44,18 @@ function Header(props) {
 
   useEffect(() => {
     if (pathName === "/home") window.scroll({ top: 0, left: 0 });
-    if (pathName === "/features") featuresPart.current.scrollIntoView();
-    if (pathName === "/details") detailsPart.current.scrollIntoView();
-    if (pathName === "/video") playerPart.current.scrollIntoView();
-    if (pathName === "/pricing") pricingPart.current.scrollIntoView();
+    if (pathName === "/features") featuresPart?.current.scrollIntoView();
+    if (pathName === "/details") detailsPart?.current.scrollIntoView();
+    if (pathName === "/video") playerPart?.current.scrollIntoView();
+    if (pathName === "/pricing") pricingPart?.current.scrollIntoView();
     window.addEventListener("load", function () {
       // i put this in event listener and settimout for execute after load and to move execution in stack for sure to execute in slow internet connection
       setTimeout(() => {
         if (pathName === "/home") window.scroll({ top: 0, left: 0 });
-        if (pathName === "/features") featuresPart.current.scrollIntoView();
-        if (pathName === "/details") detailsPart.current.scrollIntoView();
-        if (pathName === "/video") playerPart.current.scrollIntoView();
-        if (pathName === "/pricing") pricingPart.current.scrollIntoView();
+        if (pathName === "/features") featuresPart?.current.scrollIntoView();
+        if (pathName === "/details") detailsPart?.current.scrollIntoView();
+        if (pathName === "/video") playerPart?.current.scrollIntoView();
+        if (pathName === "/pricing") pricingPart?.current.scrollIntoView();
       }, 10);
     });
   }, [featuresPart, detailsPart, playerPart, pricingPart]);
@@ -100,19 +101,19 @@ function Header(props) {
     // if second part is setted
     if (secondPart !== undefined) {
       if (
-        scrollPosition > firstPart.current.offsetTop - firstHeight &&
-        scrollPosition < secondPart.current.offsetTop - secondHeight
+        scrollPosition > firstPart.current?.offsetTop - firstHeight &&
+        scrollPosition < secondPart.current?.offsetTop - secondHeight
       ) {
         ScrollLogicResult();
       }
       // pricing path has different height conditions
     } else if (path === "/pricing") {
-      if (scrollPosition > firstPart.current.offsetTop - firstHeight) {
+      if (scrollPosition > firstPart.current?.offsetTop - firstHeight) {
         ScrollLogicResult();
       }
     } else {
       // if second part is not setted, set different conditions
-      if (scrollPosition < firstPart.current.offsetTop - firstHeight) {
+      if (scrollPosition < firstPart.current?.offsetTop - firstHeight) {
         ScrollLogicResult();
       }
     }
@@ -135,14 +136,14 @@ function Header(props) {
       // if the class is not already set, if scroll position is in specific height
       if (
         headerClassName !== "navbar-narrower" &&
-        scrollPosition > headerContentRef.current.offsetTop - 150
+        scrollPosition > headerContentRef?.current.offsetTop - 150
       ) {
         setHeaderClassName("navbar-narrower");
       }
       // reverse logic
       if (
         headerClassName !== "" &&
-        scrollPosition < headerContentRef.current.offsetTop - 150
+        scrollPosition < headerContentRef?.current.offsetTop - 150
       ) {
         setHeaderClassName("");
       }
@@ -158,7 +159,13 @@ function Header(props) {
     <>
       <nav className={classNames(cx("navbar", headerClassName))}>
         <div className={classNames(cx("navbar-container"))}>
-          <Link className={classNames(cx("navbar-logo"))} to="/">
+          <Link
+            onClick={() => {
+              window.scroll({ top: 0, left: 0 });
+            }}
+            className={classNames(cx("navbar-logo"))}
+            to="/"
+          >
             <img src={logo} alt="logo" />
           </Link>
 
@@ -186,10 +193,17 @@ function Header(props) {
           )}
         </div>
       </nav>
-      <HeaderContent
-        currentUser={props.currentUser}
-        giveHeaderContentRef={setHeaderContentRefHandler}
-      />
+      {props.policiesHeader ? (
+        <PoliciesHeader
+          title={props.policiesHeader}
+          giveHeaderContentRef={setHeaderContentRefHandler}
+        />
+      ) : (
+        <HeaderContent
+          currentUser={props.currentUser}
+          giveHeaderContentRef={setHeaderContentRefHandler}
+        />
+      )}
     </>
   );
 }

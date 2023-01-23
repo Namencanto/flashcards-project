@@ -1,0 +1,11 @@
+@import "../../../../assets/base.scss";
+
+.policies-header {
+  padding: 17.6rem 0 14.4rem;
+  background-color: $color-purple;
+  & h1 {
+    @include basic-component-width;
+    color: #fff;
+    text-align: center;
+  }
+}

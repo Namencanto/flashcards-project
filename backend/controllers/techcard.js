@@ -121,12 +121,22 @@ export const deleteTechcards = (req, res) => {
       let allElementsToDelete = "";
 
       listToDelete?.forEach((listID, i) => {
-        dataToMySql.push(listID, userInfo.id, listID, userInfo.id);
-
+        dataToMySql.push(
+          listID,
+          userInfo.id,
+          listID,
+          userInfo.id,
+          listID,
+          userInfo.id
+        );
+        // DELETE ALL LIST STUFFS
         allElementsToDelete +=
           "DELETE FROM `lists` WHERE (`id` = ?) AND (`user_uid` = ?);";
         allElementsToDelete +=
           "DELETE FROM `techcards` WHERE (`list_uid` = ?) AND (`user_uid` = ?);";
+        // DELETE STATS
+        allElementsToDelete +=
+          "DELETE FROM `lists_statistics` WHERE (`list_uid` = ?) AND (`user_uid` = ?);";
       });
       folderToDelete?.forEach((folderID, i) => {
         dataToMySql.push(
@@ -135,15 +145,24 @@ export const deleteTechcards = (req, res) => {
           folderID,
           userInfo.id,
           folderID,
+          userInfo.id,
+          folderID,
           userInfo.id
         );
+        // DELETE ALL FOLDER STUFFS
         allElementsToDelete +=
           "DELETE FROM `folders` WHERE (`id` = ?) AND (`user_uid` = ?);";
         allElementsToDelete +=
           "DELETE FROM `lists` WHERE (`folder_uid` = ?) AND (`user_uid` = ?);";
         allElementsToDelete +=
           "DELETE FROM `techcards` WHERE (`folder_uid` = ?) AND (`user_uid` = ?);";
+        // DELETE STATS
+        allElementsToDelete +=
+          "DELETE FROM `folders_statistics` WHERE (`folder_uid` = ?) AND (`user_uid` = ?);";
       });
+
+      console.log(allElementsToDelete);
+      console.log(listToDelete);
       db.query(allElementsToDelete, dataToMySql, (err, data) => {
         if (err) return res.status(500).json(err);
         return res.json("All elements have been successfully deleted");

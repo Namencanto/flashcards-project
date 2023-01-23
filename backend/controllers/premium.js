@@ -111,7 +111,7 @@ export const getCheckUserPremium = (req, res) => {
       "SELECT `expiry` FROM `users_premium` WHERE `user_uid` = ? ORDER BY `date` DESC LIMIT 1; ";
     db.query(q, [userInfo.id], (err, data) => {
       if (err) return res.status(500).send(err);
-      return res.status(200).json(data[0].expiry);
+      return res.status(200).json(data[0] ? data[0].expiry : false);
     });
   });
 };

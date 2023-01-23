@@ -42,8 +42,6 @@ function MainPage(props) {
 
   return (
     <>
-      {/* logged && header zmieniony bez loginu i reszta*/}
-
       <Header
         allParts={[featuresRef, detailsRef, playerRef, pricingRef]}
         currentUser={currentUser}

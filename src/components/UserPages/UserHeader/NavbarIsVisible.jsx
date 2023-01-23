@@ -74,7 +74,7 @@ const NavbarIsVisible = () => {
               cx("navbar-nav-link"),
               cx("navbar-dropdown-toggle")
             )}
-            to="/user"
+            to={userIsVisible && "/user"}
           >
             {currentUser.nick.toUpperCase()}
             <FontAwesomeIcon

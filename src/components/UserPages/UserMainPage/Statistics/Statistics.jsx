@@ -134,7 +134,7 @@ function Statistics() {
                       options={optionsLine}
                     />
                     <FutureRepetitionsLineCharts
-                      statisticsIds={"all"}
+                      statisticsIds="all"
                       options={optionsLine}
                     />
                     <LastTenDaysTimeSpentLineChart
@@ -169,7 +169,10 @@ function Statistics() {
                   data={allActivity}
                   options={optionsLine}
                 />
-                <FutureRepetitionsLineCharts ids={"all"} />
+                <FutureRepetitionsLineCharts
+                  statisticsIds="all"
+                  options={optionsLine}
+                />
                 <LastTenDaysTimeSpentLineChart
                   data={allActivity}
                   options={optionsLine}

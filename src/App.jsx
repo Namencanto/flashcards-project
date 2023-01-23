@@ -8,6 +8,11 @@ import { AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
 import { getCookie } from "./HelperComponents/getCookie";
 import axios from "axios";
+
+import PrivacyPolicyPage from "./components/PoliciesPages/PrivacyPolicyPage/PrivacyPolicyPage";
+import TermsConditionsPage from "./components/PoliciesPages/TermsConditionsPage/TermsConditionsPage";
+import HowItWorksPage from "./components/PoliciesPages/HowItWorksPage/HowItWorksPage";
+
 function App() {
   if (process.env.REACT_APP_IS_PRODUCTION)
     axios.defaults.baseURL = `${process.env.REACT_APP_URL}/api`;
@@ -61,6 +66,13 @@ function App() {
         ></Route>
 
         {currentUser && <Route path="/user/*" element={<UserPages />}></Route>}
+
+        <Route path="privacy-policy" element={<PrivacyPolicyPage />}></Route>
+        <Route
+          path="terms-conditions"
+          element={<TermsConditionsPage />}
+        ></Route>
+        <Route path="how-it-works" element={<HowItWorksPage />}></Route>
       </Routes>
     </BrowserRouter>
   );

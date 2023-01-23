@@ -58,7 +58,6 @@ function Login() {
           inputPasswordRef.current.value
         );
 
-        console.log(res);
         if (res.status === 200) {
           setServerMessage("Successfully logged!");
           setServerMessageClass("login-server-accepted");

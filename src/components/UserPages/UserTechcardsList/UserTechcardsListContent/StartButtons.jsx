@@ -14,9 +14,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { countStatus } from "../../../../HelperComponents/countStatus";
-import { useEffect, useContext, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 
-import { RepetitionsContext } from "../../../../context/RepetitionsContext";
 function StartButtons({
   techcardsIDS,
   firstSides,
@@ -25,10 +24,9 @@ function StartButtons({
   list,
   displayLearningModal,
   statuses,
+  filteredRepetitions,
 }) {
   const cx = classNames.bind(classes);
-
-  const { filteredRepetitions } = useContext(RepetitionsContext);
 
   // Filter repetitions to get only current list repetitions
   const repetitionsIDS = techcardsIDS.filter((val) =>

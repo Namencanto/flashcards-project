@@ -27,6 +27,25 @@ $bp-600: 37.5em; // 600px;
 $bp-500: 31.25em; // 500px;
 $bp-400: 25em; // 400px;
 
+// BASIC WIDTH OF TEXTBOXES
+@mixin basic-component-width {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 54rem;
+
+  @media only screen and (min-width: $bp-800) {
+    max-width: 72rem;
+    @media only screen and (min-width: $bp-1000) {
+      max-width: 96rem;
+      @media only screen and (min-width: $bp-1200) {
+        max-width: 114rem;
+      }
+    }
+  }
+}
+
 input,
 textarea,
 button,

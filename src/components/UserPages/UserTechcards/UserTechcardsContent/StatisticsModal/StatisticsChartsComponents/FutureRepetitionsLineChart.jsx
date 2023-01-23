@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { RepetitionsContext } from "../../../../../../context/RepetitionsContext";
 function FutureRepetitionsLineCharts({ statisticsIds, options }) {
   const { allRepetitions } = useContext(RepetitionsContext);
+
   if (allRepetitions) {
     const dates = allRepetitions.dates;
     const ids = allRepetitions.ids;
@@ -17,7 +18,6 @@ function FutureRepetitionsLineCharts({ statisticsIds, options }) {
         repetitionsData = filteredRepetitionData;
       }
     }
-    console.log(repetitionsData);
 
     repetitionsData.sort((a, b) => {
       let dateA = new Intl.DateTimeFormat("en-US", {
@@ -110,7 +110,7 @@ function FutureRepetitionsLineCharts({ statisticsIds, options }) {
     ) : (
       ""
     );
-  }
+  } else return <></>;
 }
 
 export default FutureRepetitionsLineCharts;
