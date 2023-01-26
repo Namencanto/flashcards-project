@@ -112,7 +112,7 @@ function StatisticsModal({
       <div className="modal-container">
         <div ref={contentStatisticsRef} className="modal-content">
           <header className={classNames(cx("statistics-header"))}>
-            <h2>Learning settings</h2>
+            <h2>Learning statistics</h2>
             <div style={{ textAlign: "center" }}></div>
             <FontAwesomeIcon icon={faX} onClick={exitPopupAnimation} />
           </header>

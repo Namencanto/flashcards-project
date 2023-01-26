@@ -6,6 +6,7 @@ import GeneralUserInformation from "./GeneralUserInformation/GeneralUserInformat
 import axios from "axios";
 import { AuthContext } from "../../../../../context/AuthContext";
 import defaultAvatar from "../../../../../images/default-avatar.png";
+import UserSettingsHeader from "../UserSettingsHeader";
 const General = () => {
   const { changeNick } = useContext(AuthContext);
 
@@ -76,7 +77,7 @@ const General = () => {
 
   return (
     <div className={classNames(cx("settings-general"))}>
-      <h1>General settings</h1>
+      <UserSettingsHeader title={"General settings"} />
       <GeneralAvatar
         setCurrentAvatar={setCurrentAvatar}
         currentAvatar={currentAvatar}

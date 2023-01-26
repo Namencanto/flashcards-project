@@ -24,21 +24,21 @@ function HeaderContent(props) {
       : props?.currentUser?.nick;
   return (
     <>
-      <main
-        className={classNames("grid-mainpage-header-content", cx("content"))}
-      >
-        <div className={cx("content-text-container")}>
-          <h1>Your best flashcards site!</h1>
-          <p>Use TechCards to take your skills to the next level </p>
-          <Link
-            className="btn-solid-large-reverse btn-solid-large-header-content"
-            to={props.currentUser ? "/user" : "/register"}
-          >
-            {props.currentUser ? userNick.toUpperCase() : "SIGN UP"}
-          </Link>
-        </div>
-        <div ref={headerContentRef} className={cx("content-image-container")}>
-          <img src={softwareApp} alt="software app" />
+      <main className={classNames(cx("content"))}>
+        <div className={cx("content-items")}>
+          <div className={cx("content-text-container")}>
+            <h1>Your best flashcards site!</h1>
+            <p>Use TechCards to take your skills to the next level </p>
+            <Link
+              className="btn-solid-large-reverse btn-solid-large-header-content"
+              to={props.currentUser ? "/user" : "/register"}
+            >
+              {props.currentUser ? userNick.toUpperCase() : "SIGN UP"}
+            </Link>
+          </div>
+          <div ref={headerContentRef} className={cx("content-image-container")}>
+            <img src={softwareApp} alt="software app" />
+          </div>
         </div>
       </main>
 

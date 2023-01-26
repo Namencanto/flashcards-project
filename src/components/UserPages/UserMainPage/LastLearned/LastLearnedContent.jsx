@@ -13,22 +13,22 @@ function LastLearnedContent({ errorMessage, lastLearned, isFetched }) {
       {isFetched ? (
         <>
           <ul>
-            {lastLearned.list.length > 0 ? (
-              lastLearned.list.map((list, i) => {
+            {lastLearned?.list.length > 0 ? (
+              lastLearned?.list.map((list, i) => {
                 return (
                   <li key={i}>
                     <Link
                       to={`/user/techcards/${lastLearned?.folder[i]}/${list}/${lastLearned?.listId[i]}`}
                     >
+                      {list}
                       {lastLearned?.image[i] ? (
                         <img
                           src={lastLearned?.image[i]}
                           alt="list illustration"
                         />
                       ) : (
-                        <i>-</i>
+                        ""
                       )}
-                      <p>{list}</p>
                     </Link>
                   </li>
                 );

@@ -13,6 +13,7 @@ import InvoiceDocument from "./InvoiceDocument/InvoiceDocument";
 import { AuthContext } from "../../../../../context/AuthContext";
 
 import { saveAs } from "file-saver";
+import UserSettingsHeader from "../UserSettingsHeader";
 
 function Premium() {
   const cx = classNames.bind(classes);
@@ -73,7 +74,7 @@ function Premium() {
   }
   return (
     <div className={classNames(cx("premium"))}>
-      <h1>Premium settings</h1>
+      <UserSettingsHeader title={"Premium settings"} />
 
       {isFetched ? (
         <>

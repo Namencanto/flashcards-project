@@ -29,27 +29,30 @@ function LastLearned(props) {
         setIsFetched(false);
         const res = await axios.get("/users/last-learned");
 
-        const listsName = res.data.lastLists.map((arr) => arr[0]?.list);
-        const images = res.data.lastLists.map((arr) => {
-          console.log(arr[0]?.image);
-          if (arr[0]?.image) {
-            return arr[0]?.image.startsWith("list-image-")
-              ? `${URL}/${arr[0]?.image}`
-              : arr[0]?.image;
-          }
-        });
-        console.log(images);
-        const listsId = res.data.lastLists.map((arr) => arr[0]?.id);
-        const foldersName = res.data.foldersName.map((arr) => arr[0]?.folder);
-        setLastLearned({
-          list: listsName,
-          image: images,
-          listId: listsId,
-          folder: foldersName,
-        });
+        if (res.data !== "User don't have learning history") {
+          const listsName = res.data.lastLists.map((arr) => arr[0]?.list);
+          const images = res.data.lastLists.map((arr) => {
+            if (arr[0]?.image) {
+              return arr[0]?.image.startsWith("list-image-")
+                ? `${URL}/${arr[0]?.image}`
+                : arr[0]?.image;
+            }
+          });
+
+          const listsId = res.data.lastLists.map((arr) => arr[0]?.id);
+          const foldersName = res.data.foldersName.map((arr) => arr[0]?.folder);
+          setLastLearned({
+            list: listsName,
+            image: images,
+            listId: listsId,
+            folder: foldersName,
+          });
+        } else setLastLearnedErrorMessage("");
       } catch (err) {
         setIsFetched(true);
-        setLastLearnedErrorMessage(err.response.data);
+        err.response
+          ? setLastLearnedErrorMessage(err.response.data)
+          : setLastLearnedErrorMessage("Something went wrong...");
       }
       setIsFetched(true);
     };

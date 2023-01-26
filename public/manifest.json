@@ -1,10 +1,10 @@
 {
-  "short_name": "TechCards",
-  "name": "Create React App Sample",
+  "short_name": "Techcards",
+  "name": "Techcards your best flashcards site!",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "512x512 256x256 128x128 64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
@@ -18,8 +18,24 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#5f4dee",
+  "background_color": "#5f4dee",
+  "lang": "en-US",
+  "scope": "/",
+  "shortcuts": [
+    {
+      "name": "Techcards your best flashcards site!",
+      "short_name": "Techcards",
+      "url": "./index.html",
+      "icons": [
+        {
+          "src": "favicon.ico",
+          "sizes": "512x512 256x256 128x128 64x64 32x32 24x24 16x16",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
 }

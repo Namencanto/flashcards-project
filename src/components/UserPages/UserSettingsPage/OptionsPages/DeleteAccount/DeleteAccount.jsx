@@ -6,6 +6,7 @@ import classes from "./DeleteAccount.module.scss";
 import { useNavigate } from "react-router-dom";
 
 import { inputValidation } from "../../../../../hooks/useInputValidation";
+import UserSettingsHeader from "../UserSettingsHeader";
 function DeleteAccount() {
   const navigate = useNavigate();
   const cx = classNames.bind(classes);
@@ -61,7 +62,7 @@ function DeleteAccount() {
   };
   return (
     <div className={classNames(cx("delete-account"))}>
-      <h1>Delete account</h1>
+      <UserSettingsHeader title={"Delete account"} />
       <div className={classNames(cx("delete-account-container"))}>
         <div className={classNames(cx("delete-account-content"))}>
           <div style={{ maxWidth: "19.84rem" }} className="input-default">

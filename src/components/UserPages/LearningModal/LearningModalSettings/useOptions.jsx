@@ -4,20 +4,26 @@ export const useOptions = (
   techcardsToDisplay,
   setTechcardsToDisplay
 ) => {
-  const [techcardsToDisplayReverseBackup, setTechcardsToDisplayReverseBackup] =
+  const [techcardsToDisplayRandomBackup, setTechcardsToDisplayRandomBackup] =
     useState(techcardsToDisplay);
 
   // * REVERSE CASE
   useEffect(() => {
     if (learningOptions.reverse) {
-      setTechcardsToDisplayReverseBackup(techcardsToDisplay);
       setTechcardsToDisplay({
         firstSides: techcardsToDisplay.secondSides,
         secondSides: techcardsToDisplay.firstSides,
         images: techcardsToDisplay.images,
         ids: techcardsToDisplay.ids,
       });
-    } else setTechcardsToDisplay(techcardsToDisplayReverseBackup);
+    } else {
+      setTechcardsToDisplay({
+        firstSides: techcardsToDisplay.secondSides,
+        secondSides: techcardsToDisplay.firstSides,
+        images: techcardsToDisplay.images,
+        ids: techcardsToDisplay.ids,
+      });
+    }
   }, [learningOptions.reverse]);
 
   // * RANDOM CASE
@@ -34,18 +40,15 @@ export const useOptions = (
         .map(({ value }) => value);
     };
     if (learningOptions.random) {
+      setTechcardsToDisplayRandomBackup(techcardsToDisplay);
       setTechcardsToDisplay({
         firstSides: randomArr(techcardsToDisplay.firstSides, randomNumbers),
         secondSides: randomArr(techcardsToDisplay.secondSides, randomNumbers),
         images: randomArr(techcardsToDisplay.images, randomNumbers),
         ids: randomArr(techcardsToDisplay.ids, randomNumbers),
       });
-    } else
-      setTechcardsToDisplay({
-        firstSides: randomArr(techcardsToDisplay.firstSides, sortedNumbers),
-        secondSides: randomArr(techcardsToDisplay.secondSides, sortedNumbers),
-        images: randomArr(techcardsToDisplay.images, sortedNumbers),
-        ids: randomArr(techcardsToDisplay.ids, sortedNumbers),
-      });
+    } else {
+      setTechcardsToDisplay(techcardsToDisplayRandomBackup);
+    }
   }, [learningOptions.random]);
 };

@@ -10,8 +10,8 @@ import { useState, useContext, useRef, useEffect } from "react";
 import LearningModalTimer from "./LearningModalTimer";
 
 import {
-  sendKnowedTechcardToChange,
-  sendUnknowedTechcardToChange,
+  sendKnownTechcardToChange,
+  sendUnknownTechcardToChange,
 } from "./LearningModalBackendFunctions";
 
 import LearningModalSettings from "./LearningModalSettings/LearningModalSettings";
@@ -34,10 +34,12 @@ function LearningModal(props) {
     reverse: false,
     random: false,
   });
+
   const { firstSides, secondSides, techcardsIDS, techcardsImages, listTitle } =
     props.techcardsInfo;
+
   const [techcardsToDisplay, setTechcardsToDisplay] = useState({
-    firstSides,
+    firstSides: firstSides,
     secondSides,
     images: techcardsImages,
     ids: techcardsIDS,
@@ -126,14 +128,14 @@ function LearningModal(props) {
 
       const lastKnowedId = knownTechcards.ids[knownTechcards.ids.length - 1];
       if (lastKnowedId) {
-        sendKnowedTechcardToChange(lastKnowedId, round, fetchRepetitions);
+        sendKnownTechcardToChange(lastKnowedId, round, fetchRepetitions);
       }
       for (const sendedTechcard of allSendedTechcards) {
         if (sendedTechcard === lastUnknowedId) isSended = true;
       }
       if (lastUnknowedId && !isSended) {
         setAllSendedTechcards([...allSendedTechcards, lastUnknowedId]);
-        sendUnknowedTechcardToChange(lastUnknowedId, round, fetchRepetitions);
+        sendUnknownTechcardToChange(lastUnknowedId, round, fetchRepetitions);
       }
     }
   }, [unknownTechcards, knownTechcards]);
@@ -245,11 +247,11 @@ function LearningModal(props) {
 
   // * DISPLAY NEW TECHCARD FUNCTION
   const newToDisplay = (setTechcards) => {
-    console.log(time);
     props.statsAdd(
       setTechcards === setUnknownTechcards,
       setTechcards === setKnownTechcards,
-      time
+      time,
+      techcardsToDisplay.ids[0]
     );
     // IF ROUND LENGTH IS NOT ONLY ONE AND IF WHICHTECHCARD IS NOT LAST OF ROUND LENGTH
     if (roundLength !== 1 && roundLength !== whichTechcard) {

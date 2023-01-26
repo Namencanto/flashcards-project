@@ -5,8 +5,8 @@ import PoliciesPages from "../PoliciesPages";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAnglesRight, faSquare } from "@fortawesome/free-solid-svg-icons";
 
-import HowItWorksImage from "../../../images/how-it-works.jpg";
-import HowItWorksSmallImage from "../../../images/how-it-works-small.jpg";
+import HowItWorksImage from "../../../images/how-it-works.png";
+import HowItWorksSmallImage from "../../../images/how-it-works-small.png";
 
 import { Link } from "react-router-dom";
 

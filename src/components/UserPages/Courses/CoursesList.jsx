@@ -61,13 +61,13 @@ function CoursesList({ courseFolders, courseLists }) {
           {courseFolders.map((folder, iFolder) => {
             return (
               <div key={folder.id}>
-                <h2 key={folder.folder}>{folder.folder}</h2>
+                <h2>{folder.folder}</h2>
                 <ul>
                   {courseLists[iFolder].map(
                     ({ id, list, folder_uid, premium, length }) => {
                       let listExist = false;
                       return folder_uid == folder.id ? (
-                        <li>
+                        <li key={id + folder_uid}>
                           <div
                             className={classNames(
                               cx("courses-list-description")

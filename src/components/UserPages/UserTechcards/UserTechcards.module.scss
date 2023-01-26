@@ -6,19 +6,61 @@
   padding-bottom: 1.5rem;
 
   @media only screen and (min-width: $bp-1000) {
-    padding-top: 13.8rem;
+    padding-top: 15.6rem;
   }
   &-title {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
     &-icon {
+      z-index: 1;
+      align-self: flex-start;
       cursor: pointer;
-      @media only screen and (min-width: $bp-1000) {
-        height: 2rem;
+      height: 2rem;
+      margin-bottom: 2rem;
+      @media only screen and (min-width: 300px) {
+        margin: 0;
+
+        @media only screen and (min-width: $bp-1000) {
+          margin: 0.5rem 0 0 0;
+          height: 2.75rem;
+        }
       }
     }
+
+    &-content {
+      margin: auto;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
     & h1 {
-      font-size: 3.4rem;
-      @media only screen and (min-width: $bp-1000) {
-        font-size: 5rem;
+      text-align: center;
+      font-size: 3.6rem;
+      position: absolute;
+
+      left: 0%;
+      right: 0%;
+      margin-top: 2rem;
+      @media only screen and (min-width: 300px) {
+        margin-top: 0;
+        @media only screen and (min-width: $bp-600) {
+          @media only screen and (min-width: $bp-1000) {
+            font-size: 5rem;
+          }
+        }
+      }
+    }
+    &-repeat-all {
+      position: relative;
+      width: 100%;
+      margin-top: 3rem;
+      margin-bottom: -3rem;
+
+      @media only screen and (min-width: $bp-600) {
+        margin: 0.5rem 0 0 0;
+        width: auto;
       }
     }
   }
@@ -51,20 +93,47 @@
   &-main {
     overflow: hidden;
     position: relative;
+
     &-folder-title {
       display: flex;
       flex-direction: column;
       align-items: center;
+
       border-bottom: 2px solid #888;
       padding: 1.5rem 0;
-      & h2 {
-        text-align: center;
-        cursor: pointer;
-        @media only screen and (min-width: $bp-1000) {
-          text-align: start;
-          margin: 1rem 0;
-          font-size: 5rem;
+
+      @media only screen and (min-width: $bp-600) {
+        display: flex;
+      }
+      &-content {
+        width: 100%;
+
+        @media only screen and (min-width: $bp-600) {
+          display: flex;
+        }
+        & h2 {
+          cursor: pointer;
           font-weight: 500;
+          margin: 0 auto;
+          font-size: 3.06rem;
+          text-align: center;
+
+          @media only screen and (min-width: $bp-600) {
+            display: flex;
+            padding-left: 17rem;
+            justify-content: space-between;
+            @media only screen and (min-width: $bp-1000) {
+              margin: 1rem auto;
+              font-size: 4.5rem;
+            }
+          }
+        }
+        &-repeat {
+          margin: 6rem 0 -6rem 0;
+          @media only screen and (min-width: $bp-600) {
+            margin-bottom: -5rem;
+            margin-top: auto;
+          }
         }
       }
       & p {
@@ -76,6 +145,11 @@
         padding: 0 1rem;
       }
       &-stats {
+        margin: -4.5rem 0 4.5rem 0;
+        @media only screen and (min-width: $bp-600) {
+          margin: 0;
+        }
+
         padding-top: 1rem;
         display: flex;
         flex-direction: column;
@@ -104,8 +178,12 @@
         @media only screen and (min-width: $bp-1000) {
           padding: 1rem 0.25rem;
           & a {
-            color: $color-555;
+            color: #555;
             font-size: 1.8rem;
+
+            &:hover {
+              color: $color-purple;
+            }
           }
         }
       }
@@ -223,6 +301,7 @@
             margin-left: 10%;
             position: absolute;
             z-index: 1000;
+            width: 12.5rem;
           }
         }
 

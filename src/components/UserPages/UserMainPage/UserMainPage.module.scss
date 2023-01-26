@@ -15,13 +15,13 @@
     }
   }
   &-container {
-    padding-top: 1.5rem;
     & h1 {
       word-break: break-all;
       color: $color-offWhite;
       font-size: 2.8rem;
       line-height: 2.6rem;
     }
+
     & h3 {
       line-height: 3rem;
       color: $color-offWhite;
@@ -154,6 +154,12 @@
 
     &-last-learned {
       grid-column: 4 / 8;
+      p,
+      svg,
+      h1,
+      h3 {
+        color: #333;
+      }
     }
     &-about-me {
       grid-row: 2;
@@ -162,21 +168,28 @@
       svg,
       h1,
       h3 {
-        color: $color-black;
+        color: #333;
       }
     }
     &-statistics {
       grid-row: 2;
       grid-column: 3 / 5;
-    }
-    &-ranking {
-      grid-row: 2;
-      grid-column: 5 / 8;
       p,
       svg,
       h1,
       h3 {
-        color: $color-black;
+        color: #333;
+      }
+    }
+    &-ranking {
+      grid-row: 2;
+      grid-column: 5 / 8;
+
+      p,
+      svg,
+      h1,
+      h3 {
+        color: #333;
       }
     }
   }

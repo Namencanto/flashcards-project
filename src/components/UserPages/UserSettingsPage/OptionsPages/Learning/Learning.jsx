@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import LoadingSpinner from "../../../../LoadingSpinner/LoadingSpinner";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
+
+import UserSettingsHeader from "../UserSettingsHeader";
 function Learning() {
   const cx = classNames.bind(classes);
   const [whichDifficult, setWhichDifficult] = useState();
@@ -51,7 +56,7 @@ function Learning() {
 
   return (
     <div className={classNames(cx("learning"))}>
-      <h1>Learning settings</h1>
+      <UserSettingsHeader title={"Learning settings"} />
 
       {isFetched ? (
         <>

@@ -248,7 +248,7 @@ function Register() {
         )}
 
         <button
-          // disabled={serverLoading}
+          disabled={serverLoading}
           onClick={formValidation}
           type="submit"
           className="btn-solid-large"

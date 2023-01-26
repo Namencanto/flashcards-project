@@ -5,6 +5,7 @@ export const getTechcards = (req, res) => {
   checkToken(req, res, (userInfo) => {
     const qFolders = "SELECT * FROM folders WHERE user_uid = ?";
     db.query(qFolders, [userInfo.id], (err, foldersData) => {
+      if (foldersData.length === 0) return res.status(200).json(foldersData);
       if (err) return res.status(500).send(err);
 
       let qLists = "";
@@ -17,7 +18,11 @@ export const getTechcards = (req, res) => {
       db.query(qLists, listsDataToMySql, (err, listsData) => {
         if (err) return res.status(500).send(err);
 
-        if (listsData.length > 0) {
+        const allListsEmpty =
+          listsData.every(Array.isArray) &&
+          listsData.every((arr) => arr.length === 0);
+
+        if (!allListsEmpty) {
           let qTechcards = "";
           let techcardsDataToMySql = [];
 
@@ -161,8 +166,6 @@ export const deleteTechcards = (req, res) => {
           "DELETE FROM `folders_statistics` WHERE (`folder_uid` = ?) AND (`user_uid` = ?);";
       });
 
-      console.log(allElementsToDelete);
-      console.log(listToDelete);
       db.query(allElementsToDelete, dataToMySql, (err, data) => {
         if (err) return res.status(500).json(err);
         return res.json("All elements have been successfully deleted");
@@ -236,7 +239,12 @@ export const updateTechcards = (req, res) => {
       });
 
       db.query(allElementsToChange, dataToMySql, (err, data) => {
-        if (err) return res.status(500).json(err);
+        if (err.sqlMessage.startsWith("Data too long for column 'folder'"))
+          return res.status(500).json("Folder name is too long");
+        if (err.sqlMessage.startsWith("Data too long for column 'list'"))
+          return res.status(500).json("List name is too long");
+        if (err) return res.status(500).json("Somethin went wrong");
+
         return res.json("All elements have been successfully changed");
       });
     }

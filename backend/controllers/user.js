@@ -118,6 +118,8 @@ export const getLastLearned = (req, res) => {
           qSelectLastList,
           qSelectLastListData,
           (err, selectLastListData) => {
+            if (!selectLastListData)
+              return res.status(200).json("User don't have learning history");
             let qSearchFoldersName = "";
 
             const foldersId = selectLastListData.map(

@@ -260,12 +260,13 @@
     display: none;
   }
   & label {
+    cursor: pointer;
     font-size: 1.4rem;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: inherit;
-    width: 8.75rem;
+    width: 31%;
     height: 3rem;
     text-align: center;
     border-radius: 9999px;
@@ -273,7 +274,6 @@
     transition: linear 0.3s;
     color: #6e6e6edd;
     @media only screen and (min-width: $bp-1000) {
-      width: 18.5rem;
       font-size: 1.6rem;
     }
   }

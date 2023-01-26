@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const sendKnowedTechcardToChange = async (
+export const sendKnownTechcardToChange = async (
   id,
   round,
   fetchRepetitions
@@ -18,7 +18,7 @@ export const sendKnowedTechcardToChange = async (
     console.log(err);
   }
 };
-export const sendUnknowedTechcardToChange = async (
+export const sendUnknownTechcardToChange = async (
   id,
   round,
   fetchRepetitions

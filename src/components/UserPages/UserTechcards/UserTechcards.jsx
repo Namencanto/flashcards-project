@@ -14,6 +14,9 @@ import axios from "axios";
 import { countStatus } from "../../../HelperComponents/countStatus";
 
 import { countFutureRepetitions } from "./CountFutureRepetitions";
+import { isArray } from "highcharts";
+
+import LearningModal from "../LearningModal/LearningModal";
 function UserTechcards() {
   const { minWidth1000 } = MediaQueries();
 
@@ -43,41 +46,59 @@ function UserTechcards() {
   const [statisticsTitle, setStatisticsTitle] = useState("");
   const [folderOrListStats, setFolderOrListStats] = useState("");
 
+  const [learningModalIsVisible, setLearningModalIsVisible] = useState(false);
+  const [techcardsInfo, setTechcardsInfo] = useState(false);
+
   const [repetitions, setRepetitions] = useState({});
 
   const [isFetched, setIsFetched] = useState(false);
+
+  const hideLearningModal = () => {
+    setLearningModalIsVisible(false);
+  };
+
+  const displayLearningModalHandler = (techcardsInfoFromList) => {
+    setLearningModalIsVisible(true);
+    setTechcardsInfo(techcardsInfoFromList);
+  };
 
   const fetchTechcards = async () => {
     setIsFetched(false);
     try {
       const res = await axios.get("/techcards/get");
 
-      setTechcardsFolders(res.data[0]);
-      setTechcardsLists(res.data[1]);
-      setTechcardsAllSides(res.data[2]);
+      if (res.data.length > 0) {
+        setTechcardsFolders(res.data[0]);
+        setTechcardsLists(res.data[1]);
+        setTechcardsAllSides(res.data[2]);
 
-      const resRepetitionData = await axios.get("/repetitions/");
-      const repetitionsData = resRepetitionData.data[0].repetitionsData;
+        const resRepetitionData = await axios.get("/repetitions/");
+        const repetitionsData = resRepetitionData.data[0].repetitionsData;
 
-      const statuses = repetitionsData.map((object) => object.status);
+        const statuses = repetitionsData.map((object) => object.status);
 
-      const whenTheDataCanBeChangedArr = repetitionsData.map(
-        (object) => object.when_the_status_can_be_changed
-      );
-      const nextRepetitionDate = repetitionsData.map(
-        (object) => object.next_repetition_date
-      );
-      const ids = repetitionsData.map((object) => object.id);
+        const whenTheDataCanBeChangedArr = repetitionsData.map(
+          (object) => object.when_the_status_can_be_changed
+        );
+        const nextRepetitionDate = repetitionsData.map(
+          (object) => object.next_repetition_date
+        );
+        const ids = repetitionsData.map((object) => object.id);
 
-      setRepetitions(
-        countFutureRepetitions({
-          ids,
-          statuses,
-          whenTheDataCanBeChangedArr,
-          nextRepetitionDate,
-          learningDifficult: resRepetitionData.data[0].learningDifficult,
-        })
-      );
+        setRepetitions(
+          countFutureRepetitions({
+            ids,
+            statuses,
+            whenTheDataCanBeChangedArr,
+            nextRepetitionDate,
+            learningDifficult: resRepetitionData.data[0].learningDifficult,
+          })
+        );
+      } else {
+        setTechcardsFolders([]);
+        setTechcardsLists([]);
+        setTechcardsAllSides([]);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -111,7 +132,8 @@ function UserTechcards() {
     let statusesArr = [];
     let idArr = [];
     for (const allSides of techcardsAllSides) {
-      for (const side of allSides) {
+      // isArray for the one list case
+      for (const side of isArray(allSides) ? allSides : [allSides]) {
         if (side.list_uid === id && type === "LIST") {
           statusesArr.push(side.status);
           idArr.push(side.id);
@@ -132,6 +154,7 @@ function UserTechcards() {
   };
 
   const displayFolderStatisticsModalHandler = (folderID) => {
+    console.log("displayFolderStatisticsModal");
     setDataToStatistics(folderID, "FOLDER");
 
     for (const techcardsFolder of techcardsFolders) {
@@ -158,6 +181,45 @@ function UserTechcards() {
     setStatisticsModalIsVisible(false);
   };
 
+  const statsAddHandler = async (
+    isWrongAnswer,
+    isRightAnswer,
+    time,
+    currentTechcardId
+  ) => {
+    let listId = null;
+    let folderId = null;
+    for (let i = 0; i < techcardsAllSides.length; i++) {
+      for (let j = 0; j < techcardsAllSides[i].length; j++) {
+        if (currentTechcardId === techcardsAllSides[i][j].id) {
+          folderId = techcardsAllSides[i][j].folder_uid;
+          listId = techcardsAllSides[i][j].list_uid;
+        }
+      }
+    }
+    const statsAddPost = async (whatId, folder, list) => {
+      const res = await axios.post("/statistics/folderOrList/add", {
+        id: whatId,
+        folder,
+        list,
+        right: isRightAnswer,
+        wrong: isWrongAnswer,
+        time,
+      });
+      return res;
+    };
+
+    try {
+      const resList = await statsAddPost(listId, false, true);
+      const resFolder = await statsAddPost(folderId, true, false);
+
+      console.log(resList);
+      console.log(resFolder);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const props = {
     deleteFormIsSelected,
     changeFormIsSelected,
@@ -179,6 +241,7 @@ function UserTechcards() {
     displayListStatisticsModal: displayListStatisticsModalHandler,
     isFetched,
     repetitions,
+    displayLearningModal: displayLearningModalHandler,
   };
   return (
     <div className={classNames(cx("techcards"))}>
@@ -201,6 +264,18 @@ function UserTechcards() {
                 created_date={statisticsCreatedDate}
                 title={statisticsTitle}
                 statisticsIds={statisticsIds}
+              />,
+              document.getElementById("overlay-root")
+            )
+          : ""}
+        {learningModalIsVisible
+          ? ReactDOM.createPortal(
+              <LearningModal
+                listImage={null}
+                learningModalIsVisible={learningModalIsVisible}
+                hideLearningModal={hideLearningModal}
+                techcardsInfo={techcardsInfo}
+                statsAdd={statsAddHandler}
               />,
               document.getElementById("overlay-root")
             )

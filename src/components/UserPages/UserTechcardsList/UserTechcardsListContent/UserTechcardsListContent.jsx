@@ -350,9 +350,9 @@ function UserTechcardsListContent({
                       style={{ marginTop: "1rem" }}
                       className="message-to-user"
                     >
-                      It's looks like you don't have any techcards, click
+                      It looks like you don't have any techcards, click
                       {!changeListIsVisible
-                        ? " gear on top, "
+                        ? " gear on the top, "
                         : ' "Add new...", '}
                       to add some
                     </p>
@@ -621,7 +621,13 @@ function UserTechcardsListContent({
                     ""
                   )}
                 </div>
-                <button className="btn-solid-medium">Submit</button>
+                <div
+                  className={classNames(
+                    cx("techcards-list-main-form-submit-btn")
+                  )}
+                >
+                  <button className="btn-solid-large">Submit</button>
+                </div>
               </form>
             )}
             {!formIsVisible ? (

@@ -6,6 +6,11 @@ function FutureRepetitionsLineCharts({ statisticsIds, options }) {
   const { allRepetitions } = useContext(RepetitionsContext);
 
   if (allRepetitions) {
+    const nowString = new Intl.DateTimeFormat(navigator.language).format(
+      new Date()
+    );
+    const now = new Date();
+
     const dates = allRepetitions.dates;
     const ids = allRepetitions.ids;
 
@@ -41,12 +46,8 @@ function FutureRepetitionsLineCharts({ statisticsIds, options }) {
       const dateString = new Intl.DateTimeFormat(navigator.language).format(
         new Date(repetitionsData[i].date)
       );
-      const nowString = new Intl.DateTimeFormat(navigator.language).format(
-        new Date()
-      );
 
       const date = new Date(repetitionsData[i].date);
-      const now = new Date();
 
       if (dateCount.has(dateString)) {
         dateCount.set(dateString, dateCount.get(dateString) + 1);
@@ -74,9 +75,9 @@ function FutureRepetitionsLineCharts({ statisticsIds, options }) {
         calculatedRepetitions.length === 1
           ? calculatedRepetitions
               .concat(calculatedRepetitions[0])
-              .map((date, i) => "Today")
+              .map((date, i) => date)
           : calculatedRepetitions.map(({ date }, i) =>
-              i === 0 ? "Today" : date
+              date !== nowString.replaceAll(".", "-") ? date : "Today"
             ),
 
       datasets: [

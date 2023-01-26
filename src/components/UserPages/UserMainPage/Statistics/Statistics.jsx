@@ -3,7 +3,10 @@ import classNames from "classnames/bind";
 
 import { useState, useEffect } from "react";
 
-import { faChartLine } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChartLine,
+  faMagnifyingGlassChart,
+} from "@fortawesome/free-solid-svg-icons";
 
 import UserMobileCard from "../UserMobileCard/UserMobileCard";
 
@@ -12,7 +15,7 @@ import { Chart as ChartJS } from "chart.js/auto";
 
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
 import axios from "axios";
-import StatisticsChart from "./StatisticsChart";
+
 import StatisticsData from "./StatisticsData";
 import AllAnswersPieChart from "../../UserTechcards/UserTechcardsContent/StatisticsModal/StatisticsChartsComponents/AllAnswersPieChart";
 import LastTenDaysTimeSpentLineChart from "../../UserTechcards/UserTechcardsContent/StatisticsModal/StatisticsChartsComponents/LastTenDaysTimeSpentLineChart";
@@ -28,6 +31,10 @@ import {
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import FutureRepetitionsLineCharts from "../../UserTechcards/UserTechcardsContent/StatisticsModal/StatisticsChartsComponents/FutureRepetitionsLineChart";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import StatisticsModal from "./StatisticsModal";
+import ReactDOM from "react-dom";
 function Statistics() {
   const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
@@ -35,7 +42,10 @@ function Statistics() {
   const optionsAnswersPie = getOptionsAnswersPie(minWidth1000);
   const optionsStatusesPie = getOptionsStatusesPie(minWidth1000);
   const [isFetched, setIsFetched] = useState(false);
-  // todoo wiesz co
+
+  const [statisticsModalIsVisible, setStatisticsModalIsVisible] =
+    useState(false);
+
   const [mainStats, setMainStats] = useState({
     joinedDate: "",
     learnedNumber: 0,
@@ -110,8 +120,9 @@ function Statistics() {
     fetchStats();
   }, []);
 
-  const [chartData, setChartData] = useState("techcards");
-
+  const hideStatisticsModal = () => {
+    setStatisticsModalIsVisible(false);
+  };
   return (
     <div className={classNames(cx("statistics"))}>
       <div className="grid-mainpage-statistics">
@@ -119,7 +130,10 @@ function Statistics() {
           <UserMobileCard icon={faChartLine}>
             {
               <div className={classNames(cx("statistics-container"))}>
-                <h2>Statistics</h2>
+                <header>
+                  <FontAwesomeIcon icon={faMagnifyingGlassChart} />
+                  <h2>Statistics</h2>
+                </header>
                 {isFetched ? (
                   <>
                     <StatisticsData
@@ -137,10 +151,14 @@ function Statistics() {
                       statisticsIds="all"
                       options={optionsLine}
                     />
-                    <LastTenDaysTimeSpentLineChart
-                      data={allActivity}
-                      options={optionsLine}
-                    />
+                    {allActivity.allDates.length > 0 ? (
+                      <LastTenDaysTimeSpentLineChart
+                        data={allActivity}
+                        options={optionsLine}
+                      />
+                    ) : (
+                      ""
+                    )}
                     <AllAnswersPieChart
                       data={allAnswers}
                       options={optionsAnswersPie}
@@ -158,7 +176,16 @@ function Statistics() {
           </UserMobileCard>
         ) : (
           <div className={classNames(cx("statistics-container"))}>
-            <h2>Statistics</h2>
+            <header>
+              <FontAwesomeIcon
+                onClick={() => {
+                  setStatisticsModalIsVisible(true);
+                }}
+                style={{ cursor: "pointer", color: "black" }}
+                icon={faMagnifyingGlassChart}
+              />
+              <h2>Statistics</h2>
+            </header>
             {isFetched ? (
               <>
                 <StatisticsData
@@ -173,10 +200,14 @@ function Statistics() {
                   statisticsIds="all"
                   options={optionsLine}
                 />
-                <LastTenDaysTimeSpentLineChart
-                  data={allActivity}
-                  options={optionsLine}
-                />
+                {allActivity.allDates.length > 0 ? (
+                  <LastTenDaysTimeSpentLineChart
+                    data={allActivity}
+                    options={optionsLine}
+                  />
+                ) : (
+                  ""
+                )}
                 <AllAnswersPieChart
                   data={allAnswers}
                   options={optionsAnswersPie}
@@ -191,6 +222,23 @@ function Statistics() {
             )}
           </div>
         )}
+        {statisticsModalIsVisible
+          ? ReactDOM.createPortal(
+              <StatisticsModal
+                statisticsModalIsVisible={statisticsModalIsVisible}
+                hideStatisticsModal={hideStatisticsModal}
+                mainStats={mainStats}
+                allActivity={allActivity}
+                optionsLine={optionsLine}
+                allAnswers={allAnswers}
+                optionsAnswersPie={optionsAnswersPie}
+                allStatuses={allStatuses}
+                optionsStatusesPie={optionsStatusesPie}
+                isFetched={isFetched}
+              />,
+              document.getElementById("overlay-root")
+            )
+          : ""}
       </div>
     </div>
   );

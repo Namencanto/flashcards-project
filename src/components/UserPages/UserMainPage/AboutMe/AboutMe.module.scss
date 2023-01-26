@@ -24,7 +24,8 @@
       line-height: 2.4rem;
     }
     & svg {
-      color: $color-black;
+      height: 2rem;
+      color: #333;
     }
     @media only screen and (min-width: $bp-1000) {
       min-height: 0;
@@ -50,9 +51,12 @@
       & h2 {
         vertical-align: bottom !important;
         margin: 0 auto;
-        padding-right: 0.8rem;
-        color: $color-black;
-        font-size: 2.4rem;
+        padding-right: 2rem;
+
+        font-size: 3.6rem;
+        @media only screen and (min-width: $bp-1000) {
+          font-size: 2.4rem;
+        }
       }
     }
   }

@@ -8,10 +8,15 @@ import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import { useRef } from "react";
+import { useRef, useContext } from "react";
 import { countStatus } from "../../../../HelperComponents/countStatus";
 
 import LanguagesDataList from "./LanguagesDataList/LanguagesDataList";
+import { isArray } from "highcharts";
+
+import StartButtons from "../../UserTechcardsList/UserTechcardsListContent/StartButtons";
+import { RepetitionsContext } from "../../../../context/RepetitionsContext";
+
 function UserTechcardsContent({
   deleteFormIsSelected,
   changeFormIsSelected,
@@ -32,9 +37,12 @@ function UserTechcardsContent({
   displayFolderStatisticsModal,
   displayListStatisticsModal,
   isFetched,
+  displayLearningModal,
 }) {
   const cx = classNames.bind(classes);
-  console.log(techcardsAllSides);
+
+  const { filteredRepetitions } = useContext(RepetitionsContext);
+
   const addFormRadio = useRef();
   const changeFormRadio = useRef();
   const deleteFormRadio = useRef();
@@ -43,13 +51,28 @@ function UserTechcardsContent({
 
   const firstSidesFlag = techcardsFolders.map((d) => d.first_sides_flag);
   const secondSidesFlag = techcardsFolders.map((d) => d.second_sides_flag);
+
+  // Count all techcards to one arr to give possibility to learn whole user content at once
+  const allTechcardsIDS = [];
+  const allTechcardsFirstSides = [];
+  const allTechcardsSecondSides = [];
+  const allTechcardsImages = [];
+  const allTechcardsStatuses = [];
+  for (let i = 0; i < techcardsAllSides.length; i++) {
+    for (let j = 0; j < techcardsAllSides[i].length; j++) {
+      allTechcardsIDS.push(techcardsAllSides[i][j].id);
+      allTechcardsFirstSides.push(techcardsAllSides[i][j].first_side);
+      allTechcardsSecondSides.push(techcardsAllSides[i][j].second_side);
+      allTechcardsImages.push(techcardsAllSides[i][j].image);
+      allTechcardsStatuses.push(techcardsAllSides[i][j].status);
+    }
+  }
+
   /////////////////////////////////////////////////
 
   // * SUBMIT HANDLER
   const techcardsSubmitHandler = async (e) => {
     e.preventDefault();
-    // const firstSidesLanguage = takeLanguages("first");
-    // const secondSidesLanguage = takeLanguages("second");
 
     // * ADD
     if (addFormIsSelected) {
@@ -77,8 +100,16 @@ function UserTechcardsContent({
           if (input.value.length > 0)
             if (!listExists)
               listsToAdd.push([input.attributes.folderID.value, input.value]);
-            else setUserMessage(["red", "List name already exists"]);
-          else setUserMessage(["red", "List name cannot be empty"]);
+            else
+              setUserMessage([
+                "server-denied-medium",
+                "List name already exists",
+              ]);
+          else
+            setUserMessage([
+              "server-denied-medium",
+              "List name cannot be empty",
+            ]);
         });
 
         // * LIST ADD
@@ -88,14 +119,16 @@ function UserTechcardsContent({
               list: listsToAdd,
             });
             fetchTechcards();
-            setUserMessage(["green", res.data]);
+            setUserMessage(["server-accepted-medium", res.data]);
 
             // vanish fields after submit
             for (const list of allInputs) {
               list.value = "";
             }
+
+            setUserMessage(["server-accepted-medium", res.data]);
           } catch (err) {
-            setUserMessage(["red", "Something went wrong..."]);
+            setUserMessage(["server-denied-medium", "Something went wrong..."]);
           }
         }
       }
@@ -104,7 +137,10 @@ function UserTechcardsContent({
       const secondSidesFlag = e.target.secondSidesLanguage.value;
       const newFolder = techcardAddFolderRef.current.value;
       if (techcardsFolders.find(({ folder }) => folder === newFolder))
-        return setUserMessage(["red", "Folder name already exists"]);
+        return setUserMessage([
+          "server-denied-medium",
+          "Folder name already exists",
+        ]);
 
       if (newFolder.length > 0 && newFolder.length < 30) {
         try {
@@ -114,10 +150,10 @@ function UserTechcardsContent({
             secondSidesFlag,
           });
           fetchTechcards();
-          setUserMessage(["green", res.data]);
+          setUserMessage(["server-accepted-medium", res.data]);
           techcardAddFolderRef.current.value = "";
         } catch (err) {
-          setUserMessage(["red", "Something went wrong..."]);
+          setUserMessage(["server-denied-medium", "Something went wrong..."]);
         }
       }
     }
@@ -136,9 +172,13 @@ function UserTechcardsContent({
       let firstSidesFlagToChange = [];
       let secondSidesFlagToChange = [];
 
-      allLists.forEach((inputList) => {
+      // function needed for two cases when there is 1 input and when there is more than 1
+      const changeListHandler = (inputList) => {
         if (inputList.value.length === 0)
-          return setUserMessage(["red", "List name cannot be empty"]);
+          return setUserMessage([
+            "server-denied-medium",
+            "List name cannot be empty",
+          ]);
 
         // check if list name already exists
         let listExists = false;
@@ -154,21 +194,34 @@ function UserTechcardsContent({
 
         if (inputList.value === inputList.attributes.oldList.value) return;
         if (listExists)
-          return setUserMessage(["red", "List name arleady exists"]);
+          return setUserMessage([
+            "server-denied-medium",
+            "List name arleady exists",
+          ]);
         listsToChange.push([
           inputList.attributes.listID.value,
           inputList.value,
         ]);
-      });
-      let folderExists = false;
-      allFolders.forEach((inputFolder, i) => {
+      };
+      const changeFolderHandler = (inputFolder, i) => {
         if (inputFolder.value.length === 0)
-          return setUserMessage(["red", "Folder name cannot be empty"]);
+          return setUserMessage([
+            "server-denied-medium",
+            "Folder name cannot be empty",
+          ]);
 
         if (
+          NodeList.prototype.isPrototypeOf(e.target.firstSidesLanguage) &&
           inputFolder.value === inputFolder.attributes.oldFolder.value &&
           allFirstSidesFlag[i].value === firstSidesFlag[i] &&
           allSecondSidesFlag[i].value === secondSidesFlag[i]
+        )
+          return;
+        if (
+          !NodeList.prototype.isPrototypeOf(e.target.firstSidesLanguage) &&
+          inputFolder.value === inputFolder.attributes.oldFolder.value &&
+          e.target.firstSidesLanguage.value === firstSidesFlag[i] &&
+          e.target.secondSidesLanguage.value === secondSidesFlag[i]
         )
           return;
 
@@ -176,8 +229,16 @@ function UserTechcardsContent({
           inputFolder.attributes.folderID.value,
           inputFolder.value,
         ]);
-        firstSidesFlagToChange.push(allFirstSidesFlag[i].value);
-        secondSidesFlagToChange.push(allSecondSidesFlag[i].value);
+        firstSidesFlagToChange.push(
+          NodeList.prototype.isPrototypeOf(e.target.firstSidesLanguage)
+            ? allFirstSidesFlag[i].value
+            : e.target.firstSidesLanguage.value
+        );
+        secondSidesFlagToChange.push(
+          NodeList.prototype.isPrototypeOf(e.target.secondSidesLanguage)
+            ? allSecondSidesFlag[i].value
+            : e.target.secondSidesLanguage.value
+        );
         for (const { folder } of techcardsFolders) {
           if (
             folder === foldersToChange[foldersToChange.length - 1][1] &&
@@ -186,7 +247,24 @@ function UserTechcardsContent({
           )
             return (folderExists = true);
         }
-      });
+      };
+
+      if (allLists.length > 0) {
+        allLists.forEach((inputList) => {
+          changeListHandler(inputList);
+        });
+      } else {
+        changeListHandler(e.target.changeList);
+      }
+
+      let folderExists = false;
+      if (allFolders.length > 0) {
+        allFolders.forEach((inputFolder, i) => {
+          changeFolderHandler(inputFolder, i);
+        });
+      } else {
+        changeFolderHandler(e.target.changeFolder, 0);
+      }
 
       if (listsToChange.length > 0) {
         try {
@@ -194,25 +272,31 @@ function UserTechcardsContent({
             list: listsToChange,
           });
           fetchTechcards();
-          setUserMessage(["green", res.data]);
+          setUserMessage(["server-accepted-medium", res.data]);
         } catch (err) {
-          setUserMessage(["red", "Something went wrong..."]);
+          setUserMessage(["server-denied-medium", err.response.data]);
         }
       }
 
       if (foldersToChange.length > 0) {
         if (folderExists)
-          return setUserMessage(["red", "Folder name already exists"]);
+          return setUserMessage([
+            "server-denied-medium",
+            "Folder name already exists",
+          ]);
         try {
           const res = await axios.post("/techcards/update", {
-            folder: foldersToChange,
+            folder:
+              foldersToChange.length > 0
+                ? foldersToChange
+                : e.target.changeFolder,
             firstSidesFlag: firstSidesFlagToChange,
             secondSidesFlag: secondSidesFlagToChange,
           });
           fetchTechcards();
-          setUserMessage(["green", res.data]);
+          setUserMessage(["server-accepted-medium", res.data]);
         } catch (err) {
-          setUserMessage(["red", "Something went wrong..."]);
+          setUserMessage(["server-denied-medium", err.response.data]);
         }
       }
     }
@@ -257,9 +341,9 @@ function UserTechcardsContent({
             list: listToDelete,
           });
           fetchTechcards();
-          return setUserMessage(["green", res.data]);
+          return setUserMessage(["server-accepted-medium", res.data]);
         } catch (err) {
-          setUserMessage(["red", "Something went wrong..."]);
+          setUserMessage(["server-denied-medium", "Something went wrong..."]);
         }
       }
       if (folderToDelete.length > 0) {
@@ -268,9 +352,9 @@ function UserTechcardsContent({
             folder: folderToDelete,
           });
           fetchTechcards();
-          return setUserMessage(["green", res.data]);
+          return setUserMessage(["server-accepted-medium", res.data]);
         } catch (err) {
-          setUserMessage(["red", "Something went wrong..."]);
+          setUserMessage(["server-denied-medium", "Something went wrong..."]);
         }
       }
     } else return;
@@ -285,8 +369,11 @@ function UserTechcardsContent({
     let learnedCard = 0;
     let hardCard = 0;
     let uidCard;
+    const oneListCase = !isArray(techcardsAllSides[0]);
 
-    for (const { status, list_uid } of techcardsAllSides[firstI]) {
+    for (const { status, list_uid } of oneListCase
+      ? techcardsAllSides
+      : techcardsAllSides[firstI]) {
       if (status === 5) newCard += 1;
       if (status === 0) learnedCard += 1;
       if (status === 1 || status === 2 || status === 3 || status === 4)
@@ -304,6 +391,7 @@ function UserTechcardsContent({
       hardCard,
     ]);
   }
+
   return (
     <div className={classNames(cx("techcards-container"))}>
       {isFetched ? (
@@ -314,22 +402,65 @@ function UserTechcardsContent({
               onClick={changeTechcardsconHandler}
               icon={techcardsChangeIcon}
             />
-            <h1>TECHCARDS</h1>
-            {!changeTechcardsIsVisible && techcardsFolders.length === 0 ? (
-              <h3>
-                It looks like you don't have any techcards, click gear to add
-                some
-              </h3>
+            <h1>Techcards</h1>
+            {!changeTechcardsIsVisible && techcardsFolders.length !== 0 ? (
+              <div className={classNames(cx("techcards-title-repeat-all"))}>
+                <StartButtons
+                  techcardsIDS={allTechcardsIDS}
+                  firstSides={allTechcardsFirstSides}
+                  secondSides={allTechcardsSecondSides}
+                  techcardsImages={allTechcardsImages}
+                  list={"All techcards"}
+                  displayLearningModal={displayLearningModal}
+                  statuses={allTechcardsStatuses}
+                  filteredRepetitions={filteredRepetitions}
+                  shortType={true}
+                />
+              </div>
             ) : (
               ""
             )}
           </div>
+          {!changeTechcardsIsVisible && techcardsFolders.length === 0 ? (
+            <h3 style={{ textAlign: "center" }}>
+              It looks like you don't have any techcards, click gear to add some
+            </h3>
+          ) : (
+            ""
+          )}
           <form onSubmit={techcardsSubmitHandler}>
             {techcardsFolders.map(({ folder, id }, iFolder) => {
               const folderID = id;
+
+              // Filtering to the folder reps
+              const currentFolderIDS = [];
+              const currentFolderFirstSides = [];
+              const currentFolderSecondSides = [];
+              const currentFolderStatuses = [];
+              const currentFolderImages = [];
+              for (let i = 0; i < techcardsAllSides.length; i++) {
+                for (let j = 0; j < techcardsAllSides[i].length; j++) {
+                  if (folderID === techcardsAllSides[i][j].folder_uid) {
+                    currentFolderIDS.push(techcardsAllSides[i][j].id);
+                    currentFolderFirstSides.push(
+                      techcardsAllSides[i][j].first_side
+                    );
+                    currentFolderSecondSides.push(
+                      techcardsAllSides[i][j].second_side
+                    );
+                    currentFolderImages.push(techcardsAllSides[i][j].image);
+                    currentFolderStatuses.push(techcardsAllSides[i][j].status);
+                  }
+                }
+              }
+
               let counter = [];
               if (techcardsAllSides) {
-                for (const techcardAllSides of techcardsAllSides) {
+                const oneListCase = !isArray(techcardsAllSides[0]);
+
+                for (const techcardAllSides of oneListCase
+                  ? [techcardsAllSides]
+                  : techcardsAllSides) {
                   for (const { folder_uid, status } of techcardAllSides) {
                     if (folder_uid === id) counter.push(status);
                   }
@@ -359,13 +490,36 @@ function UserTechcardsContent({
                       </>
                     ) : (
                       <>
-                        <h2
-                          onClick={() => {
-                            displayFolderStatisticsModal(id);
-                          }}
+                        <div
+                          className={classNames(
+                            cx("techcards-main-folder-title-content")
+                          )}
                         >
-                          {folder}
-                        </h2>
+                          <h2
+                            onClick={() => {
+                              displayFolderStatisticsModal(id);
+                            }}
+                          >
+                            {folder}
+                          </h2>
+                          <div
+                            className={classNames(
+                              cx("techcards-main-folder-title-content-repeat")
+                            )}
+                          >
+                            <StartButtons
+                              techcardsIDS={currentFolderIDS}
+                              firstSides={currentFolderFirstSides}
+                              secondSides={currentFolderSecondSides}
+                              techcardsImages={currentFolderImages}
+                              list={`All techcards from ${folder}`}
+                              displayLearningModal={displayLearningModal}
+                              statuses={currentFolderStatuses}
+                              filteredRepetitions={filteredRepetitions}
+                              shortType={true}
+                            />
+                          </div>
+                        </div>
                         <div>
                           <div
                             className={classNames(
@@ -486,11 +640,13 @@ function UserTechcardsContent({
                   <ul>
                     {techcardsLists[iFolder]?.map(({ list, id }, iList) => {
                       let actualStatus = [];
-                      for (const allsideStatus of allSidesStatus) {
-                        if (allsideStatus[0] === id)
-                          actualStatus = allsideStatus.slice(1);
+                      for (const sideStatus of allSidesStatus) {
+                        if (sideStatus[0] === id)
+                          actualStatus = sideStatus.slice(1);
                       }
+
                       const listCount = actualStatus.reduce((a, b) => a + b, 0);
+
                       return (
                         <li key={iList}>
                           {changeFormIsSelected ? (
@@ -696,13 +852,18 @@ function UserTechcardsContent({
                     <label htmlFor="delete">Delete</label>
                   </div>
                 </div>
-                <p style={{ color: userMessage[0] }}>{userMessage[1]}</p>
                 <button
-                  style={{ width: "15rem", height: "4rem", fontSize: "1.6rem" }}
+                  style={{
+                    marginTop: "0.5rem",
+                    width: "15rem",
+                    height: "4rem",
+                    fontSize: "1.6rem",
+                  }}
                   className="btn-solid-small"
                 >
                   Confirm
                 </button>
+                <p className={userMessage[0]}>{userMessage[1]}</p>
               </>
             ) : (
               ""

@@ -8,7 +8,7 @@
   padding-bottom: 1.5rem;
 
   @media only screen and (min-width: $bp-1000) {
-    padding-top: 13.8rem;
+    padding-top: 15.6rem;
   }
   &-title {
     &-icons {
@@ -25,8 +25,9 @@
       display: block;
       cursor: pointer;
       margin-bottom: 1rem;
+      height: 2rem;
       @media only screen and (min-width: $bp-1000) {
-        height: 2rem;
+        height: 2.75rem;
       }
       &-form {
         display: inline-block;
@@ -113,6 +114,9 @@
     }
   }
   &-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 68.75rem;
     &-header {
       display: flex;
       border-bottom: 1px $color-555 solid;
@@ -320,16 +324,53 @@
           }
         }
       }
+
       & button {
         margin-top: 1rem;
+      }
+      &-submit-btn {
+        margin-top: 5rem;
+        display: flex;
+        justify-content: center;
+        & button {
+          width: 20rem;
+        }
       }
     }
   }
   &-btns {
-    margin: 2.5rem 0 1rem 0;
+    margin-top: auto;
     display: flex;
-    justify-content: space-around;
-    width: 65rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    scale: 0.75;
+    margin-top: -0.75rem;
+    @media only screen and (min-width: $bp-600) {
+      margin-top: 0;
+      scale: 1;
+      justify-content: flex-start;
+      @media only screen and (min-width: $bp-1400) {
+        display: flex;
+      }
+    }
+    &-display-further {
+      align-self: flex-start;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      cursor: pointer;
+      color: #000;
+      font-size: 1.8rem;
+      @media only screen and (min-width: $bp-600) {
+        width: 16rem;
+      }
+      & svg {
+        margin-left: 1rem;
+      }
+    }
   }
   &-btn {
     &-start {
@@ -338,7 +379,6 @@
         & span {
           margin-top: 0.2rem;
           color: white;
-          // position: absolute;
           z-index: 10;
           margin-left: 1rem;
 
@@ -348,11 +388,10 @@
           }
         }
         & button {
+          margin: 0 0.5rem;
           text-align: start;
-          // padding-left: 5.25rem;
           cursor: pointer;
           font-size: 1.4rem;
-          // position: relative;
 
           width: 16rem;
           height: 3rem;
@@ -370,10 +409,22 @@
           background-color: orangered;
         }
       }
+      &-all {
+        @include btn-start;
+        & button {
+          background-color: $color-purple;
+        }
+      }
       &-new {
         @include btn-start;
         & button {
-          background-color: lightblue;
+          background-color: rgb(112, 174, 255);
+        }
+      }
+      &-known {
+        @include btn-start;
+        & button {
+          background-color: rgb(0, 160, 0);
         }
       }
       &-to-learn {
@@ -390,7 +441,9 @@
       }
     }
     &-quantity {
+      width: 16rem;
       text-align: center;
+      margin: auto;
       & svg {
         color: #555;
         cursor: pointer;
