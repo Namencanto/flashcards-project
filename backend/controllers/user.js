@@ -72,7 +72,6 @@ export const getRanking = (req, res) => {
     const month = today.toISOString().split("T")[0].slice(0, -3);
     const qFirst =
       "SELECT `month_score`, `user_uid` FROM `users_monthly_statistics` WHERE month = ? ORDER BY month_score DESC LIMIT 10;";
-    console.log(month);
     db.query(qFirst, [month], (err, dataFirst) => {
       if (err) return res.status(500).json(err);
       let qSecond = "";
@@ -82,8 +81,7 @@ export const getRanking = (req, res) => {
           data.user_uid +
           ";";
       }
-      console.log(qSecond.length === 0);
-      console.log(qSecond);
+
       if (qSecond.length === 0) {
         return res.status(200).json(null);
       }
@@ -101,10 +99,14 @@ export const getLastLearned = (req, res) => {
   checkToken(req, res, ({ id }) => {
     try {
       const qSelectLastLearnedId =
-        "SELECT DISTINCT `list_uid` FROM `lists_statistics` WHERE `user_uid` = ? ORDER BY `id` DESC LIMIT 5;";
+        "SELECT sub.list_uid FROM ( SELECT list_uid, MAX(id) as id FROM techcards.lists_statistics WHERE user_uid = ? GROUP BY list_uid ORDER BY id DESC LIMIT 5 ) as sub ORDER BY sub.id DESC;";
 
       // SELECT LAST 3 LEARNED LIST
+
       db.query(qSelectLastLearnedId, [id], (err, selectLastLearnedIdData) => {
+        if (!selectLastLearnedIdData)
+          return res.status(500).json("Something went wrong...");
+
         let qSelectLastList = "";
         let qSelectLastListData = [];
 
