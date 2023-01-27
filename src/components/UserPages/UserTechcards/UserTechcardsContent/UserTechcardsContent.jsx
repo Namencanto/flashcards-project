@@ -58,13 +58,15 @@ function UserTechcardsContent({
   const allTechcardsSecondSides = [];
   const allTechcardsImages = [];
   const allTechcardsStatuses = [];
-  for (let i = 0; i < techcardsAllSides.length; i++) {
-    for (let j = 0; j < techcardsAllSides[i].length; j++) {
-      allTechcardsIDS.push(techcardsAllSides[i][j].id);
-      allTechcardsFirstSides.push(techcardsAllSides[i][j].first_side);
-      allTechcardsSecondSides.push(techcardsAllSides[i][j].second_side);
-      allTechcardsImages.push(techcardsAllSides[i][j].image);
-      allTechcardsStatuses.push(techcardsAllSides[i][j].status);
+  if (techcardsAllSides) {
+    for (let i = 0; i < techcardsAllSides.length; i++) {
+      for (let j = 0; j < techcardsAllSides[i].length; j++) {
+        allTechcardsIDS.push(techcardsAllSides[i][j].id);
+        allTechcardsFirstSides.push(techcardsAllSides[i][j].first_side);
+        allTechcardsSecondSides.push(techcardsAllSides[i][j].second_side);
+        allTechcardsImages.push(techcardsAllSides[i][j].image);
+        allTechcardsStatuses.push(techcardsAllSides[i][j].status);
+      }
     }
   }
 
@@ -438,18 +440,22 @@ function UserTechcardsContent({
               const currentFolderSecondSides = [];
               const currentFolderStatuses = [];
               const currentFolderImages = [];
-              for (let i = 0; i < techcardsAllSides.length; i++) {
-                for (let j = 0; j < techcardsAllSides[i].length; j++) {
-                  if (folderID === techcardsAllSides[i][j].folder_uid) {
-                    currentFolderIDS.push(techcardsAllSides[i][j].id);
-                    currentFolderFirstSides.push(
-                      techcardsAllSides[i][j].first_side
-                    );
-                    currentFolderSecondSides.push(
-                      techcardsAllSides[i][j].second_side
-                    );
-                    currentFolderImages.push(techcardsAllSides[i][j].image);
-                    currentFolderStatuses.push(techcardsAllSides[i][j].status);
+              if (techcardsAllSides) {
+                for (let i = 0; i < techcardsAllSides.length; i++) {
+                  for (let j = 0; j < techcardsAllSides[i].length; j++) {
+                    if (folderID === techcardsAllSides[i][j].folder_uid) {
+                      currentFolderIDS.push(techcardsAllSides[i][j].id);
+                      currentFolderFirstSides.push(
+                        techcardsAllSides[i][j].first_side
+                      );
+                      currentFolderSecondSides.push(
+                        techcardsAllSides[i][j].second_side
+                      );
+                      currentFolderImages.push(techcardsAllSides[i][j].image);
+                      currentFolderStatuses.push(
+                        techcardsAllSides[i][j].status
+                      );
+                    }
                   }
                 }
               }

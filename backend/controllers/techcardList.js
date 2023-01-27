@@ -20,7 +20,7 @@ export const getTechcardList = (req, res) => {
       if (err) return res.status(500).send(err);
 
       const qTechcards = "SELECT * FROM techcards WHERE list_uid = ?";
-      db.query(qTechcards, [listsData[0][0].id], (err, techcardsData) => {
+      db.query(qTechcards, [listsData[0][0]?.id], (err, techcardsData) => {
         if (err) return res.status(500).send(err);
 
         return res.status(200).json({

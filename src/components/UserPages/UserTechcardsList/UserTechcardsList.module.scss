@@ -339,19 +339,14 @@
     }
   }
   &-btns {
-    margin-top: auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     scale: 0.75;
-    margin-top: -0.75rem;
+    margin-top: auto;
     @media only screen and (min-width: $bp-600) {
-      margin-top: 0;
       scale: 1;
       justify-content: flex-start;
-      @media only screen and (min-width: $bp-1400) {
-        display: flex;
-      }
     }
     &-display-further {
       align-self: flex-start;
