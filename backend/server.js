@@ -18,6 +18,7 @@ if (process.env.SERVER_IS_PRODUCTION) {
     "/static",
     express.static(path.resolve(__dirname, "../build/static"))
   );
+  app.use("/static", express.static(path.resolve(__dirname, "../build")));
   app.get("*", (req, res) =>
     res.sendFile(path.join(__dirname, "../build/index.html"))
   );

@@ -75,7 +75,9 @@ function FutureRepetitionsLineCharts({ statisticsIds, options }) {
         calculatedRepetitions.length === 1
           ? calculatedRepetitions
               .concat(calculatedRepetitions[0])
-              .map((date, i) => date)
+              .map(({ date }, i) =>
+                date !== nowString.replaceAll(".", "-") ? date : "Today"
+              )
           : calculatedRepetitions.map(({ date }, i) =>
               date !== nowString.replaceAll(".", "-") ? date : "Today"
             ),

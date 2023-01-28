@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /backend/node_modules
 /node_modules
@@ -13,7 +11,7 @@
 /build
 
 # uploads
-/backend/uploads
+# should be in a serious app /backend/uploads
 
 # misc
 .DS_Store

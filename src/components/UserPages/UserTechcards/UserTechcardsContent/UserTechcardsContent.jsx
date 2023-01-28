@@ -502,6 +502,13 @@ function UserTechcardsContent({
                           )}
                         >
                           <h2
+                            style={
+                              changeTechcardsIsVisible
+                                ? {
+                                    paddingLeft: "0",
+                                  }
+                                : null
+                            }
                             onClick={() => {
                               displayFolderStatisticsModal(id);
                             }}
@@ -513,17 +520,21 @@ function UserTechcardsContent({
                               cx("techcards-main-folder-title-content-repeat")
                             )}
                           >
-                            <StartButtons
-                              techcardsIDS={currentFolderIDS}
-                              firstSides={currentFolderFirstSides}
-                              secondSides={currentFolderSecondSides}
-                              techcardsImages={currentFolderImages}
-                              list={`All techcards from ${folder}`}
-                              displayLearningModal={displayLearningModal}
-                              statuses={currentFolderStatuses}
-                              filteredRepetitions={filteredRepetitions}
-                              shortType={true}
-                            />
+                            {!changeTechcardsIsVisible ? (
+                              <StartButtons
+                                techcardsIDS={currentFolderIDS}
+                                firstSides={currentFolderFirstSides}
+                                secondSides={currentFolderSecondSides}
+                                techcardsImages={currentFolderImages}
+                                list={`All techcards from ${folder}`}
+                                displayLearningModal={displayLearningModal}
+                                statuses={currentFolderStatuses}
+                                filteredRepetitions={filteredRepetitions}
+                                shortType={true}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </div>
                         </div>
                         <div>

@@ -240,7 +240,10 @@
         margin-top: 15rem;
         justify-content: center;
         @media only screen and (min-width: $bp-1000) {
-          margin-top: 10rem;
+          margin-top: 7.5rem;
+          @media only screen and (min-width: $bp-2000) {
+            margin-top: 15rem;
+          }
         }
         & button {
           cursor: pointer;
@@ -295,7 +298,7 @@
 
       &-round-info {
         padding-top: 5rem;
-        padding-bottom: 9.8rem;
+        padding-bottom: 6.5rem;
         & p,
         h3 {
           font-size: 3rem;

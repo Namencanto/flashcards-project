@@ -380,11 +380,15 @@ function LearningModal(props) {
                   {round > 1 ? " rounds" : " round"}
                 </p>
                 <p>
-                  Effectiveness:{" "}
-                  {(
-                    roundsStatistics.effectiveness.reduce((a, b) => a + b) /
-                    roundsStatistics.effectiveness.length
-                  ).toFixed(2)}
+                  Effectiveness: {console.log(roundsStatistics.effectiveness)}
+                  {
+                    // jakis wielki cham tutaj ten warunek postawil :oo
+                    (roundsStatistics.effectiveness[0] === NaN
+                      ? roundsStatistics.effectiveness.reduce((a, b) => a + b) /
+                        roundsStatistics.effectiveness.length
+                      : 100
+                    ).toFixed(2)
+                  }
                   %
                 </p>
                 <p>

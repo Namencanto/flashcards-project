@@ -11,7 +11,7 @@
     "test:all": "jest -- index.test.js",
     "start": "nodemon server.js",
     "client": "cd ../ && npm start",
-    "dev": "concurrently -n 'server,client' -c 'red,green'  \"nodemon server.js\" \"npm run client\""
+    "dev": "concurrently \"nodemon server.js\" \"cd ../npm run start\""
   },
   "keywords": [],
   "author": "",

@@ -22,7 +22,7 @@ const General = () => {
   const resetServerMessage = () => {
     setServerMessage("");
   };
-  // * this is just for test
+
   const generalInformationFetch = async () => {
     try {
       const resGeneral = await axios.get("/users/general");
