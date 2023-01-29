@@ -271,7 +271,6 @@ function UserTechcardsListContent({
               }}
               icon={listChangeIcon}
             />
-            {/* <p>{folder}</p> */}
             <div style={{ display: "flex" }}>
               <h1>{list}</h1>
               {!changeListIsVisible && listImage ? (

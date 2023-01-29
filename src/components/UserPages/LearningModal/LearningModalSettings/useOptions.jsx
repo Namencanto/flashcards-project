@@ -24,6 +24,36 @@ export const useOptions = (
         ids: techcardsToDisplay.ids,
       });
     }
+
+    // with enable random
+    if (learningOptions.reverse && learningOptions.random) {
+      setTechcardsToDisplay({
+        firstSides: techcardsToDisplay.secondSides,
+        secondSides: techcardsToDisplay.firstSides,
+        images: techcardsToDisplay.images,
+        ids: techcardsToDisplay.ids,
+      });
+      setTechcardsToDisplayRandomBackup({
+        firstSides: techcardsToDisplay.secondSides,
+        secondSides: techcardsToDisplay.firstSides,
+        images: techcardsToDisplay.images,
+        ids: techcardsToDisplay.ids,
+      });
+    }
+    if (learningOptions.random) {
+      setTechcardsToDisplay({
+        firstSides: techcardsToDisplay.secondSides,
+        secondSides: techcardsToDisplay.firstSides,
+        images: techcardsToDisplay.images,
+        ids: techcardsToDisplay.ids,
+      });
+      setTechcardsToDisplayRandomBackup({
+        firstSides: techcardsToDisplay.secondSides,
+        secondSides: techcardsToDisplay.firstSides,
+        images: techcardsToDisplay.images,
+        ids: techcardsToDisplay.ids,
+      });
+    }
   }, [learningOptions.reverse]);
 
   // * RANDOM CASE

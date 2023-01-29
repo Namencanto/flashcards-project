@@ -15,7 +15,6 @@ import {
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
 
 import axios from "axios";
-import AboutMeLanguages from "./AboutMeLanguages";
 import AboutMeContent from "./AboutMeContent";
 
 function AboutMe() {
@@ -34,7 +33,6 @@ function AboutMe() {
     setIsFetched(false);
     try {
       const res = await axios.get("/users/getInformation");
-      console.log(res.data);
       setChangeTextIsVisible(false);
       setTextareaIcon(faGear);
       setAboutMeText(res.data[0].about_me_info);

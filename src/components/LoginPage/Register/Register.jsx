@@ -237,8 +237,8 @@ function Register() {
           />
           <p>
             I've read and agree to Techcards' written
-            <Link to="privacy-policy"> Privacy Policy </Link> and
-            <Link to="terms-conditions"> Terms Conditions </Link>.
+            <Link to="/privacy-policy"> Privacy Policy </Link> and
+            <Link to="/terms-conditions"> Terms Conditions </Link>.
           </p>
         </div>
         {inputCheckboxIsValid || (

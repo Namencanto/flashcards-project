@@ -380,7 +380,7 @@ function LearningModal(props) {
                   {round > 1 ? " rounds" : " round"}
                 </p>
                 <p>
-                  Effectiveness: {console.log(roundsStatistics.effectiveness)}
+                  Effectiveness:
                   {
                     // jakis wielki cham tutaj ten warunek postawil :oo
                     (roundsStatistics.effectiveness[0] === NaN

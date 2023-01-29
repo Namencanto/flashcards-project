@@ -22,6 +22,7 @@
       }
     }
     &-icon {
+      color: #333;
       display: block;
       cursor: pointer;
       margin-bottom: 1rem;
@@ -61,8 +62,10 @@
     & h1 {
       display: inline-block;
       font-size: 3.4rem;
+      line-height: 4rem;
       @media only screen and (min-width: $bp-1000) {
         font-size: 5rem;
+        line-height: 5rem;
       }
     }
   }
@@ -342,8 +345,10 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    scale: 0.75;
+
     margin-top: auto;
+    scale: 0.8;
+
     @media only screen and (min-width: $bp-600) {
       scale: 1;
       justify-content: flex-start;
@@ -375,10 +380,10 @@
           margin-top: 0.2rem;
           color: white;
           z-index: 10;
-          margin-left: 1rem;
+          // margin-left: .5rem;
 
           & svg {
-            padding-right: 0.5rem;
+            padding: 0 0.5rem;
             width: 1.3rem;
           }
         }
@@ -388,11 +393,12 @@
           cursor: pointer;
           font-size: 1.4rem;
 
-          width: 16rem;
+          min-width: 16rem;
           height: 3rem;
           border: none;
           border-radius: 1rem;
           color: white;
+          padding: 0 1rem;
           &:disabled {
             filter: brightness(80%);
           }

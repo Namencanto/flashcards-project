@@ -20,17 +20,16 @@ function AboutMeContent({
 
   return (
     <div className={classNames(cx("aboutme-container"))}>
+      <div className={classNames(cx("aboutme-container-header"))}>
+        <FontAwesomeIcon
+          style={{ cursor: isFetched ? "pointer" : "default" }}
+          onClick={isFetched && changeTextIconHandler}
+          icon={textareaIcon}
+        />
+        <h2>About me</h2>
+      </div>
       {isFetched ? (
         <>
-          <div className={classNames(cx("aboutme-container-header"))}>
-            <FontAwesomeIcon
-              style={{ cursor: "pointer" }}
-              onClick={changeTextIconHandler}
-              icon={textareaIcon}
-            />
-            <h2>About me</h2>
-          </div>
-
           <div className={classNames(cx("aboutme-container-info"))}>
             <AboutMeText
               changeTextIsVisible={changeTextIsVisible}

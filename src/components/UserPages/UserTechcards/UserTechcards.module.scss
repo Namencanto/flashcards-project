@@ -14,6 +14,7 @@
     margin-bottom: 2rem;
     flex-wrap: wrap;
     &-icon {
+      color: #333;
       z-index: 1;
       align-self: flex-start;
       cursor: pointer;
@@ -39,15 +40,16 @@
       text-align: center;
       font-size: 3.6rem;
       position: absolute;
-
       left: 0%;
       right: 0%;
       margin-top: 2rem;
       @media only screen and (min-width: 300px) {
-        margin-top: 0;
+        margin-top: -1.25rem;
         @media only screen and (min-width: $bp-600) {
+          margin-top: -0.25rem;
           @media only screen and (min-width: $bp-1000) {
             font-size: 5rem;
+            line-height: 5rem;
           }
         }
       }
@@ -175,15 +177,17 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        & a {
+          color: #555;
+
+          &:hover {
+            color: $color-purple;
+          }
+        }
         @media only screen and (min-width: $bp-1000) {
           padding: 1rem 0.25rem;
           & a {
-            color: #555;
             font-size: 1.8rem;
-
-            &:hover {
-              color: $color-purple;
-            }
           }
         }
       }

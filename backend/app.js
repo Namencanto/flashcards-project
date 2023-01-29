@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/auth.js";
+import newsletterRoutes from "./routes/newsletters.js";
 import userRoutes from "./routes/users.js";
 import techcardRoutes from "./routes/techcards.js";
 import techcardListRoutes from "./routes/techcardsLists.js";
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
+app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/techcards", techcardRoutes);
 app.use("/api/techcards/lists", techcardListRoutes);

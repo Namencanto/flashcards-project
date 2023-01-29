@@ -1,7 +1,7 @@
 import classes from "./Courses.module.scss";
 import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus, faDollar } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faDollar } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
@@ -28,6 +28,10 @@ function CoursesList({ courseFolders, courseLists }) {
         courseFolderId,
         courseListId,
       });
+
+      if (res.status === 200) {
+        fetchUserCourses();
+      }
     } catch (e) {
       console.log(e);
     }
@@ -100,7 +104,6 @@ function CoursesList({ courseFolders, courseLists }) {
                                       folder_uid,
                                       id
                                     );
-                                    fetchUserCourses();
                                   } else {
                                     navigate("/pricing");
                                   }

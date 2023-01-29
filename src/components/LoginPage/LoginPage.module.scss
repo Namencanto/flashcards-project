@@ -20,11 +20,13 @@
     background-color: $color-purple;
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
+    overflow: auto;
   }
   &-wrapper {
     position: relative;
     margin: 0 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   &-description {

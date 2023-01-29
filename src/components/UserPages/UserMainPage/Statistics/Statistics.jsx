@@ -131,7 +131,6 @@ function Statistics() {
             {
               <div className={classNames(cx("statistics-container"))}>
                 <header>
-                  <FontAwesomeIcon icon={faMagnifyingGlassChart} />
                   <h2>Statistics</h2>
                 </header>
                 {isFetched ? (

@@ -29,7 +29,10 @@ function Quiz(props) {
       if (isInvalid) return;
       if (props.whichTechcard !== props.techcardsToDisplay.firstSides.length)
         props.setWhichTechcard(props.whichTechcard + 1);
-      else return props.setListIsFinished(true);
+      else {
+        props.newToDisplay(props.setKnownTechcards);
+        return props.setListIsFinished(true);
+      }
 
       props.newToDisplay(props.setKnownTechcards);
       props.setTechcardsToDisplay((prevState) => ({

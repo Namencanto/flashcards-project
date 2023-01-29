@@ -539,6 +539,9 @@ function UserTechcardsContent({
                         </div>
                         <div>
                           <div
+                            style={
+                              changeTechcardsIsVisible ? { margin: "0" } : null
+                            }
                             className={classNames(
                               cx("techcards-main-folder-title-stats")
                             )}

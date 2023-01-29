@@ -29,8 +29,6 @@ function LoginPage(props) {
   }, [getCookie("jwtTime")]);
   return (
     <>
-      {/* login && header login : reszta */}
-
       <Header allParts={props.allParts} />
       <div className={classNames(cx("loginpage-container"))}>
         <div className={classNames(cx("loginpage"))}>

@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
 
 import { emailValidation } from "../../../hooks/useInputValidation";
+import axios from "axios";
 function Newsletter() {
   const cx = classNames.bind(classes);
 
@@ -14,6 +15,7 @@ function Newsletter() {
   const [inputCheckboxIsValid, setInputCheckboxIsValid] = useState(true);
 
   const [inputEmailErrorMessage, setInputEmailErrorMessage] = useState("");
+  const [serverResponse, setServerResponse] = useState({});
 
   const inputEmailRef = useRef();
   const inputCheckboxRef = useRef();
@@ -27,15 +29,28 @@ function Newsletter() {
   const inputCheckboxValidation = () => {
     setInputCheckboxIsValid(inputCheckboxRef.current.checked);
   };
-  const formValidation = (e) => {
+  const formValidation = async (e) => {
     e.preventDefault();
-
+    const email = inputEmailRef.current.value;
     if (
-      inputEmailRef.current.value !== "" &&
+      email !== "" &&
       inputEmailIsValid === true &&
       inputCheckboxIsValid === true
     ) {
-      // send to server
+      try {
+        const res = await axios.post("/newsletter/", {
+          email,
+        });
+        setServerResponse({
+          message: res.data,
+          type: "server-accepted-large",
+        });
+      } catch (err) {
+        setServerResponse({
+          message: err.response.data,
+          type: "server-denied-large",
+        });
+      }
     } else {
       inputCheckboxValidation();
       inputEmailValidation();
@@ -91,6 +106,7 @@ function Newsletter() {
             </button>
           </form>
         </div>
+        <p className={serverResponse.type}>{serverResponse.message}</p>
       </div>
     </div>
   );

@@ -133,7 +133,7 @@ function TermsConditionsPage() {
           Services. By visiting Techcards or using the Services you agree to the
           use of cookies in your browser and HTML-based emails. Cookies are
           small text files placed on your device when you visit a{" "}
-          <Link to="/home">web site </Link>in order to track use of the site and
+          <Link to="/home">web site</Link> in order to track use of the site and
           to improve your user experience.
         </p>
       </section>

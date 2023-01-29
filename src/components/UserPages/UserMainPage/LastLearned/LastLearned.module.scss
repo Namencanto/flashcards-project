@@ -1,11 +1,13 @@
 @import "../../../../assets/base.scss";
 .last-learned {
   background-color: $color-purple;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
+  padding-bottom: 1.5rem;
   width: 100vw;
 
   @media only screen and (min-width: $bp-1000) {
-    height: 100%;
+    min-height: 0;
     width: 100%;
   }
 
@@ -24,13 +26,11 @@
 
     & ul {
       overflow: auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
       height: 100%;
       margin: auto;
+
       @media only screen and (min-width: $bp-1000) {
-        margin-top: -1.3rem;
+        height: calc(100% - 2.6rem);
       }
       & li {
         display: flex;

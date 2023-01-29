@@ -5,7 +5,6 @@ import { passwordValidation } from "./server-validations/inputsValidation.js";
 import { emailValidation } from "./server-validations/inputsValidation.js";
 import { nickValidation } from "./server-validations/inputsValidation.js";
 import { checkToken } from "./checkToken.js";
-//
 
 export const register = (req, res) => {
   // * CHECK EXISTING USER
@@ -231,16 +230,9 @@ export const deleteAccount = (req, res) => {
   });
 };
 
-import dotenv from "dotenv";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-import path from "path";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-dotenv.config({ path: path.resolve(__dirname, "../../.env.local") });
-
 // * Send user their information
-import nodemailer from "nodemailer";
+
+import { sendMail } from "./emailBotConfig.js";
 
 export const postSendUserInformation = (req, res) => {
   try {
@@ -260,15 +252,6 @@ export const postSendUserInformation = (req, res) => {
       if (!isPasswordCorrect)
         return res.status(404).json("Wrong email or password");
 
-      const transporter = nodemailer.createTransport({
-        // for bigger app better use something like mailgun or sendgrid than gmail
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      });
-
       // Collect user premium data
       const collectUserPremiumData =
         "SELECT * FROM users_premium WHERE user_uid = ?;";
@@ -285,8 +268,8 @@ export const postSendUserInformation = (req, res) => {
           for (const key in userProfileData) {
             if (key !== "id" && key !== "password") {
               userProfileHTML += `<li>${key}: ${
-                userProfileData[key].toString().startsWith("user-avatar-")
-                  ? `${process.env.REACT_APP_URL}/${userProfileData[key]}`
+                userProfileData[key]?.toString().startsWith("user-avatar-")
+                  ? `<a href="${process.env.REACT_APP_URL}/${userProfileData[key]}" style="color: #87CEEB;">${process.env.REACT_APP_URL}/${userProfileData[key]}</a>`
                   : userProfileData[key]
               }</li>`;
             }
@@ -298,7 +281,11 @@ export const postSendUserInformation = (req, res) => {
           for (const userPremiumDataObject of userPremiumData) {
             userPremiumHTML += "<h3>User Premium Data</h3><ul>";
             for (const key in userPremiumDataObject) {
-              if (key !== "id" && key !== "user_uid") {
+              if (
+                key !== "id" &&
+                key !== "user_uid" &&
+                key !== "unsubscribed"
+              ) {
                 userPremiumHTML += `<li>${key}: ${userPremiumDataObject[key]}</li>`;
               }
             }
@@ -307,21 +294,14 @@ export const postSendUserInformation = (req, res) => {
 
           // Email data
           const mailOptions = {
-            from: "Techcards",
-            to: "mateusz.ordon22@gmail.com",
+            from: process.env.EMAIL_USER,
+            to: userEmail,
             subject: "Please, these are all your data",
-            text: "Check it out!",
-            html: userProfileHTML + userPremiumHTML,
+            text: userProfileHTML + userPremiumHTML,
+            html: `<div style="background-color: #5f4dee; color: white; padding: 20px;">${userProfileHTML}${userPremiumHTML}</div>`,
           };
 
-          transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log("Email sent: " + info.response);
-              return res.status(200).json("Data has been sent to your email");
-            }
-          });
+          sendMail(mailOptions, res, "Data has been sent to your email");
         }
       );
     });

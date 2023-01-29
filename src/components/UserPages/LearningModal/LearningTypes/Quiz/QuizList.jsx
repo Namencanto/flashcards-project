@@ -9,7 +9,6 @@ function QuizList({
   correctAnswer,
   isInvalid,
   goToNextTechcard,
-  whenReload,
   listIsFinished,
   learningOptions,
 }) {
@@ -17,7 +16,6 @@ function QuizList({
 
   useEffect(() => {
     if (listIsFinished) return;
-    //todo: crash when all goods
     const randomUnique = (range, count) => {
       let nums = new Set();
       while (nums.size < count) {
@@ -46,40 +44,43 @@ function QuizList({
 
     //
 
-    if (sidesToDisplay.length === 2) {
-      const rndInt = randomUnique(2, 2);
-      const arrToRandomize = [correctAnswer, sidesToDisplay[rndInt[1]]];
+    if (firstSides.length === 2) {
+      const rndInt = randomUnique(1, 1);
+      const arrToRandomize = [correctAnswer, sidesToDisplay[rndInt[0]]];
       const randomizedArr = randomArr(arrToRandomize);
+
       setQuizArr(randomizedArr);
     }
-    if (sidesToDisplay.length === 3) {
-      const rndInt = randomUnique(3, 3);
+    if (firstSides.length === 3) {
+      const rndInt = randomUnique(2, 2);
       const arrToRandomize = [
         correctAnswer,
+        sidesToDisplay[rndInt[0]],
         sidesToDisplay[rndInt[1]],
-        sidesToDisplay[rndInt[2]],
       ];
+
       const randomizedArr = randomArr(arrToRandomize);
+
       setQuizArr(randomizedArr);
     }
-    if (sidesToDisplay.length >= 4) {
+    if (firstSides.length >= 4) {
       const rndInt = randomUnique(sidesToDisplay.length, 4);
       const arrToRandomize = [
         correctAnswer,
+        sidesToDisplay[rndInt[0]],
         sidesToDisplay[rndInt[1]],
         sidesToDisplay[rndInt[2]],
-        sidesToDisplay[rndInt[3]],
       ];
       const randomizedArr = randomArr(arrToRandomize);
       setQuizArr(randomizedArr);
     }
-  }, [techcardsToDisplay, learningOptions.reverse]);
+  }, [techcardsToDisplay, learningOptions.reverse, learningOptions.random]);
 
   return (
     <ol>
-      {quizArr.map((value) => {
+      {quizArr.map((value, i) => {
         return (
-          <li key={value + whenReload} id="quizEl">
+          <li key={value + i} id="quizEl">
             <button
               value={value}
               onClick={() => {

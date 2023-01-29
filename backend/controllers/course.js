@@ -129,6 +129,9 @@ export const addCourseToUser = (req, res) => {
             [userInfo.id, userCourseListId, userCourseFolderId, courseListId],
             (err) => {
               if (err) return res.status(500).send(err);
+              return res
+                .status(200)
+                .send("The course has been added to your account");
             }
           );
         }
@@ -154,6 +157,9 @@ export const addCourseToUser = (req, res) => {
                 ],
                 (err) => {
                   if (err) return res.status(500).send(err);
+                  return res
+                    .status(200)
+                    .send("The course has been added to your account");
                 }
               );
             }
