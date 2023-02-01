@@ -18,6 +18,10 @@ export const getOptionsLine = (minWidth1000) => {
         borderJoinStyle: "round",
       },
     },
+    interaction: {
+      intersect: false,
+      mode: "index",
+    },
   };
 };
 

@@ -27,14 +27,11 @@ function Ranking() {
         const res = await axios.get("/users/ranking");
 
         if (res.data) {
-          console.log(res.data);
           let rankingDataObject = [];
-          console.log(res.data.dataFirst);
           res.data.dataFirst.forEach(({ user_uid, month_score }, i) => {
             let nicks = [];
             let avatars = [];
             for (const arr of res.data.dataSecond) {
-              console.log(arr.length);
               const nick = arr.length ? arr[0].nick : arr.nick;
               const avatar = arr.length ? arr[0].avatar : arr.avatar;
 
@@ -57,7 +54,6 @@ function Ranking() {
           });
 
           rankingDataObject?.sort((a, b) => b.ranking_score - a.ranking_score);
-          console.log(rankingDataObject);
           setRankingData(rankingDataObject);
         }
       } catch (err) {

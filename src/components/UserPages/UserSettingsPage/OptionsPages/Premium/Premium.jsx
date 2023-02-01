@@ -81,7 +81,7 @@ function Premium() {
           <div className={classNames(cx("premium-content"))}>
             <h2>Premium buy history:</h2>
             {userPremiumHistory.length ? (
-              <>
+              <div className={classNames(cx("premium-container"))}>
                 <table>
                   <thead>
                     <tr>
@@ -229,7 +229,7 @@ function Premium() {
                 <p style={{ color: "red", marginTop: "0.5rem" }}>
                   {errorMessage}
                 </p>
-              </>
+              </div>
             ) : (
               <p>
                 Purchase history is currently empty, purchase something in our

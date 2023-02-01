@@ -24,15 +24,20 @@ import axios from "axios";
 import { useEffect } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 
+import defaultAvatar from "../../../images/default-avatar.png";
+
 function UserMainPage() {
   const { minWidth1000 } = MediaQueries();
-
   const { currentUser } = useContext(AuthContext);
+
+  const URL = process.env.REACT_APP_URL;
 
   const cx = classNames.bind(classes);
 
   const [boxIsOpen, setBoxIsOpen] = useState(false);
   const [strike, setStrike] = useState(0);
+
+  const [avatar, setAvatar] = useState(defaultAvatar);
 
   const setBoxIsOpenHandler = () => {
     setBoxIsOpen(true);
@@ -62,13 +67,31 @@ function UserMainPage() {
           });
           return strikeCounter;
         };
-
-        console.log(setStrike(calculateStrike()));
+        setStrike(calculateStrike());
       } catch (err) {
         console.log(err);
       }
     };
     fetchStrike();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserAvatar = async () => {
+      try {
+        const res = await axios.get("/users/avatar");
+        if (res.data) {
+          setAvatar(
+            res.data.startsWith("user-avatar-")
+              ? `${URL}/${res.data}`
+              : res.data
+          );
+        }
+        console.log(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchUserAvatar();
   }, []);
 
   return (
@@ -82,6 +105,7 @@ function UserMainPage() {
                   Welcome <br /> {currentUser.nick}
                 </h1>
                 <h3>Your strike is {strike} days!</h3>
+
                 <div className={classNames(cx("user-main-boxes"))}>
                   <Link
                     to="about-me"
@@ -149,8 +173,13 @@ function UserMainPage() {
               <div className="grid-user-main">
                 <div className={cx("user-main-desktop-hello")}>
                   <div className={cx("user-main-desktop-hello-text")}>
-                    <h1>Welcome {currentUser.nick}</h1>
-                    <h3>Your strike is {strike} days!</h3>
+                    <div className={cx("user-main-avatar")}>
+                      <img src={avatar} alt="user avatar" />
+                    </div>
+                    <div className={cx("user-main-desktop-hello-text-content")}>
+                      <h1>Welcome {currentUser.nick}</h1>
+                      <h3>Your strike is {strike} days!</h3>
+                    </div>
                   </div>
                 </div>
 

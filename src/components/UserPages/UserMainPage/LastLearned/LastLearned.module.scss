@@ -10,8 +10,16 @@
     min-height: 0;
     width: 100%;
   }
-
+  &-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @media only screen and (min-width: $bp-1000) {
+      height: calc(100% - 2.6rem);
+    }
+  }
   &-content {
+    overflow: auto;
     min-height: 70vh;
     background-color: $color-white;
     border-radius: 1rem;
@@ -25,7 +33,6 @@
     }
 
     & ul {
-      overflow: auto;
       height: 100%;
       margin: auto;
 
@@ -47,11 +54,6 @@
           position: relative;
           color: #555;
 
-          &::before {
-            position: absolute;
-            left: -1rem;
-            content: "•";
-          }
           &:hover {
             color: $color-purple;
           }
@@ -72,6 +74,7 @@
       }
     }
     & h2 {
+      color: #333;
       margin-bottom: 1rem;
       font-size: 3.6rem;
       text-align: center;
@@ -81,8 +84,12 @@
       }
     }
     &-empty {
-      color: black;
+      color: #333;
+      height: 100%;
       justify-content: center;
+      @media only screen and (min-width: $bp-1000) {
+        margin-top: -1.3rem;
+      }
     }
   }
 }

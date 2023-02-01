@@ -2,7 +2,7 @@ import classes from "./AboutMe.module.scss";
 import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRemove } from "@fortawesome/free-solid-svg-icons";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 function AboutMeLanguages({
   userLanguagesLevels,
@@ -10,11 +10,18 @@ function AboutMeLanguages({
   userLanguages,
   changeLanguagesSubmitHandler,
   fetchUserInformation,
+
+  setError,
 }) {
   const cx = classNames.bind(classes);
   const allLanguages = useRef();
   const languagesInputRef = useRef();
   const languagesLevelInputRef = useRef();
+
+  const [errorLanguages, setErrorLanguages] = useState({
+    message: "",
+    type: "",
+  });
 
   // * CHANGE LANGUAGES
   const addLanguageSubmitHandler = async (e) => {
@@ -26,7 +33,7 @@ function AboutMeLanguages({
       /[a-zA-Z]+/.test(languagesInputRef.current.value)
     ) {
       try {
-        const res = await axios.post("/users/addLanguage", {
+        await axios.post("/users/addLanguage", {
           language: languagesInputRef.current.value,
           level:
             languagesLevelInputRef.current.options[
@@ -34,22 +41,30 @@ function AboutMeLanguages({
             ].text,
         });
         fetchUserInformation();
-        console.log(res);
       } catch (err) {
         console.log(err);
+        setError({
+          message: "Something went wrong...",
+          type: "server-denied-large",
+        });
       }
-    } else console.log("dupsko");
+    } else
+      setErrorLanguages({
+        message: "Language must contain only letters and length from 1 to 30",
+        type: "server-denied-small",
+      });
   };
 
   // * REMOVE LANGUAGES
   const removeLanguageHandler = async (e) => {
     e.preventDefault();
+
     const languageToDelete = e.target.attributes.language.value;
     let index;
     for (let i = 0; i < userLanguages.length; i++) {
       if (languageToDelete === userLanguages[i]) index = i;
     }
-    console.log(index);
+
     const newLanguagesArr = userLanguages.filter(
       (lang, i) => lang !== languageToDelete
     );
@@ -64,20 +79,28 @@ function AboutMeLanguages({
         if (newLanguagesArr[i].length < 30) {
           newLanguagesLevels += newLanguagesLevelsArr[i] + "/";
           newLanguages += newLanguagesArr[i] + "/";
-        } else return console.log("30let");
+        } else
+          return setErrorLanguages({
+            message:
+              "you have too many languages entered, if you are that good, contact us, we will change this restriction specially for you ;)",
+            type: "server-denied-small",
+          });
       }
     }
 
     try {
-      const res = await axios.post("/users/addLanguage", {
+      await axios.post("/users/addLanguage", {
         language: newLanguages,
         level: newLanguagesLevels,
         change: true,
       });
       fetchUserInformation();
-      console.log(res);
     } catch (err) {
       console.log(err);
+      setError({
+        message: "Something went wrong...",
+        type: "server-denied-large",
+      });
     }
   };
 
@@ -208,6 +231,9 @@ function AboutMeLanguages({
         <button style={{ marginTop: "1rem" }} className="btn-solid-small">
           Add new language
         </button>
+        <div style={{ marginTop: "1rem" }} className={errorLanguages.type}>
+          {errorLanguages.message}
+        </div>
       </form>
     </>
   ) : (

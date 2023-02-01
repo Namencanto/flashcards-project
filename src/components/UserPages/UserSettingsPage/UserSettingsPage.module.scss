@@ -12,7 +12,7 @@
   &-header {
     display: flex;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
     justify-content: space-between;
     & svg {
       color: #333;
@@ -63,7 +63,6 @@
       font-size: 3.6rem;
       line-height: 3.6rem;
       text-align: center;
-      margin-bottom: 1rem;
       @media only screen and (min-width: $bp-1000) {
         font-size: 5rem;
         line-height: 5rem;

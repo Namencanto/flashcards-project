@@ -21,7 +21,7 @@ function HowItWorksPage() {
       <section className={classNames(cx("policies-textbox"))}>
         <h3>Business Analysis And Reporting Tools</h3>
         <p>
-          Tivo also automatically collects and receives certain information from
+          Techcards also automatically collects and receives certain information from
           your computer or mobile device, including the activities you perform
           on our Website, the Platforms, and the Applications, the type of
           hardware and software you are using (for example, your operating
@@ -33,7 +33,7 @@ function HowItWorksPage() {
           applicable).
         </p>
         <p>
-          When you first register for a Tivo account, and when you use the
+          When you first register for a Techcards account, and when you use the
           Services, we collect some <Link>Personal Information</Link> about you
           such as:
         </p>
@@ -57,7 +57,7 @@ function HowItWorksPage() {
             <li>
               <FontAwesomeIcon icon={faSquare} />
               <p>
-                A unique Tivo user ID (an alphanumeric string) which is assigned
+                A unique Techcards user ID (an alphanumeric string) which is assigned
                 to you upon registration should always be at front
               </p>
             </li>
@@ -121,7 +121,7 @@ function HowItWorksPage() {
         >
           <h3>Improving Product Strategy</h3>
           <p>
-            Tivo also automatically collects and receives certain information
+            Techcards also automatically collects and receives certain information
             from your computer or mobile device, including the activities you
             perform on our Website, the Platforms, and the Applications, the
             type of hardware and software you are using (for example, your
@@ -152,7 +152,7 @@ function HowItWorksPage() {
         )}
       >
         <p>
-          Tivo is a HTML landing page template tool. By its nature, Services
+          Techcards is a HTML landing page template tool. By its nature, Services
           enable our customers to promote their products and services integrate
           with hundreds of business applications that they already use, all in
           one place. Services help our customers promote their products and

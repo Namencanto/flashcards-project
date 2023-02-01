@@ -8,7 +8,6 @@ import { useRef, useEffect } from "react";
 import MembershipType from "./MembershipType";
 import PaymentMethods from "./PaymentMethods";
 
-import Logo from "../../../../images/logo-purple.svg";
 function TransactionModal(props) {
   const cx = classNames.bind(classes);
   const modalRef = useRef();

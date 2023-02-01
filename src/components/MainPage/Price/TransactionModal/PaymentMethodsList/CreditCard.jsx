@@ -5,13 +5,13 @@ import axios from "axios";
 import Invoice from "./Invoice/Invoice";
 function CreditCard({ membership }) {
   const cx = classNames.bind(classes);
-
+  console.log(membership);
   const [invoiceIsVisible, setInvoiceIsVisible] = useState(false);
-  const [serverMessage, setServerMessage] = useState();
-  const [serverMessageClassName, setServerMessageClassName] = useState();
-  const [cardNumberErrorMessage, setCardNumberErrorMessage] = useState();
-  const [cvcErrorMessage, setCvcErrorMessage] = useState();
-  const [dateErrorMessage, setDateErrorMessage] = useState();
+  const [serverMessage, setServerMessage] = useState("");
+  const [serverMessageClassName, setServerMessageClassName] = useState("");
+  const [cardNumberErrorMessage, setCardNumberErrorMessage] = useState("");
+  const [cvcErrorMessage, setCvcErrorMessage] = useState("");
+  const [dateErrorMessage, setDateErrorMessage] = useState("");
   const [invoiceErrorMessage, setInvoiceErrorMessage] = useState("");
 
   function validateYear(year) {
@@ -93,7 +93,7 @@ function CreditCard({ membership }) {
               paymentAmount: membership.price,
             };
         const res = await axios.post("/premium/", postData);
-        console.log(res);
+
         setServerMessage(res.data);
         setServerMessageClassName("server-accepted-large");
       }
@@ -152,7 +152,7 @@ function CreditCard({ membership }) {
           </div>
         </div>
 
-        <div className="input-checkbox">
+        <div style={{ marginBottom: "0.5rem" }} className="input-checkbox">
           <input
             type="checkbox"
             id="name"
@@ -172,7 +172,12 @@ function CreditCard({ membership }) {
           ""
         )}
 
-        <button className="btn-solid-large">Make payment</button>
+        <button
+          disabled={serverMessage === "Payment successful"}
+          className="btn-solid-large"
+        >
+          Make payment
+        </button>
       </form>
       <p style={{ marginTop: "1rem" }} className={serverMessageClassName}>
         {serverMessage}

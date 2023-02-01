@@ -1,37 +1,46 @@
 import classes from "./AboutMe.module.scss";
 import classNames from "classnames/bind";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 
 function AboutMeText({
   changeTextIsVisible,
   fetchUserInformation,
   aboutMeText,
+  setError,
 }) {
   const cx = classNames.bind(classes);
-
+  const [errorAboutMe, setErrorAboutMe] = useState({
+    message: "",
+    type: "",
+  });
   const textareaRef = useRef();
   const aboutMeRef = useRef();
 
   // * UPDATE ABOUT ME INFO
   const changeAboutMeTextSubmitHandler = async (e) => {
     e.preventDefault();
-
     if (
       textareaRef.current.value.length !== 0 &&
       textareaRef.current.value.length <= 500
     ) {
       try {
-        const res = await axios.post("/users/addInformation", {
+        await axios.post("/users/addInformation", {
           aboutMeText: textareaRef.current.value,
         });
         fetchUserInformation();
-        console.log(res);
       } catch (err) {
         console.log(err);
+        setError({
+          message: "Something went wrong...",
+          type: "server-denied-small",
+        });
       }
     } else {
-      console.log("za duzo");
+      setErrorAboutMe({
+        message: "About me must contain only letters and length from 1 to 255",
+        type: "server-denied-small",
+      });
     }
   };
 
@@ -53,6 +62,9 @@ function AboutMeText({
         name="aboutMeText"
       />
       <button className="btn-solid-small">Change</button>
+      <div style={{ marginTop: "1rem" }} className={errorAboutMe.type}>
+        {errorAboutMe.message}
+      </div>
     </form>
   ) : (
     <p ref={aboutMeRef}>{aboutMeText || "Write some about yourself"}</p>

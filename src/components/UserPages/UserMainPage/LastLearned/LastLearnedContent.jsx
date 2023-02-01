@@ -11,7 +11,7 @@ function LastLearnedContent({ errorMessage, lastLearned, isFetched }) {
     <div className={classNames(cx("last-learned-content"))}>
       <h2>Last learned</h2>
       {isFetched ? (
-        <>
+        <div className={classNames(cx("last-learned-container"))}>
           <ul>
             {lastLearned?.list.length > 0 ? (
               lastLearned?.list.map((list, i) => {
@@ -34,14 +34,21 @@ function LastLearnedContent({ errorMessage, lastLearned, isFetched }) {
                 );
               })
             ) : (
-              <li className={classNames(cx("last-learned-content-empty"))}>
+              <li
+                style={
+                  errorMessage.length !== 0
+                    ? { color: "red", fontSize: "2.4rem" }
+                    : null
+                }
+                className={classNames(cx("last-learned-content-empty"))}
+              >
                 {errorMessage.length !== 0
                   ? errorMessage
                   : "Last learned is currently empty, start learn to display"}
               </li>
             )}
           </ul>
-        </>
+        </div>
       ) : (
         <LoadingSpinner />
       )}

@@ -1,6 +1,18 @@
 import { db } from "../config/db.js";
 import { checkToken } from "./checkToken.js";
 
+// * GET AVATAR TO MAIN PAGE
+export const getAvatar = (req, res) => {
+  checkToken(req, res, (userInfo) => {
+    const q = "SELECT `avatar` FROM `users` WHERE `id` = ?";
+    db.query(q, [userInfo.id], (err, data) => {
+      if (err) return res.status(500).json(err);
+      return res.json(data[0].avatar);
+    });
+  });
+};
+
+// * GET ABOUT ME INFO
 export const getInformation = (req, res) => {
   checkToken(req, res, (userInfo) => {
     const q =
@@ -14,6 +26,7 @@ export const getInformation = (req, res) => {
   });
 };
 
+// * POST TO ABOUT ME
 export const addInformation = (req, res) => {
   checkToken(req, res, (userInfo) => {
     const q =
@@ -87,7 +100,6 @@ export const getRanking = (req, res) => {
       }
       db.query(qSecond, (err, dataSecond) => {
         if (err) return res.status(500).json(err);
-
         return res.json({ dataFirst, dataSecond });
       });
     });

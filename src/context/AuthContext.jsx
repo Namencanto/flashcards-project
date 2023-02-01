@@ -12,11 +12,17 @@ export const AuthContextProvider = ({ children }) => {
   );
 
   setInterval(() => {
+    if (!localStorage.getItem("user")) {
+      cookies.remove("jwtTime");
+      localStorage.removeItem("user");
+      setCurrentUser(null);
+    }
+
     if (!cookies.get("jwtTime") && localStorage.getItem("user")) {
       localStorage.removeItem("user");
       setCurrentUser(null);
     }
-  }, 1000);
+  }, 10000);
 
   const register = async (email, password, nick) => {
     const res = await axios.post("/auth/register", {

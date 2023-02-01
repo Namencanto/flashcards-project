@@ -12,6 +12,7 @@ import {
   getLearningDifficult,
   postLearningDifficult,
   getLastLearned,
+  getAvatar,
 } from "../controllers/user.js";
 import multer from "multer";
 
@@ -48,6 +49,8 @@ const upload = multer({
 import express from "express";
 
 const router = express.Router();
+
+router.get("/avatar", getAvatar);
 
 router.get("/general", getGeneralInformation);
 router.get("/privaty-login", getPrivatyAndLogin);

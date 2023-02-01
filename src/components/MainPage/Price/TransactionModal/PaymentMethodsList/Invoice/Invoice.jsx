@@ -10,7 +10,7 @@ function Invoice({ invoiceErrorMessage }) {
       <div className={classNames(cx("payment-methods-card-input-invoice-box"))}>
         <div className="input-default">
           <input type="text" id="vat-number" placeholder=" " maxlength="100" />
-          <label htmlFor="vat-number">VAT Number (TIN, NIP)</label>
+          <label htmlFor="vat-number">VAT Number</label>
         </div>
         <div style={{ marginLeft: "1rem" }} className="input-default">
           <input type="text" id="company" placeholder=" " />
@@ -29,16 +29,31 @@ function Invoice({ invoiceErrorMessage }) {
       </div>
       <div className={classNames(cx("payment-methods-card-input-invoice-box"))}>
         <div className="input-default">
-          <input type="text" id="zip-code" placeholder=" " />
-          <label htmlFor="zip-code">Zip Code</label>
+          <input style={{}} type="text" id="zip-code" placeholder=" " />
+          <label
+            style={window.innerWidth < 300 ? { left: "1rem" } : null}
+            htmlFor="zip-code"
+          >
+            Zip Code
+          </label>
         </div>
         <div style={{ marginLeft: "1rem" }} className="input-default">
           <input type="text" id="address" placeholder=" " />
-          <label htmlFor="address">Address</label>
+          <label
+            style={window.innerWidth < 300 ? { left: "1rem" } : null}
+            htmlFor="address"
+          >
+            Address
+          </label>
         </div>
         <div style={{ marginLeft: "1rem" }} className="input-default">
           <input type="text" id="country" placeholder=" " />
-          <label htmlFor="country">Country</label>
+          <label
+            style={window.innerWidth < 300 ? { left: "1rem" } : null}
+            htmlFor="country"
+          >
+            Country
+          </label>
         </div>
       </div>
       <p style={{ color: "red" }}>{invoiceErrorMessage}</p>

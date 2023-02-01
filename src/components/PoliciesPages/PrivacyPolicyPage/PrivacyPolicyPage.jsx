@@ -113,8 +113,8 @@ function PrivacyPolicyPage() {
             <li>
               <FontAwesomeIcon icon={faSquare} />
               <p>
-                A unique Tivo user ID (an alphanumeric string) which is assigned
-                to you upon registration should always be at front
+                A unique Techcards user ID (an alphanumeric string) which is
+                assigned to you upon registration should always be at front
               </p>
             </li>
             <li>
@@ -171,9 +171,9 @@ function PrivacyPolicyPage() {
       </section>
 
       <section className={classNames(cx("policies-textbox"))}>
-        <h3>How We Use Tivo Landing Page Data</h3>
+        <h3>How We Use Techcards Landing Page Data</h3>
         <p>
-          Tivo Landing Page Template uses visitors' data for the following
+          Techcards Landing Page Template uses visitors' data for the following
           general purposes and for other specific ones that are important:
         </p>
         <ol>
@@ -212,8 +212,9 @@ function PrivacyPolicyPage() {
             us
           </li>
           <li>
-            To sell or market Tivo Landing Page products and services to you or
-            in other parts of the world where legislation is less restrictive
+            To sell or market Techcards Landing Page products and services to
+            you or in other parts of the world where legislation is less
+            restrictive
           </li>
           <li>
             To better understand your needs and the needs of users in the
@@ -239,10 +240,11 @@ function PrivacyPolicyPage() {
       <section className={classNames(cx("policies-textbox"))}>
         <h3>Customer Content We Process For Customers</h3>
         <p>
-          Tivo is a HTML landing page template tool. By its nature, Services
-          enable our customers to promote their products and services integrate
-          with hundreds of business applications that they already use, all in
-          one place. Customer security is our primary focus in this document.
+          Techcards is a HTML landing page template tool. By its nature,
+          Services enable our customers to promote their products and services
+          integrate with hundreds of business applications that they already
+          use, all in one place. Customer security is our primary focus in this
+          document.
         </p>
         <p>
           Services help our customers promote their products and services,
@@ -252,7 +254,7 @@ function PrivacyPolicyPage() {
         </p>
       </section>
       <section className={classNames(cx("policies-textbox"))}>
-        <h3>Consent Of Using Tivo Landing Page</h3>
+        <h3>Consent Of Using Techcards Landing Page</h3>
         <p>
           By using any of the Services, or submitting or collecting any Personal
           Information via the Services, you consent to the collection, transfer,
@@ -267,14 +269,15 @@ function PrivacyPolicyPage() {
         <section className={classNames(cx("policies-textbox"))}>
           <h3>Inquire What Data We Have</h3>
           <p>
-            Tivo Landing Page uses tracking technology on the landing page, in
-            the Applications, and in the Platforms, including mobile application
-            identifiers and a unique Tivo user ID to help us. Recognize you
-            across different Services, to monitor usage and web traffic routing
-            for the Services, and to customize and improve the Services.
+            Techcards Landing Page uses tracking technology on the landing page,
+            in the Applications, and in the Platforms, including mobile
+            application identifiers and a unique Techcards user ID to help us.
+            Recognize you across different Services, to monitor usage and web
+            traffic routing for the Services, and to customize and improve the
+            Services.
           </p>
           <p>
-            By visiting Tivo or using the Services you agree to the use of
+            By visiting Techcards or using the Services you agree to the use of
             cookies in your browser and HTML-based emails. You visit a website,
             by using any of the Services, or submitting or collecting any
             Personal Information via the Services, you consent and use of your{" "}
@@ -334,7 +337,7 @@ function PrivacyPolicyPage() {
                 type="checkbox"
               />
               <p>
-                I've read and agree to Tivo's written
+                I've read and agree to Techcards's written
                 <Link to="privacy-policy"> Privacy Policy </Link> and
                 <Link to="terms-conditions"> Terms Conditions </Link>.
               </p>

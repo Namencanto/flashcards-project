@@ -35,6 +35,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import StatisticsModal from "./StatisticsModal";
 import ReactDOM from "react-dom";
+import StatisticsContent from "./StatisticsContent";
+
 function Statistics() {
   const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
@@ -42,6 +44,8 @@ function Statistics() {
   const optionsAnswersPie = getOptionsAnswersPie(minWidth1000);
   const optionsStatusesPie = getOptionsStatusesPie(minWidth1000);
   const [isFetched, setIsFetched] = useState(false);
+
+  const [error, setError] = useState({ message: "", type: "" });
 
   const [statisticsModalIsVisible, setStatisticsModalIsVisible] =
     useState(false);
@@ -77,7 +81,6 @@ function Statistics() {
       setIsFetched(false);
       try {
         const res = await axios.get("/statistics/user/get");
-
         const joined = new Date(res.data[0].joinedDate);
         let allDatesArr = [];
         let allWrongArr = [];
@@ -113,6 +116,10 @@ function Statistics() {
         });
       } catch (error) {
         console.log(error);
+        setError({
+          message: "Something went wrong...",
+          type: "server-denied-large",
+        });
       }
       setIsFetched(true);
     };
@@ -122,6 +129,21 @@ function Statistics() {
 
   const hideStatisticsModal = () => {
     setStatisticsModalIsVisible(false);
+  };
+  const props = {
+    mainStats,
+    allActivity,
+    optionsLine,
+    allAnswers,
+    optionsAnswersPie,
+    allStatuses,
+    optionsStatusesPie,
+    StatisticsData,
+    LastTenDaysLineChart,
+    FutureRepetitionsLineCharts,
+    LastTenDaysTimeSpentLineChart,
+    AllAnswersPieChart,
+    AllStatusesPieChart,
   };
   return (
     <div className={classNames(cx("statistics"))}>
@@ -134,39 +156,13 @@ function Statistics() {
                   <h2>Statistics</h2>
                 </header>
                 {isFetched ? (
-                  <>
-                    <StatisticsData
-                      mainStats={mainStats}
-                      totalTime={allActivity.allTimes.reduce(
-                        (a, b) => a + b,
-                        0
-                      )}
-                    />
-                    <LastTenDaysLineChart
-                      data={allActivity}
-                      options={optionsLine}
-                    />
-                    <FutureRepetitionsLineCharts
-                      statisticsIds="all"
-                      options={optionsLine}
-                    />
-                    {allActivity.allDates.length > 0 ? (
-                      <LastTenDaysTimeSpentLineChart
-                        data={allActivity}
-                        options={optionsLine}
-                      />
-                    ) : (
-                      ""
-                    )}
-                    <AllAnswersPieChart
-                      data={allAnswers}
-                      options={optionsAnswersPie}
-                    />
-                    <AllStatusesPieChart
-                      statuses={allStatuses}
-                      options={optionsStatusesPie}
-                    />
-                  </>
+                  error.message.length > 0 ? (
+                    <div style={{ color: "red" }} className={error.type}>
+                      {error.message}
+                    </div>
+                  ) : (
+                    <StatisticsContent {...props} />
+                  )
                 ) : (
                   <LoadingSpinner />
                 )}
@@ -186,42 +182,17 @@ function Statistics() {
               <h2>Statistics</h2>
             </header>
             {isFetched ? (
-              <>
-                <StatisticsData
-                  mainStats={mainStats}
-                  totalTime={allActivity.allTimes.reduce((a, b) => a + b, 0)}
-                />
-                <LastTenDaysLineChart
-                  data={allActivity}
-                  options={optionsLine}
-                />
-                <FutureRepetitionsLineCharts
-                  statisticsIds="all"
-                  options={optionsLine}
-                />
-                {allActivity.allDates.length > 0 ? (
-                  <LastTenDaysTimeSpentLineChart
-                    data={allActivity}
-                    options={optionsLine}
-                  />
-                ) : (
-                  ""
-                )}
-                <AllAnswersPieChart
-                  data={allAnswers}
-                  options={optionsAnswersPie}
-                />
-                <AllStatusesPieChart
-                  statuses={allStatuses}
-                  options={optionsStatusesPie}
-                />
-              </>
+              error.message.length > 0 ? (
+                <div className={error.type}>{error.message}</div>
+              ) : (
+                <StatisticsContent {...props} />
+              )
             ) : (
               <LoadingSpinner />
             )}
           </div>
         )}
-        {statisticsModalIsVisible
+        {statisticsModalIsVisible && error.message.length === 0
           ? ReactDOM.createPortal(
               <StatisticsModal
                 statisticsModalIsVisible={statisticsModalIsVisible}

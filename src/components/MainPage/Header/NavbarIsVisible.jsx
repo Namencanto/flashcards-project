@@ -94,20 +94,26 @@ const NavbarIsVisible = (props) => {
 
         <li className={classNames(cx("navbar-nav-item"))}>
           <NavLink
+            id="video"
             onMouseEnter={() => {
               setVideoIsVisible(true);
             }}
             onMouseLeave={() => {
               setVideoIsVisible(false);
             }}
-            onClick={() => {
-              videoIsVisible && scrollHandler("player");
+            onClick={(e) => {
+              if (videoIsVisible) {
+                e.target.id === "video" && scrollHandler("player");
+              } else {
+                e.preventDefault();
+              }
             }}
             className={classNames(
               cx("navbar-nav-link"),
               cx("navbar-dropdown-toggle")
             )}
-            to={videoIsVisible && "/video"}
+            disabled={videoIsVisible}
+            to="/video"
           >
             VIDEO
             <FontAwesomeIcon
@@ -117,6 +123,9 @@ const NavbarIsVisible = (props) => {
             {videoIsVisible && (
               <div className={classNames(cx("navbar-dropdown-menu"))}>
                 <NavLink
+                  onClick={() => {
+                    window.scroll({ top: 0, left: 0 });
+                  }}
                   className={classNames(cx("navbar-dropdown-items-item"))}
                   to="/how-it-works"
                 >
@@ -126,6 +135,9 @@ const NavbarIsVisible = (props) => {
                 </NavLink>
                 <div className={classNames(cx("navbar-dropdown-items"))}></div>
                 <NavLink
+                  onClick={() => {
+                    window.scroll({ top: 0, left: 0 });
+                  }}
                   className={classNames(cx("navbar-dropdown-items-item"))}
                   to="/terms-conditions"
                 >
@@ -135,6 +147,9 @@ const NavbarIsVisible = (props) => {
                 </NavLink>
                 <div className={classNames(cx("navbar-dropdown-items"))}></div>
                 <NavLink
+                  onClick={() => {
+                    window.scroll({ top: 0, left: 0 });
+                  }}
                   className={classNames(cx("navbar-dropdown-items-item"))}
                   to="/privacy-policy"
                 >
@@ -161,6 +176,11 @@ const NavbarIsVisible = (props) => {
         {props.currentUser && props.currentUser.nick !== null ? (
           <li className={classNames(cx("navbar-nav-item"))}>
             <NavLink
+              onClick={(e) => {
+                if (!userIsVisible) {
+                  e.preventDefault();
+                }
+              }}
               onMouseEnter={() => {
                 setUserIsVisible(true);
               }}
@@ -171,7 +191,7 @@ const NavbarIsVisible = (props) => {
                 cx("navbar-nav-link"),
                 cx("navbar-dropdown-toggle")
               )}
-              to={userIsVisible && "/user"}
+              to="/user"
             >
               {props.currentUser.nick.toUpperCase()}
               <FontAwesomeIcon

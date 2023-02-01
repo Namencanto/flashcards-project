@@ -38,7 +38,7 @@ function Footer({ backgroundColor }) {
               <h4>About Techcards</h4>
               <p>
                 We're passionate about designing and developing one of the best
-                marketing apps in the market
+                flashcards apps in the market
               </p>
             </div>
 
@@ -106,8 +106,11 @@ function Footer({ backgroundColor }) {
           <div className={classNames(cx("footer-copyright"))}>
             <div className={classNames(cx("footer-copyright-container"))}>
               <p>
-                Copyright © 2022 Origin version created by
-                <a href="https://inovatik.com"> Inovatik</a>
+                Copyright © 2023 Origin version created by
+                <a href="https://www.landingfolio.com/templates/post/tivo">
+                  {" "}
+                  Inovatik
+                </a>
               </p>
             </div>
           </div>

@@ -3,6 +3,8 @@ import classNames from "classnames/bind";
 
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../../../LoadingSpinner/LoadingSpinner";
+import defaultAvatar from "../../../../images/default-avatar.png";
+
 function RankingContent({
   rankingTitleFunction,
   rankingData,
@@ -27,21 +29,24 @@ function RankingContent({
                 month!
               </p>
             ) : error ? (
-              <p>Something went wrong with ranking fetch...</p>
+              <p style={{ color: "red" }} className="server-denied-large">
+                Something went wrong with ranking fetch...
+              </p>
             ) : (
               rankingData.map((user, i) => {
                 return (
                   <li key={i}>
-                    <Link to={`/user/all-users/${user.uid}`}>
+                    {/* to={`/user/all-users/${user.uid}`}  */}
+                    {/* TODO PUBLIC PROFILES */}
+                    <Link>
                       <div className={classNames(cx("ranking-description"))}>
                         <div
                           className={classNames(cx("ranking-description-user"))}
                         >
-                          {user.avatar ? (
-                            <img src={user.avatar} alt="user avatar" />
-                          ) : (
-                            ""
-                          )}
+                          <img
+                            src={user.avatar ? user.avatar : defaultAvatar}
+                            alt="user avatar"
+                          />
 
                           <p
                             style={{

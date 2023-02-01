@@ -36,14 +36,13 @@ const Price = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     const checkUserPremium = async () => {
-      console.log("asfasffassfsf");
       if (props.currentUser) {
         try {
           const res = await axios.get("/premium/check-user");
-          console.log(res);
+
           const currentDate = new Date();
           const expiryDate = new Date(res.data);
-          console.log(expiryDate);
+
           if (expiryDate.getTime() > currentDate.getTime()) {
             setUserPremium(true);
           }
@@ -54,7 +53,6 @@ const Price = React.forwardRef((props, ref) => {
     };
     checkUserPremium();
   });
-  console.log(userPremium);
 
   const setModalIsVisibleHandler = () => {
     setModalIsVisible(true);
@@ -142,7 +140,7 @@ const Price = React.forwardRef((props, ref) => {
                   ) : (
                     <button
                       onClick={() => {
-                        setMembership(premiumTypes[2]);
+                        setMembership(premiumTypes[0]);
                         setModalIsVisibleHandler();
                       }}
                       className="btn-solid-medium"
@@ -228,7 +226,7 @@ const Price = React.forwardRef((props, ref) => {
                   ) : (
                     <button
                       onClick={() => {
-                        setMembership(premiumTypes[2]);
+                        setMembership(premiumTypes[1]);
                         setModalIsVisibleHandler();
                       }}
                       className="btn-solid-medium"

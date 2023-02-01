@@ -3,14 +3,9 @@ import classNames from "classnames/bind";
 
 import UserMobileCard from "../UserMobileCard/UserMobileCard";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  faUser,
-  faGear,
-  faArrowLeft,
-  faRemove,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faGear, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import MediaQueries from "../../../../HelperComponents/MediaQueries";
 
@@ -21,9 +16,12 @@ function AboutMe() {
   const { minWidth1000 } = MediaQueries();
   const cx = classNames.bind(classes);
 
+  const [error, setError] = useState({ message: "", type: "" });
   const [changeTextIsVisible, setChangeTextIsVisible] = useState(false);
   const [textareaIcon, setTextareaIcon] = useState(faGear);
-  const [aboutMeText, setAboutMeText] = useState("insert any value");
+  const [aboutMeText, setAboutMeText] = useState(
+    "A place to describe yourself"
+  );
   const [userLanguages, setUserLanguages] = useState([]);
   const [userLanguagesLevels, setUserLanguagesLevels] = useState([]);
   const [isFetched, setIsFetched] = useState(false);
@@ -33,14 +31,26 @@ function AboutMe() {
     setIsFetched(false);
     try {
       const res = await axios.get("/users/getInformation");
+
       setChangeTextIsVisible(false);
       setTextareaIcon(faGear);
-      setAboutMeText(res.data[0].about_me_info);
 
-      setUserLanguages(res.data[0].languages.slice(0, -1).split("/"));
-      setUserLanguagesLevels(res.data[0].levels.slice(0, -1).split("/"));
+      if (res.data[0]) {
+        setAboutMeText(res.data[0].about_me_info);
+        setUserLanguages(res.data[0].languages.slice(0, -1).split("/"));
+        setUserLanguagesLevels(res.data[0].levels.slice(0, -1).split("/"));
+      }
+      if (res.status === 200) {
+        setError({
+          message: "",
+          type: "",
+        });
+      }
     } catch (err) {
-      console.log(err);
+      setError({
+        message: "Something went wrong...",
+        type: "server-denied-large",
+      });
     }
     setIsFetched(true);
   };
@@ -92,7 +102,10 @@ function AboutMe() {
       fetchUserInformation();
       console.log(res);
     } catch (err) {
-      console.log(err);
+      setError({
+        message: "Something went wrong...",
+        type: "server-denied-large",
+      });
     }
   };
 
@@ -113,6 +126,8 @@ function AboutMe() {
     userLanguages,
     changeLanguagesSubmitHandler,
     isFetched,
+    error,
+    setError,
   };
   return (
     <div className={classNames(cx("aboutme"))}>

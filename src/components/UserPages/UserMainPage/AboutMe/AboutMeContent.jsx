@@ -15,6 +15,8 @@ function AboutMeContent({
   userLanguages,
   changeLanguagesSubmitHandler,
   isFetched,
+  error,
+  setError,
 }) {
   const cx = classNames.bind(classes);
 
@@ -35,6 +37,7 @@ function AboutMeContent({
               changeTextIsVisible={changeTextIsVisible}
               fetchUserInformation={fetchUserInformation}
               aboutMeText={aboutMeText}
+              setError={setError}
             />
           </div>
           <div className={classNames(cx("aboutme-container-languages"))}>
@@ -46,8 +49,10 @@ function AboutMeContent({
                 changeTextIsVisible={changeTextIsVisible}
                 userLanguages={userLanguages}
                 changeLanguagesSubmitHandler={changeLanguagesSubmitHandler}
+                setError={setError}
               />
             }
+            <div className={error.type}>{error.message}</div>
           </div>
         </>
       ) : (
