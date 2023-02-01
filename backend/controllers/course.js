@@ -103,7 +103,7 @@ export const addCourseToUser = (req, res) => {
     const qCreateCourseList =
       "INSERT INTO `lists` SET `list` = ?, `user_uid` = ?, `folder_uid` = ?;";
     const qCopyCourseToUserAccount =
-      "INSERT INTO techcards (user_uid, list_uid, folder_uid, first_side, second_side) SELECT ?,?,?, first_side, second_side FROM course_techcards WHERE list_uid = ?;";
+      "INSERT INTO techcards (user_uid, list_uid, folder_uid, first_side, second_side, image) SELECT ?,?,?, first_side, second_side, image FROM course_techcards WHERE list_uid = ?;";
 
     // * First Part
     let userCourseFolderId = "";
