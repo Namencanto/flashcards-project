@@ -36,7 +36,6 @@
 
   &-content {
     background-color: $color-white;
-    height: 100%;
 
     transition: all 0.2s ease-out;
     opacity: 0;
@@ -117,7 +116,6 @@
           margin-bottom: 0.6rem;
           align-items: center;
           & p {
-  
             margin-bottom: 0;
             font-weight: 400;
           }
