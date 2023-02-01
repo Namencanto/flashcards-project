@@ -2,15 +2,11 @@
 
 ### React-based website, an app where you can create and use your own flashcards with many features
 
----
-
 ## **Live Website** :globe_with_meridians:
 
 ### [https://techcards.onrender.com](https://techcards.onrender.com)
 
 ## **Getting Started** :rocket:
-
----
 
 1. Clone or download the repository
 2. Run `npm install` or `yarn install` to install dependencies
@@ -20,8 +16,6 @@
 6. Visit `http://localhost:3000` to view the app in the browser
 
 # **Features** :heavy_check_mark:
-
----
 
 ### Flashcards learning with several options of teaching and creating own flashcards
 
@@ -53,8 +47,6 @@ Get personalized newsletters and easily retrieve your account information with t
 
 # **Future Features** :bulb:
 
----
-
 ### 1. Public Profiles Logic
 
 In the future, we are planning to implement the public profile functionality, which will allow users to showcase their learning progress and achievements to others. It will include a user's statistics, ranking, last learned flashcards and more. This feature will make it easier for users to connect with others who have similar interests and learning goals.
@@ -71,8 +63,6 @@ We are always looking for ways to improve our platform and make it more useful f
 
 ## Built With :hammer_and_wrench:
 
----
-
 - [React](https://reactjs.org/): A JavaScript library for building user interfaces.
 - [React Router v6](https://reactrouter.com/): A popular library for routing in React applications.
 - [Node.js](https://nodejs.org/en/): An open-source, cross-platform JavaScript runtime environment.
@@ -82,18 +72,12 @@ We are always looking for ways to improve our platform and make it more useful f
 
 ## Contributing :handshake:
 
----
-
 If you're interested in contributing to Techcards, please send me a message or create a pull request.
 
 ## Original Source :compass:
 
----
-
 This project was inspired by [Inovatik Tivo](https://www.landingfolio.com/templates/post/tivo)
 
 ## License :copyright:
-
----
 
 Techcards is open source and released under the [MIT License](https://opensource.org/licenses/MIT).
