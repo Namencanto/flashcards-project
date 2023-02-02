@@ -141,7 +141,6 @@ function LearningModal(props) {
   }, [unknownTechcards, knownTechcards]);
   useEffect(() => {
     // * SET LIST IS FINISHED IF ALL TECHCARDS IS KNOWN
-
     if (
       listIsFinished !== true &&
       learningTechcardsStatus.unknown === 0 &&
@@ -381,14 +380,10 @@ function LearningModal(props) {
                 </p>
                 <p>
                   Effectiveness:
-                  {
-                    // jakis wielki cham tutaj ten warunek postawil :oo
-                    (roundsStatistics.effectiveness[0] === NaN
-                      ? roundsStatistics.effectiveness.reduce((a, b) => a + b) /
-                        roundsStatistics.effectiveness.length
-                      : 100
-                    ).toFixed(2)
-                  }
+                  {(
+                    roundsStatistics.effectiveness.reduce((a, b) => a + b) /
+                    roundsStatistics.effectiveness.length
+                  ).toFixed(2)}
                   %
                 </p>
                 <p>
@@ -401,7 +396,7 @@ function LearningModal(props) {
               >
                 <p>End of {round} round</p>
                 <p>
-                  effectiveness{" "}
+                  Effectiveness{" "}
                   {Math.round(
                     (knownTechcards.firstSides.length /
                       (knownTechcards.firstSides.length +
@@ -411,7 +406,7 @@ function LearningModal(props) {
                   %
                 </p>
                 <p>
-                  time:{" "}
+                  Time:{" "}
                   {roundTimes[roundTimes.length - 1]
                     ? new Date(roundTimes[roundTimes.length - 1] * 1000)
                         .toISOString()
@@ -535,13 +530,13 @@ function LearningModal(props) {
                 <div
                   className={classNames(cx("learning-content-main-buttons"))}
                 >
-                  <button
+                  {/* <button
                     className={classNames(
                       cx("learning-content-main-buttons-default")
                     )}
                   >
                     Try again
-                  </button>
+                  </button> */}
                   <button
                     onClick={exitPopupAnimation}
                     className={classNames(

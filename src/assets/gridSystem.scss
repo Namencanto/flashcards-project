@@ -159,21 +159,18 @@
     &-main {
       @media only screen and (min-width: $bp-1000) {
         box-shadow: 0px 0px 10px 0px rgba(66, 68, 90, 1);
-        max-width: 87.5rem;
+        max-width: 94rem;
         margin: auto;
 
         display: grid;
         min-height: 30rem;
-        // height: 65vh;
-        // height: calc(100vh - 30rem);
         grid-template-columns: repeat(6, 1fr);
-        grid-template-rows: 20vh 45vh;
+        grid-template-rows: 25vh 50vh;
         grid-gap: 1rem;
         @media only screen and (min-width: $bp-1200) {
-          // grid-template-columns: 1fr 80vw 1fr;
+          max-width: 104rem;
           @media only screen and (min-width: $bp-1400) {
-            // grid-template-columns: 1fr 100rem 1fr;
-            max-width: 104rem;
+            max-width: 120rem;
             @media only screen and (min-width: $bp-2000) {
               max-width: 130rem;
             }

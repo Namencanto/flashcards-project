@@ -101,7 +101,8 @@ export const addCourseToUser = (req, res) => {
     const qCreateCourseFolder =
       "INSERT INTO `folders` SET `folder` = ?, `user_uid` = ?, `first_sides_flag` = ?, `second_sides_flag` = ?;";
     const qCreateCourseList =
-      "INSERT INTO `lists` SET `list` = ?, `user_uid` = ?, `folder_uid` = ?;";
+      "INSERT INTO lists (list, user_uid, folder_uid, image) SELECT ?, ?, ?, image FROM course_lists WHERE id = ?;";
+
     const qCopyCourseToUserAccount =
       "INSERT INTO techcards (user_uid, list_uid, folder_uid, first_side, second_side, image) SELECT ?,?,?, first_side, second_side, image FROM course_techcards WHERE list_uid = ?;";
 
@@ -111,7 +112,7 @@ export const addCourseToUser = (req, res) => {
     const createCourseList = (id) => {
       db.query(
         qCreateCourseList,
-        [courseList, userInfo.id, id],
+        [courseList, userInfo.id, id, courseListId],
         (err, data) => {
           if (err) return res.status(500).send(err);
           userCourseListId = data.insertId;
